@@ -5,7 +5,7 @@ cv:
   location: Chicago, IL
 
   sections:
-    education:
+    Education:
       - institution: University of Chicago
         location: Chicago, IL
         studyType: M.A. in Computational Social Science, Economics Specialization
@@ -13,7 +13,6 @@ cv:
         endDate: 2027-06-01
         highlights:
           - "Selected Coursework: Introduction to Empirical Analysis I&II; Social Interactions and Inequality; Large-Scale Computing for the Social Sciences; Analysis in Rⁿ I; Probability and Statistics; AI Agents for Social Science and Society"
-
       - institution: King's College London
         location: London, UK
         studyType: "B.Sc., Political Economy (Grade: 2:1)"
@@ -21,8 +20,7 @@ cv:
         endDate: 2025-07-01
         highlights:
           - "Selected Coursework: Game Theory; Experimental Economics; Quantitative Methods; Mathematics for Economists; Econometrics"
-
-    experience:
+    Experience:
       - name: Auditing Text-Based Reward Signals in Scientific Discovery
         position: Research Project, AI Agents for Social Science and Society
         location: University of Chicago
@@ -32,17 +30,15 @@ cv:
           - Built a directed hypergraph over papers, researcher profiles, and concepts to test whether Chorus text-based rewards tracked scientific value
           - Ran three-persona simulations with Consolidator, Disruptor, and Connector agents to compare alternative surprise regimes
           - Audited 443 publications, identified three systematic reward inversions, and proposed a multimodal ranking metric
-
       - name: FOMC Communication Dynamics, Media Narratives, and S&P 500 Volatility
         position: Research Project, Computational Social Science
         location: University of Chicago
         startDate: 2026-01-01
         endDate: 2026-03-01
         highlights:
-          - Built a 2021–2025 dataset covering 40 FOMC meetings, 2,740 NYT articles, 11 FRED series, and S&P 500 event-window measures
+          - Built a 2021-2025 dataset covering 40 FOMC meetings, 2,740 NYT articles, 11 FRED series, and S&P 500 event-window measures
           - Constructed a 40-observation meeting-level panel merging hawkish-dovish text scores, macro controls, and post-meeting volatility
           - Estimated OLS models and lead-lag correlations to test whether media tone tracked or anticipated shifts in Fed communication
-
       - name: Large-Scale Behavioral Analysis of Cooperation Mechanisms
         position: Undergraduate Researcher, B.Sc. Dissertation
         location: King's College London
@@ -52,7 +48,6 @@ cv:
           - Built a panel with more than 1.5 million interaction observations on about 135,000 agents
           - Compared static grouping with dynamic regrouping across enforcement regimes
           - Estimated interaction models with cluster-robust inference on the full panel
-
       - name: UK Structural Inequality Analysis
         position: Research Analyst, Econometrics Empirical Project
         location: King's College London
@@ -60,9 +55,8 @@ cv:
         endDate: 2023-04-01
         highlights:
           - Built an analytical sample from large-scale UK census microdata for gender disparity analysis
-          - Estimated multivariate OLS wage regressions with variance-inflation and heteroskedasticity diagnostics
+          - Estimated multivariate OLS wage regressions with diagnostics
           - Separated unconditional gender gaps from conditional pay differentials
-
       - name: Comparative Analysis of Sequence Modeling Architectures (LSTM vs. ARIMA)
         position: Research Program
         location: Massachusetts Institute of Technology
@@ -72,19 +66,17 @@ cv:
           - Implemented ARIMA and LSTM models to forecast gold log returns from 2000 to 2020
           - Built an end-to-end Python pipeline with standardized preprocessing and hyperparameter search
           - Wrote a 5,000-word technical report comparing model approaches
-
-    teaching:
+    Teaching:
       - name: "ECON 17100: Introduction to International Trade"
         position: Teaching Assistant (Prof. Timothy Hersey)
         location: University of Chicago
         startDate: 2026-01-01
         endDate: 2026-03-01
         highlights:
-          - Led weekly 50-minute discussion sections on Ricardian and Heckscher–Ohlin trade models
+          - Led weekly 50-minute discussion sections on Ricardian and Heckscher-Ohlin trade models
           - Provided weekly office hours and Ed Discussion support
           - Drafted solution sets and grading rubrics
-
-    awards:
+    Awards:
       - title: Gargoyle Research Scholarship
         date: 2025
         awarder: University of Chicago
@@ -94,31 +86,16 @@ cv:
       - title: M.A. Director's Scholarship
         date: 2025
         awarder: University of Chicago
-
-    skills:
+    Skills:
       - name: Core Analysis
-        keywords:
-          - "Python (pandas, NumPy, scikit-learn, PyTorch/TensorFlow)"
-          - "R (tidyverse)"
-          - SQL
-          - Stata
+        keywords: ["Python (pandas, NumPy, scikit-learn, PyTorch/TensorFlow)", "R (tidyverse)", "SQL", "Stata"]
       - name: Modeling & Simulation
-        keywords:
-          - Java
-          - C++
-          - MATLAB
+        keywords: ["Java", "C++", "MATLAB"]
       - name: "Methods: Empirical & Causal Inference"
-        keywords:
-          - "OLS regression"
-          - "Causal inference (DiD, RD)"
-          - Experimental design
+        keywords: ["OLS regression", "Causal inference (DiD, RD)", "Experimental design"]
       - name: "Methods: Statistical Modeling & ML"
-        keywords:
-          - "Time-series forecasting (ARIMA, LSTM)"
-          - Machine learning
-          - "NLP / text-as-data"
-
-    languages:
+        keywords: ["Time-series forecasting (ARIMA, LSTM)", "Machine learning", "NLP / text-as-data"]
+    Languages:
       - language: Mandarin
         fluency: Native
       - language: English

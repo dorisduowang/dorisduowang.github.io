@@ -2,15 +2,12 @@
 layout: page
 title: Publications
 permalink: /publications/
-description: Working papers and research in progress.
+description: Published papers and working papers.
 nav: true
 nav_order: 2
-years: [2026]
+years: [2026, 2023]
 ---
 
-<!-- _pages/publications.md -->
 <div class="publications">
-
 {% bibliography %}
-
 </div>
