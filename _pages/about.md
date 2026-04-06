@@ -1,34 +1,30 @@
 ---
 layout: about
-title: about
+title: About
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
+subtitle: M.A. in Computational Social Science (Economics) · <a href='https://macss.uchicago.edu/'>University of Chicago</a>
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: prof_pic.jpg # TODO: Add your photo as assets/img/prof_pic.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
-    <p>555 your office number</p>
-    <p>123 your address street</p>
-    <p>Your City, State 12345</p>
+    <p>Chicago, IL</p>
+    <p>dorisduowang@uchicago.edu</p>
 
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 
-announcements:
-  enabled: true # includes a list of news items
-  scrollable: true # adds a vertical scroll bar if there are more than 3 news items
-  limit: 5 # leave blank to include all the news in the `_news` folder
-
-latest_posts:
-  enabled: true
-  scrollable: true # adds a vertical scroll bar if there are more than 3 new posts items
-  limit: 3 # leave blank to include all the blog posts
+news: true # includes a list of news items
+latest_posts: false
 ---
 
-Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](https://www.reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
+I am a first-year M.A. student in [Computational Social Science (Economics)](https://macss.uchicago.edu/) at the **University of Chicago**. I received my B.Sc. in Political Economy from [King's College London](https://www.kcl.ac.uk/) in 2025.
 
-Put your address / P.O. box / other info right below your picture. You can also disable any of these elements by editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_bibliography/papers.bib` and Jekyll will render your [publications page](/al-folio/publications/) automatically.
+My research sits at the intersection of **behavioral economics**, **computational social science**, and **institutional design**. I am broadly interested in how cooperation emerges and is sustained in strategic environments, and how language-based monitoring can improve the efficiency of enforcement mechanisms.
 
-Link to your social media connections, too. This theme is set up to use [Font Awesome icons](https://fontawesome.com/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them.
+Currently, I am working on **Punishment on Demand**, a project that uses transformer-based surprisal scores to adaptively trigger peer punishment in repeated public goods games. I am also investigating how FOMC communication dynamics and media narratives influence financial market volatility.
+
+Prior to UChicago, my undergraduate dissertation at King's College London examined cooperation dynamics and institutional design in large-scale repeated games, analyzing over 1.5 million interaction observations across approximately 135,000 agents.
+
+**Research Interests:** Behavioral and experimental economics of cooperation · Strategic communication in repeated games · Language-based monitoring and selective enforcement · LLM-based simulation of economic behavior
