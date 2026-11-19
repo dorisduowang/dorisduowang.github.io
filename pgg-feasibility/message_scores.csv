@@ -1,0 +1,61 @@
+round,player,message,score,quantity_masked_score,words,target_tokens,quantity_mentions,same_as_any_previous,same_as_own_previous,contribution
+1,P1,Let's all contribute 5 to maximize the public fund. Cooperation benefits everyone.,,,12,15,1,,,5
+1,P2,Let's contribute equally to ensure the public fund grows. Each of us should put in 5 tokens. Working together benefits all of us.,,,23,27,1,,,5
+1,P3,Let's all contribute 10 tokens to maximize the public fund and our individual earnings.,,,14,16,1,,,10
+1,P4,Let's contribute together to maximize our collective gains. Cooperation leads to better outcomes for all.,,,15,18,0,,,5
+2,P1,Let's all contribute 5 again to keep the public fund strong. Working together benefits everyone.,1.9297350845817063,1.8088206820631105,15,18,1,False,False,0
+2,P2,Let's all contribute 5 to maximize the public fund. Cooperation benefits everyone.,0.9950563587248326,0.968198203103384,12,15,1,True,False,5
+2,P3,Let's all contribute 5 to maximize our individual earnings and the public fund.,1.350798416386048,1.1759956989262719,13,15,1,False,False,0
+2,P4,Let's all contribute 10 to maximize the public fund. Cooperation ensures higher returns for everyone.,1.5080278364475816,1.469184804732274,15,18,1,False,False,5
+3,P1,Let's all contribute 5 to maximize the public fund. Cooperation benefits everyone.,1.1174341443770877,0.8171483364058076,12,15,1,True,False,0
+3,P2,Let's contribute 5 each to maintain the public fund and ensure mutual gains.,3.8072442704811693,3.650918895829818,13,15,1,False,False,0
+3,P3,Let's all contribute 5 to maximize the public fund and our individual earnings.,1.1515402249759064,0.8865732320118695,13,15,1,False,False,0
+3,P4,Let's all contribute 5 to boost the public fund and our individual earnings.,1.4383348563996454,1.2199329914874397,13,15,1,False,False,5
+4,P1,Let's contribute 10 each to maximize the public fund and avoid sanctions. Cooperation is key!,3.5054577096727573,3.246720390296296,15,18,1,False,False,10
+4,P2,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,3.15847914754168,2.6559805017430334,16,19,1,False,False,10
+4,P3,Let's all contribute 5 to maximize the public fund and avoid sanctions. Cooperation benefits everyone.,1.845749539944033,1.8099529443455762,15,18,1,False,False,10
+4,P4,Let's all contribute 5 to maximize the public fund and avoid sanctions.,1.7765022860507347,1.7169233332077662,12,14,1,False,False,10
+5,P1,Let's all contribute 10 to maximize the public fund and our individual earnings.,2.437273321840136,2.084333432139829,13,15,1,False,False,5
+5,P2,Let's all contribute 10 to maximize the public fund and ensure mutual benefits.,1.5274353963051301,1.2855255899994518,13,15,1,False,False,5
+5,P3,Let's all contribute 10 again to sustain the public fund and ensure mutual gains. Cooperation leads to higher returns for everyone!,2.5822191039527147,2.6195318666566165,21,24,1,False,False,5
+5,P4,Let's all contribute 10 again to maximize the public fund and our individual earnings.,2.8798296592140105,2.744155302150723,14,16,1,False,False,5
+6,P1,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,2.8140604870001735,2.7286420084070415,16,19,1,False,False,10
+6,P2,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,2.811870981497984,2.731672019721009,16,19,1,False,False,10
+6,P3,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,2.819064434470707,2.740118493011687,16,19,1,False,False,10
+6,P4,Let's all contribute 10 to maximize the public fund and avoid sanctions. Cooperation ensures mutual gains!,2.640780063388918,2.6577581510180606,16,19,1,False,False,10
+7,P1,Let's all contribute 10 to maximize the public fund and our individual earnings. Cooperation ensures mutual gains!,2.2076361092331354,2.048018700429349,17,20,1,False,False,5
+7,P2,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation is key!,2.191686625463741,2.0421251875843156,16,19,1,False,False,5
+7,P3,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation is key!,2.184909494630502,2.0358840513654286,16,19,1,False,False,5
+7,P4,Let's all contribute 10 to maximize the public fund and our individual earnings.,2.537729821447283,2.297622621041228,13,15,1,False,False,0
+8,P1,Let's all contribute 10 to maximize the public fund and avoid sanctions. Cooperation ensures mutual gains!,1.783822282294032,1.696158082660986,16,19,1,False,False,10
+8,P2,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,2.0511747045981648,1.9714763194322587,16,19,1,False,False,10
+8,P3,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,2.0536501721209404,1.9733853019890375,16,19,1,False,False,10
+8,P4,Let's all contribute 10 to maximize the public fund and avoid sanctions. Cooperation ensures mutual gains!,1.7854020977025165,1.6962187764234842,16,19,1,False,False,10
+9,P1,Let's all contribute 10 again to maximize the public fund and sustain our mutual gains. Cooperation ensures higher returns for everyone!,2.77941491578531,2.718005527113564,21,24,1,False,False,5
+9,P2,Let's all contribute 10 to maximize the public fund and ensure mutual gains.,1.403709366560603,1.3588172529962321,13,15,1,False,False,5
+9,P3,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation is key!,2.1129602152290508,2.032903698264272,16,19,1,False,False,10
+9,P4,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation leads to better outcomes for all.,2.133193854280525,2.0363052293129535,20,23,1,False,False,0
+10,P1,Let's all contribute 10 to maximize the public fund and avoid sanctions. Cooperation ensures mutual gains!,2.206575013139579,2.0629702925769378,16,19,1,False,False,10
+10,P2,Let's all contribute 10 to maximize the public fund and avoid sanctions. Cooperation ensures mutual gains!,2.2146266888747435,2.0684077337180495,16,19,1,False,False,10
+10,P3,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation is key!,2.0585802970195397,1.9827432604506612,15,18,1,False,False,10
+10,P4,Let's contribute 5 each to maintain the public fund and avoid sanctions. Cooperation ensures mutual gains!,4.237340308113121,3.915920260618441,16,19,1,False,False,10
+11,P1,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation leads to better outcomes for all.,1.9503250765998887,1.9429193710990755,20,23,1,False,False,0
+11,P2,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation leads to better outcomes for all.,1.9705674496894379,1.9619502352191678,20,23,1,False,False,0
+11,P3,Let's all contribute 10 to maximize the public fund and our individual earnings. Cooperation ensures mutual gains!,1.998726413224358,2.0490920948685103,17,20,1,False,False,5
+11,P4,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation is key!,1.3945847652442018,1.4537335785134928,16,19,1,False,False,5
+12,P1,Let's all contribute 10 to sustain the public fund and prevent sanctions. Working together benefits everyone.,3.1788119956556904,3.0771570662851446,16,19,1,False,False,10
+12,P2,Let's all contribute 10 to maintain the public fund and avoid sanctions. Working together benefits everyone.,2.9869641911998195,2.8980960116605274,16,19,1,False,False,10
+12,P3,Let's all contribute 10 to maximize the public fund and avoid sanctions. Cooperation ensures mutual gains!,1.3588408923885589,1.274080529488856,16,19,1,False,False,10
+12,P4,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,1.8685425148762174,1.7684684727806599,16,19,1,False,False,10
+13,P1,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation benefits everyone.,1.6658999130534204,1.654435888287844,16,19,1,False,False,5
+13,P2,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation is key!,1.9090803291795677,1.8716016049962492,16,19,1,False,False,10
+13,P3,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation is key!,1.9125877893591103,1.87381050271797,16,19,1,False,False,0
+13,P4,Let's all contribute 10 to maintain the public fund and ensure mutual gains. Cooperation leads to better outcomes for all.,1.9228905001604606,1.8405652311412268,20,23,1,False,False,5
+14,P1,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,2.143767212395017,1.9973906370811165,16,19,1,False,False,10
+14,P2,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,2.142479185799235,1.9913243828807026,16,19,1,False,False,10
+14,P3,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,2.1443181956603534,1.9929317500907928,16,19,1,False,False,8
+14,P4,Let's all contribute 10 to avoid sanctions and maximize the public fund. Cooperation ensures mutual gains!,2.142284840896824,1.9900782066164537,16,19,1,False,False,10
+15,P1,Let's all contribute 10 to maximize the public fund and ensure mutual gains.,2.030773826816585,1.9007086247511324,13,15,1,False,False,0
+15,P2,"Since this is the last round, let's all free-ride to maximize individual earnings. No future rounds to benefit from the public fund.",3.97431081533432,4.004245820322207,22,28,0,False,False,0
+15,P3,"Since punishment is inactive, let's all contribute 0 to maximize individual gains in the final round.",3.913030868298129,3.5320033089490606,16,19,1,False,False,0
+15,P4,Let's all contribute 10 to maximize the public fund and ensure mutual gains. Cooperation leads to better outcomes for all.,2.5074753356469874,2.3682538709787573,20,23,1,False,False,0
