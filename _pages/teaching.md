@@ -10,6 +10,7 @@ nav_order: 4
 ## University of Chicago
 
 ### ECON 17100: Introduction to International Trade
+
 **Teaching Assistant** · Winter 2026 · Prof. Timothy Hersey
 
 - Led weekly 50-minute discussion sections translating Ricardian and Heckscher-Ohlin trade models into quantitative problem-solving exercises
