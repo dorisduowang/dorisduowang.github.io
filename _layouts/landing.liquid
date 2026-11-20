@@ -12,7 +12,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ page.title | escape }}">
     <meta property="og:description" content="{{ page.description | escape }}">
-    <meta property="og:image" content="{{ '/assets/img/portfolio/doris-centered-poster.webp' | absolute_url }}">
+    <meta property="og:image" content="{{ '/assets/img/portfolio/doris-centered-poster.webp' | absolute_url | bust_file_cache }}">
     <meta property="og:image:alt" content="Doris Wang wearing a black sleeveless top and a heart pendant">
     <link rel="canonical" href="{{ page.url | absolute_url }}">
     <link rel="icon" type="image/png" href="{{ '/assets/img/portfolio/doris-mark.png' | relative_url }}">
@@ -64,7 +64,7 @@
           <div class="portrait-plate" role="img" aria-label="Animated portrait of Doris Wang in a black sleeveless top">
             <img
               class="landing-portrait"
-              src="{{ '/assets/img/portfolio/doris-centered-poster.webp' | relative_url }}"
+              src="{{ '/assets/img/portfolio/doris-centered-poster.webp' | relative_url | bust_file_cache }}"
               width="1104"
               height="1024"
               alt=""
@@ -72,7 +72,7 @@
             >
             <video
               class="landing-video"
-              data-source="{{ '/assets/video/doris-centered-loop.mp4' | relative_url }}"
+              data-source="{{ '/assets/video/doris-centered-loop.mp4' | relative_url | bust_file_cache }}"
               muted
               loop
               playsinline
