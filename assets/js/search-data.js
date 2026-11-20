@@ -3,8 +3,8 @@ const ninja = document.querySelector('ninja-keys');
 
 // add the home and posts menu items
 ninja.data = [{
-    id: "nav-about",
-    title: "About",
+    id: "nav-doris-wang-王朵",
+    title: "Doris Wang · 王朵",
     section: "Navigation",
     handler: () => {
       window.location.href = "/";
@@ -53,7 +53,7 @@ ninja.data = [{
               window.location.href = "/projects/chorus_audit/";
             },},{id: "projects-fomc-communication-amp-s-amp-p-500-volatility",
           title: 'FOMC Communication &amp;amp; S&amp;amp;P 500 Volatility',
-          description: "Analyzing how Fed communication dynamics and media narratives drive financial market volatility",
+          description: "Analyzing relationships among Fed communication, news coverage, and market volatility",
           section: "Projects",handler: () => {
               window.location.href = "/projects/fomc_communication/";
             },},{id: "projects-cooperation-in-large-scale-repeated-games",
