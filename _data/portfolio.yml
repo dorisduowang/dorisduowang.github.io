@@ -1,0 +1,56 @@
+- title: FOMC Media Alignment
+  field: Financial economics
+  topic: markets
+  figure: fomc
+  caption: Media coverage and volatility around the FOMC announcement
+  description: When do news narratives and market volatility move together around Fed announcements? With Yuzhao (Jerry) Jin.
+  url: https://github.com/dorisduowang/fomc-media-alignment
+  link: View the current study
+- title: Auditing Text-Based Reward Signals
+  field: AI and science
+  topic: ai
+  figure: chorus
+  caption: A network of papers, researchers and concepts
+  description: In an audit of 443 publications, I examined how alternative reward signals change which papers an AI research system surfaces.
+  url: /projects/chorus_audit/
+  link: Read the project
+- title: Cooperation in Large-Scale Repeated Games
+  field: Experimental economics
+  topic: cooperation
+  figure: cooperation
+  caption: Fixed groups compared with regrouping across rounds
+  description: My King's College London dissertation examines punishment and regrouping across more than 1.5 million recorded interactions.
+  url: /projects/kcl_dissertation/
+  link: Read the dissertation summary
+- title: Facilitator-Free Digital Twins
+  field: Group decision-making
+  topic: cooperation
+  figure: twins
+  caption: Participant-matched digital twins deliberate in small groups
+  description: A public GRAIL protocol contribution on simulating small-group deliberation with participant-matched digital twins.
+  url: https://github.com/dorisduowang/group_ai_lab/blob/feature/no-facilitator-agent-study/docs/TWIN2K_GRAIL_PROTOCOL.md
+  link: Read the protocol
+- title: Gold Forecasting with ARIMA and LSTM
+  field: Financial econometrics
+  topic: markets
+  figure: gold
+  caption: Two forecasting models evaluated on gold returns
+  description: A comparison of classical and neural models for out-of-sample gold return forecasting, using daily data from 2000 to 2020.
+  url: https://doi.org/10.54691/bcpbm.v38i.4123
+  link: Read the paper
+- title: Gender Pay and Structural Inequality
+  field: Applied microeconomics
+  topic: inequality
+  figure: inequality
+  caption: Census microdata, regression and model diagnostics
+  description: An analysis of UK gender pay disparities using census microdata, regression and model diagnostics.
+  url: /cv/
+  link: See research experience
+- title: LLM Washing Machine
+  field: Mechanistic interpretability
+  topic: ai
+  figure: llm
+  caption: Representations of a compound and its head word
+  description: How do language models represent a compound concept such as “washing machine”? I compare it with its head word using similarity and sparse-feature analyses.
+  url: https://github.com/dorisduowang/llm-washing-machine-claude/blob/main/REPORT.md
+  link: Read the analysis

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      {{ page.title | escape }}
+      | Research Portfolio
+    </title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <meta name="theme-color" content="#22171e">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ page.title | escape }}">
+    <meta property="og:description" content="{{ page.description | escape }}">
+    <meta property="og:image" content="{{ '/assets/img/portfolio/doris-portrait.webp' | absolute_url }}">
+    <meta property="og:image:alt" content="Portrait of Doris Wang">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <link rel="icon" type="image/webp" href="{{ '/assets/img/portfolio/peony-icon.webp' | relative_url }}">
+    <link rel="preload" href="{{ '/assets/fonts/portfolio/instrument-serif.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{{ '/assets/css/portfolio.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/research-figures.css' | relative_url }}">
+    <script defer src="{{ '/assets/js/portfolio.js' | relative_url }}"></script>
+    <script defer src="{{ '/assets/js/research-figures.js' | relative_url }}"></script>
+  </head>
+  <body id="top">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <nav class="header-inner" aria-label="Main navigation">
+        <a class="wordmark" href="#top" aria-label="Doris Wang, home">
+          <span class="wordmark-seal" lang="zh-Hans" aria-hidden="true">朵</span>
+          <span>Doris Wang</span>
+        </a>
+        <div class="nav-links">
+          <a href="#research">Research</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <a class="nav-cv" href="{{ '/cv/' | relative_url }}">CV</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title" data-hero>
+        <div class="hero-stage content-width">
+          <div class="hero-visual" aria-hidden="true">
+            <div class="hero-painting">
+              <img src="{{ '/assets/img/portfolio/ink-peonies.webp' | relative_url }}" width="1536" height="1024" alt="" fetchpriority="high">
+            </div>
+            <div class="hero-orbit"></div>
+            <i class="petal petal-one"></i>
+            <i class="petal petal-two"></i>
+          </div>
+          <div class="hero-intro">
+            <p class="eyebrow hero-kicker"><span></span> Economics &amp; computational social science</p>
+            <h1 id="hero-title">Doris <em>Wang</em></h1>
+            <p class="chinese-name"><span lang="zh-Hans">王朵</span><span class="name-divider"></span><span>Wáng Duǒ</span></p>
+            <p class="hero-description">I study how people and AI agents cooperate when the rules, signals, and incentives change.</p>
+            <a class="hero-cta" href="#research"><span aria-hidden="true">✦</span> Explore my research</a>
+          </div>
+          <figure class="hero-portrait">
+            <div class="portrait-mat">
+              <img
+                src="{{ '/assets/img/portfolio/doris-portrait.webp' | relative_url }}"
+                alt="Doris Wang"
+                width="850"
+                height="572"
+              >
+            </div>
+          </figure>
+          <div class="hero-foot">
+            <span>University of Chicago</span>
+            <span class="hero-foot-line"></span>
+            <span>Chicago, IL</span>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="research content-width"
+        id="research"
+        aria-labelledby="research-title"
+        data-pgg-source="{{ '/pgg-feasibility/data.json' | relative_url }}"
+      >
+        <header class="section-heading">
+          <div>
+            <p class="eyebrow section-kicker"><span aria-hidden="true">✦</span> Research portfolio</p>
+            <h2 id="research-title">Selected <em>work</em></h2>
+          </div>
+          <p>Experiments, empirical studies, and tools about cooperation, information, and how decisions are made.</p>
+        </header>
+
+        <article class="feature">
+          <div class="feature-copy">
+            <p class="eyebrow feature-kicker">Featured study <span></span> Cooperation</p>
+            <h3>Public Goods Game <em>Feasibility</em></h3>
+            <p>
+              What can agents’ public messages tell us about the next round? I follow a single 15-round game with four language-model agents and audit
+              a surprisal score against what the agents actually do.
+            </p>
+            <div class="feature-links">
+              <a class="solid-link" href="{{ '/pgg-feasibility/' | relative_url }}">Open the interactive study</a>
+              <a class="text-link" href="https://github.com/dorisduowang/pgg-feasibility">Code &amp; data</a>
+              <a class="text-link" href="{{ '/projects/punishment_on_demand/' | relative_url }}">Earlier simulation</a>
+            </div>
+          </div>
+          <figure class="pgg-figure">
+            <div class="pgg-figure-header">
+              <div>
+                <p class="eyebrow">One observed game · 15 rounds</p>
+                <h4>Mean contribution</h4>
+              </div>
+            </div>
+            <div class="pgg-canvas">
+              <canvas id="pgg-chart" aria-hidden="true"></canvas>
+              <img
+                class="pgg-fallback"
+                src="{{ '/pgg-feasibility/figures/trajectory.png' | relative_url }}"
+                alt="Contribution trajectory with points for all 15 rounds"
+                loading="lazy"
+              >
+            </div>
+            <div class="round-panel" hidden>
+              <div class="round-input">
+                <button class="round-play" type="button" aria-label="Play rounds"><span aria-hidden="true">▶</span></button>
+                <input id="round-input" type="range" min="1" max="15" value="4" step="1" aria-label="Select game round">
+                <span class="round-position" aria-hidden="true">4 / 15</span>
+              </div>
+              <output class="round-detail" for="round-input"></output>
+            </div>
+            <figcaption>
+              <span class="active-key" aria-hidden="true"></span> Shaded rounds mark when the history-based punishment rule was active.
+            </figcaption>
+          </figure>
+        </article>
+
+        <div class="work-heading">
+          <h3>More projects</h3>
+          <div class="filters" role="group" aria-label="Filter projects by topic" hidden>
+            <button type="button" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" data-filter="cooperation" aria-pressed="false">Cooperation</button>
+            <button type="button" data-filter="ai" aria-pressed="false">AI &amp; Science</button>
+            <button type="button" data-filter="markets" aria-pressed="false">Markets</button>
+            <button type="button" data-filter="inequality" aria-pressed="false">Inequality</button>
+          </div>
+        </div>
+        <p class="visually-hidden" id="filter-status" aria-live="polite"></p>
+        <div class="work-grid">
+          {% for project in site.data.portfolio %}
+            <article class="work-card" data-topic="{{ project.topic }}">
+              <figure class="work-figure">
+                <canvas data-research-figure="{{ project.figure }}" aria-hidden="true"></canvas>
+                <figcaption>{{ project.caption | escape }}</figcaption>
+              </figure>
+              <div class="work-copy">
+                <p class="eyebrow">{{ project.field | escape }}</p>
+                <h4>{{ project.title | escape }}</h4>
+                <p>{{ project.description | escape }}</p>
+                <a
+                  class="text-link"
+                  href="{% if project.url contains '://' %}{{ project.url }}{% else %}{{ project.url | relative_url }}{% endif %}"
+                >
+                  {{- project.link | escape -}}
+                </a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="about" id="about" aria-labelledby="about-title">
+        <div class="about-inner content-width">
+          <div class="about-copy">
+            <p class="eyebrow section-kicker"><span aria-hidden="true">✦</span> About me</p>
+            <h2 id="about-title">Hi, I’m <em>Doris.</em></h2>
+            <p>
+              I’m an M.A. student in <a href="https://macss.uchicago.edu/">Computational Social Science (Economics)</a> at the University of Chicago.
+              I received my B.Sc. in Political Economy from King’s College London in 2025.
+            </p>
+            <p>
+              I’m drawn to questions about when cooperation breaks down, what people’s language reveals before it does, and how institutions can
+              respond. I work with experiments, panel data, and agent simulations to study those questions at different scales.
+            </p>
+            <div class="about-links">
+              <a class="text-link" href="{{ '/cv/' | relative_url }}">Curriculum vitae</a>
+              <a class="text-link" href="{{ '/publications/' | relative_url }}">Publications</a>
+              <a class="text-link" href="{{ '/teaching/' | relative_url }}">Teaching</a>
+            </div>
+          </div>
+          <div class="photo-pair">
+            <figure class="graduation-photo">
+              <img
+                src="{{ '/assets/img/portfolio/kcl-graduation.webp' | relative_url }}"
+                alt="Doris Wang shaking hands onstage at her King’s College London graduation"
+                width="836"
+                height="1150"
+                loading="lazy"
+              >
+              <figcaption>King’s College London · 2025</figcaption>
+            </figure>
+            <figure class="flowers-photo">
+              <img
+                src="{{ '/assets/img/portfolio/flower-portrait.webp' | relative_url }}"
+                alt="Black-and-white portrait of Doris Wang holding a bouquet"
+                width="960"
+                height="665"
+                loading="lazy"
+              >
+            </figure>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contact" class="site-footer" aria-labelledby="contact-title">
+      <div class="footer-inner content-width">
+        <div>
+          <p class="eyebrow"><span aria-hidden="true">✦</span> Contact</p>
+          <h2 id="contact-title">Let’s <em>talk.</em></h2>
+          <a class="email-link" href="mailto:dorisduowang@uchicago.edu">dorisduowang@uchicago.edu</a>
+        </div>
+        <div class="footer-socials" aria-label="Social profiles">
+          <a href="https://github.com/dorisduowang">GitHub</a>
+          <a href="https://www.linkedin.com/in/duodoriswang/">LinkedIn</a>
+          <a href="https://www.instagram.com/dorisduowang/">Instagram</a>
+        </div>
+        <span class="footer-seal" lang="zh-Hans">王朵</span>
+      </div>
+    </footer>
+  </body>
+</html>
