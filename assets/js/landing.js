@@ -19,7 +19,7 @@
 
   function setMotion(playing) {
     landing.dataset.motion = playing ? "running" : "paused";
-    motionLabel.textContent = playing ? "Pause scan" : "Play scan";
+    motionLabel.textContent = playing ? "Pause motion" : "Play motion";
   }
 
   setMotion(!reducedMotion.matches);

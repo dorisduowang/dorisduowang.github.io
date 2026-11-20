@@ -1,8 +1,8 @@
 (() => {
-  const ink = "#29212a";
+  const ink = "#292929";
   const red = "#a54843";
   const green = "#586b5c";
-  const muted = "#665c56";
+  const muted = "#555555";
   const line = "#b9a994";
   const ivory = "#fbf6ed";
   const rose = "#ead5cc";
@@ -71,7 +71,7 @@
 
   function drawFomc(context) {
     box(context, 156, 30, 88, 138, "#ead5cc9e", "#c88f84");
-    label(context, "Event window", 200, 45, { align: "center", color: red });
+    label(context, "Event window", 200, 45, { align: "center" });
 
     path(
       context,
@@ -103,11 +103,11 @@
     );
     dot(context, 200, 96, 6, red);
 
-    label(context, "News before", 96, 73, { align: "center", font: serif, size: 17, color: green });
-    label(context, "News after", 304, 73, { align: "center", font: serif, size: 17, color: green });
+    label(context, "News before", 96, 73, { align: "center", font: serif, size: 17 });
+    label(context, "News after", 304, 73, { align: "center", font: serif, size: 17 });
     label(context, "Lead", 95, 120, { align: "center", color: muted });
     label(context, "Lag", 305, 120, { align: "center", color: muted });
-    label(context, "FOMC", 200, 150, { align: "center", color: red });
+    label(context, "FOMC", 200, 150, { align: "center" });
   }
 
   function drawChorus(context) {
@@ -129,7 +129,7 @@
       line
     );
     nodes.forEach(({ name, color, fill, y }) => {
-      label(context, name, 39, y, { font: serif, size: 17, color });
+      label(context, name, 39, y, { font: serif, size: 17 });
       path(
         context,
         [
@@ -218,7 +218,7 @@
 
     models.forEach(({ name, y, stroke, fill }) => {
       box(context, 162, y, 76, 38, fill, stroke);
-      label(context, name, 200, y + 19, { align: "center", color: stroke, size: 16 });
+      label(context, name, 200, y + 19, { align: "center", size: 16 });
       path(
         context,
         [
@@ -258,7 +258,7 @@
 
     arrow(context, 120, 160, 89);
     box(context, 168, 63, 65, 52, sage, green);
-    label(context, "OLS", 200, 89, { align: "center", size: 19, color: green });
+    label(context, "OLS", 200, 89, { align: "center", size: 19 });
     arrow(context, 241, 279, 89);
 
     box(context, 287, 51, 79, 77, ivory);
@@ -294,9 +294,9 @@
     box(context, 29, 56, 77, 35, rose, red);
     box(context, 106, 56, 77, 35, sage, green);
     box(context, 106, 127, 77, 35, sage, green);
-    label(context, "washing", 67.5, 73.5, { align: "center", font: serif, size: 17, color: red });
-    label(context, "machine", 144.5, 73.5, { align: "center", font: serif, size: 17, color: green });
-    label(context, "machine", 144.5, 144.5, { align: "center", font: serif, size: 17, color: green });
+    label(context, "washing", 67.5, 73.5, { align: "center", font: serif, size: 17 });
+    label(context, "machine", 144.5, 73.5, { align: "center", font: serif, size: 17 });
+    label(context, "machine", 144.5, 144.5, { align: "center", font: serif, size: 17 });
 
     path(
       context,

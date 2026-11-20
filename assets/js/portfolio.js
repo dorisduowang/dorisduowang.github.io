@@ -1,22 +1,3 @@
-const hero = document.querySelector("[data-hero]");
-const canMoveArt = matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
-
-if (hero) {
-  hero.addEventListener("pointermove", (event) => {
-    if (!canMoveArt.matches) return;
-    const rect = hero.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    hero.style.setProperty("--painting-x", `${x * 32}px`);
-    hero.style.setProperty("--painting-y", `${y * 24}px`);
-  });
-
-  hero.addEventListener("pointerleave", () => {
-    hero.style.removeProperty("--painting-x");
-    hero.style.removeProperty("--painting-y");
-  });
-}
-
 const filters = document.querySelector(".filters");
 
 if (filters) {
@@ -151,7 +132,7 @@ function drawContributionChart(canvas, context, rounds, activeIndex) {
 
   rounds.forEach((row, index) => {
     if (!row.active) return;
-    context.fillStyle = "#f2d8d3";
+    context.fillStyle = "#e4e4e4";
     context.fillRect(x(index) - step / 2, top, step, bottom - top);
   });
 
@@ -159,8 +140,8 @@ function drawContributionChart(canvas, context, rounds, activeIndex) {
   context.textBaseline = "middle";
   context.textAlign = "right";
   context.lineWidth = 1;
-  context.strokeStyle = "#ddcfc3";
-  context.fillStyle = "#655852";
+  context.strokeStyle = "#cecece";
+  context.fillStyle = "#4a4a4a";
 
   for (let value = 0; value <= max; value += max / 2) {
     context.beginPath();
@@ -172,7 +153,7 @@ function drawContributionChart(canvas, context, rounds, activeIndex) {
 
   const selectedX = x(activeIndex);
   context.beginPath();
-  context.strokeStyle = "#9d524b";
+  context.strokeStyle = "#656565";
   context.setLineDash([3, 3]);
   context.moveTo(selectedX, top);
   context.lineTo(selectedX, bottom);
@@ -180,7 +161,7 @@ function drawContributionChart(canvas, context, rounds, activeIndex) {
   context.setLineDash([]);
 
   context.beginPath();
-  context.strokeStyle = "#812f31";
+  context.strokeStyle = "#202020";
   context.lineWidth = 2.5;
   context.lineJoin = "round";
   rounds.forEach((row, index) => {
@@ -194,14 +175,14 @@ function drawContributionChart(canvas, context, rounds, activeIndex) {
   rounds.forEach((row, index) => {
     const selected = index === activeIndex;
     context.beginPath();
-    context.fillStyle = selected ? "#812f31" : "#fcf8f0";
-    context.strokeStyle = "#812f31";
+    context.fillStyle = selected ? "#202020" : "#ffffff";
+    context.strokeStyle = "#202020";
     context.lineWidth = selected ? 2.5 : 1.35;
     context.arc(x(index), y(row.mean_contribution), selected ? 5 : 2.6, 0, Math.PI * 2);
     context.fill();
     context.stroke();
     if (index === 0 || index === rounds.length - 1 || row.round % 3 === 0) {
-      context.fillStyle = "#655852";
+      context.fillStyle = "#4a4a4a";
       context.fillText(row.round, x(index), bottom + 13);
     }
   });

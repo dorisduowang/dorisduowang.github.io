@@ -1,6 +1,6 @@
 @font-face {
-  font-family: "DM Sans";
-  src: url("../fonts/portfolio/dm-sans-latin-ext.woff2") format("woff2");
+  font-family: "Inter";
+  src: url("../fonts/portfolio/inter-latin-ext.woff2") format("woff2");
   font-weight: 400 700;
   font-display: swap;
   unicode-range:
@@ -9,8 +9,8 @@
 }
 
 @font-face {
-  font-family: "DM Sans";
-  src: url("../fonts/portfolio/dm-sans.woff2") format("woff2");
+  font-family: "Inter";
+  src: url("../fonts/portfolio/inter.woff2") format("woff2");
   font-weight: 400 700;
   font-display: swap;
   unicode-range:
@@ -19,9 +19,8 @@
 }
 
 @font-face {
-  font-family: "Instrument Serif";
-  src: url("../fonts/portfolio/instrument-serif-italic.woff2") format("woff2");
-  font-style: italic;
+  font-family: basis33;
+  src: url("../fonts/portfolio/basis33.ttf") format("truetype");
   font-display: swap;
 }
 
@@ -35,14 +34,14 @@
 
 :root {
   color-scheme: dark;
-  --black: #100f10;
-  --paper: #f6efe7;
-  --muted: #c8baae;
-  --accent: #f1ae92;
-  --hairline: #efc5a844;
+  --black: #050505;
+  --paper: #fff;
+  --muted: #bcbcbc;
+  --accent: #fff;
+  --hairline: #ffffff42;
   --gutter: clamp(1.25rem, 5.4vw, 6.2rem);
-  --sans: "DM Sans", system-ui, sans-serif;
-  --serif: "Instrument Serif", Georgia, serif;
+  --sans: "Inter", system-ui, sans-serif;
+  --pixel: basis33, ui-monospace, "SFMono-Regular", monospace;
   --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
   --chinese: "Wang Duo Serif", "Songti SC", "Noto Serif CJK SC", serif;
 }
@@ -133,17 +132,15 @@ a {
   gap: 0.8rem;
 }
 
-.seal {
+.identity-mark {
   display: grid;
   place-items: center;
   flex: 0 0 auto;
   width: 2.55rem;
   aspect-ratio: 1;
-  border: 1px solid #b97662;
-  border-radius: 0.2rem;
-  color: var(--accent);
-  font: 600 1.2rem/1 var(--chinese);
-  transform: rotate(-5deg);
+  border: 1px solid #ffffff61;
+  color: var(--paper);
+  font: 400 1.3rem/1 var(--pixel);
 }
 
 .identity-text {
@@ -204,8 +201,8 @@ a {
   position: relative;
   min-height: 35rem;
   display: grid;
-  align-items: center;
-  padding: 3.75rem var(--gutter) 4.3rem;
+  align-items: end;
+  padding: 3rem var(--gutter) clamp(2.65rem, 8svh, 5.75rem);
 }
 
 .portrait-stage {
@@ -218,29 +215,56 @@ a {
 
 .portrait-plate {
   position: absolute;
-  top: 49%;
-  right: -8.5%;
-  width: min(81vw, 150svh);
+  top: 52%;
+  right: -8%;
+  width: min(85vw, 160svh);
   aspect-ratio: 1392 / 1080;
   transform: translateY(-50%);
   mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 76%, transparent 99%);
+}
+
+.portrait-motion {
+  position: absolute;
+  inset: 0;
+  transform-origin: 49% 68%;
+  animation: portrait-breathe 9.8s ease-in-out infinite paused;
+}
+
+@keyframes portrait-breathe {
+  0%,
+  100% {
+    transform: perspective(900px) translate3d(-1%, 0, 0) rotateY(-3deg) rotateZ(-1.1deg);
+  }
+
+  34% {
+    transform: perspective(900px) translate3d(0.3%, -1.3%, 0) rotateY(1.5deg) rotateZ(0.6deg) scale(1.029);
+  }
+
+  68% {
+    transform: perspective(900px) translate3d(1.2%, -0.35%, 0) rotateY(3.2deg) rotateZ(1.15deg) scale(1.015);
+  }
 }
 
 .landing-portrait {
   display: block;
   width: 100%;
   height: 100%;
-  filter: brightness(0.83) saturate(0.76) contrast(1.14);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
+  filter: brightness(0.87) saturate(0.76) contrast(1.11);
 }
 
+.portrait-stage::before,
 .portrait-stage::after {
   position: absolute;
   content: "";
   inset: 0;
-  background:
-    linear-gradient(90deg, var(--black) 23%, #100f10f0 29%, #100f10bb 38%, #100f103b 51%, transparent 62%, #100f10a8 100%),
-    linear-gradient(0deg, var(--black), transparent 20%, transparent 86%, var(--black));
+}
+
+.portrait-stage::before {
+  background: radial-gradient(ellipse 39% 70% at 71% 51%, #242424, #111 56%, #050505 97%);
+}
+
+.portrait-stage::after {
+  background: linear-gradient(0deg, var(--black), transparent 16%);
 }
 
 .scan-zone {
@@ -252,7 +276,7 @@ a {
   z-index: 1;
   overflow: hidden;
   isolation: isolate;
-  --grid: #fff0cc45;
+  --grid: #ffffff42;
   mask-image: radial-gradient(ellipse 58% 59%, #000 46%, #000c 65%, transparent 98%);
 }
 
@@ -265,7 +289,7 @@ a {
 .scan-grid {
   background-image:
     linear-gradient(90deg, var(--grid) 1px, transparent 1px), linear-gradient(var(--grid) 1px, transparent 1px),
-    radial-gradient(ellipse 65% 50% at 56% 52%, transparent 59%, #fbdbaa46 60%, transparent 61%);
+    radial-gradient(ellipse 65% 50% at 56% 52%, transparent 59%, #ffffff3b 60%, transparent 61%);
   background-size:
     16.6% 100%,
     100% 12.5%,
@@ -275,14 +299,14 @@ a {
 }
 
 .scan-beam {
-  --beam: #fff1d4;
-  background: linear-gradient(90deg, transparent, #f5be9877 18%, var(--beam) 48%, #f5be9899 78%, transparent);
+  --beam: #fff;
+  background: linear-gradient(90deg, transparent, #ffffff77 18%, var(--beam) 48%, #ffffff99 78%, transparent);
   height: clamp(1px, 0.18vw, 3px);
   top: 15%;
   bottom: auto;
   box-shadow:
-    0 0 0.55rem #ffc19d9a,
-    0 0 1.5rem #f69b6a7a;
+    0 0 0.55rem #ffffff9a,
+    0 0 1.5rem #ffffff63;
   animation: scan-sweep 6.4s cubic-bezier(0.45, 0.05, 0.55, 0.95) -1.65s infinite paused;
 }
 
@@ -293,9 +317,10 @@ a {
   right: 0;
   height: 3.8rem;
   bottom: 0;
-  background: linear-gradient(0deg, #ffd7a73b, transparent);
+  background: linear-gradient(0deg, #ffffff3b, transparent);
 }
 
+[data-motion="running"] .portrait-motion,
 [data-motion="running"] .scan-beam {
   animation-play-state: running;
 }
@@ -328,7 +353,7 @@ a {
   align-items: center;
   gap: 0.3rem 0.6rem;
   color: var(--accent);
-  font: 600 clamp(0.68rem, 1.1vw, 0.86rem)/1.55 var(--mono);
+  font: 400 clamp(0.88rem, 1.32vw, 1.08rem)/1.3 var(--pixel);
   letter-spacing: 0.025em;
   text-transform: uppercase;
 }
@@ -346,23 +371,24 @@ a {
 
 .hero-content h1 {
   margin-block: 0.99rem 1.4rem;
-  font-size: clamp(4.2rem, 8.05vw, 9em);
+  font-size: clamp(3.8rem, 7.2vw, 7.35rem);
   font-weight: 600;
   line-height: 0.86;
-  letter-spacing: -0.078em;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
 }
 
 .hero-content h1 em {
   display: block;
   margin-top: 0.2rem;
-  color: #efb59e;
-  font: italic 400 1.2em/0.91 var(--serif);
-  letter-spacing: -0.04em;
+  color: var(--paper);
+  font: 400 1.2em/0.84 var(--pixel);
+  letter-spacing: -0.045em;
 }
 
 .hero-deck {
   max-width: 24rem;
-  color: #dfd5cc;
+  color: #d9d9d9;
   font-size: clamp(1rem, 1.4vw, 1.25rem);
   line-height: 1.6;
 }
@@ -386,21 +412,22 @@ a {
 }
 
 .primary-link {
-  color: #211716;
-  background: #f2b99f;
+  color: var(--paper);
+  border: 1px solid #ffffff59;
+  background: #ffffff0d;
   border-radius: 0.2rem;
   padding: 0.62rem 1.05rem;
   transition: background-color 200ms;
 }
 
 .primary-link:hover {
-  background: #ffe0ce;
+  background: #ffffff21;
 }
 
 .graduation-link {
   color: var(--paper);
   text-decoration: underline;
-  text-decoration-color: #ecb9a394;
+  text-decoration-color: #ffffff94;
   text-underline-offset: 0.33em;
 }
 
@@ -523,7 +550,7 @@ a {
     right: 0;
     width: min(19rem, 100%);
     padding: 0.65rem;
-    background: #191516;
+    background: #191919;
     border: 1px solid var(--hairline);
   }
 
@@ -551,14 +578,12 @@ a {
     mask-image: linear-gradient(180deg, #000 76%, transparent);
   }
 
-  .landing-portrait {
-    mask-image: none;
+  .portrait-stage::before {
+    background: radial-gradient(ellipse 62% 39% at 50% 28%, #242424, #111 66%, #050505 100%);
   }
 
   .portrait-stage::after {
-    background:
-      linear-gradient(90deg, #100f10c9, transparent 32%, transparent 68%, #100f1088),
-      linear-gradient(0deg, var(--black) 10%, #100f10f5 26%, #100f1080 39%, transparent 64%, #100f1066 100%);
+    background: linear-gradient(0deg, var(--black) 14%, #050505d1 30%, transparent 57%);
   }
 
   .hero-content {
@@ -610,12 +635,17 @@ a {
   }
 
   .hero-content h1 {
-    font-size: clamp(3.05rem, 11.5vw, 3.7rem);
+    font-size: clamp(2.55rem, 12.7vw, 3.45rem);
   }
 
   .field-label {
     max-width: 24rem;
-    font-size: 0.65rem;
+    font-size: 0.82rem;
+  }
+
+  .footer-location,
+  .footer-separator {
+    display: none;
   }
 }
 
@@ -664,7 +694,7 @@ a {
     transform: translateY(-50%);
   }
 
-  .portrait-stage::after {
-    background: linear-gradient(90deg, var(--black) 23%, #100f10d4 39%, transparent 62%, #100f1088 100%);
+  .portrait-stage::before {
+    background: radial-gradient(ellipse 36% 95% at 71% 47%, #242424, #111 61%, #050505 100%);
   }
 }
