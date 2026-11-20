@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      {{ page.title | escape }}
+      | Research
+    </title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <meta name="theme-color" content="#100f10">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ page.title | escape }}">
+    <meta property="og:description" content="{{ page.description | escape }}">
+    <meta property="og:image" content="{{ '/assets/img/portfolio/doris-landing-portrait.webp' | absolute_url }}">
+    <meta property="og:image:alt" content="Doris Wang wearing a black sleeveless top and a heart pendant">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <link rel="icon" type="image/webp" href="{{ '/assets/img/portfolio/peony-icon.webp' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/landing.css' | relative_url }}">
+    <script defer src="{{ '/assets/js/landing.js' | relative_url }}"></script>
+  </head>
+  <body>
+    {% assign portfolio_url = '/portfolio/' | relative_url %}
+    {% capture navigation %}
+      <a href="{{ portfolio_url }}#research">Research</a>
+      <a href="{{ portfolio_url }}#about">About</a>
+      <a href="{{ portfolio_url }}#graduation">KCL Graduation</a>
+      <a href="{{ '/cv/' | relative_url }}">CV</a>
+      <a href="{{ portfolio_url }}#contact">Contact</a>
+    {% endcapture %}
+    <div class="landing-shell" data-landing data-portfolio-url="{{ portfolio_url }}" data-motion="paused">
+      <a class="skip-link" href="#main">Skip to content</a>
+      <header class="landing-header">
+        <a class="identity" href="{{ '/' | relative_url }}" aria-label="Doris Wang, home">
+          <span class="seal" lang="zh-Hans" aria-hidden="true">朵</span>
+          <span class="identity-text">
+            <span class="identity-name">Doris Wang</span>
+            <span class="identity-name-alt"><span lang="zh-Hans">王朵</span> <span aria-hidden="true">/</span> Wáng Duǒ</span>
+          </span>
+        </a>
+        <nav class="desktop-nav" aria-label="Main navigation">
+          {{ navigation }}
+        </nav>
+        <details class="mobile-menu">
+          <summary><span>Menu</span><i aria-hidden="true"></i></summary>
+          <nav aria-label="Mobile navigation">
+            {{ navigation }}
+          </nav>
+        </details>
+      </header>
+
+      <main class="landing-main" id="main">
+        <div class="portrait-stage">
+          <div class="portrait-plate">
+            <img
+              class="landing-portrait"
+              src="{{ '/assets/img/portfolio/doris-landing-portrait.webp' | relative_url }}"
+              srcset="
+                {{ '/assets/img/portfolio/doris-landing-portrait-small.webp' | relative_url }} 800w,
+                {{ '/assets/img/portfolio/doris-landing-portrait.webp' | relative_url }} 1392w
+              "
+              sizes="(max-width: 45rem) 150vw, 81vw"
+              width="1392"
+              height="1080"
+              alt="Portrait of Doris Wang"
+              fetchpriority="high"
+            >
+            <div class="scan-zone" aria-hidden="true">
+              <div class="scan-grid"></div>
+              <div class="scan-beam"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-content">
+          <p class="field-label">
+            <span aria-hidden="true"></span> Behavioral economics <span class="field-divider" aria-hidden="true">/</span> Computational social science
+          </p>
+          <h1>The rules of <em>cooperation.</em></h1>
+          <p class="hero-deck">I use experiments, data, and AI agents to study how people cooperate when the rules change.</p>
+          <div class="hero-actions">
+            <a class="primary-link" href="{{ portfolio_url }}#research">Explore research</a>
+            <a class="graduation-link" href="{{ portfolio_url }}#graduation">KCL graduation</a>
+          </div>
+        </div>
+      </main>
+
+      <footer class="landing-footer">
+        <span><span class="footer-affiliation">University of Chicago</span><span class="footer-separator" aria-hidden="true"></span>Chicago, IL</span>
+        <button class="motion-toggle" type="button" data-motion-toggle hidden>
+          <i aria-hidden="true"></i>
+          <span>Play scan</span>
+        </button>
+      </footer>
+    </div>
+  </body>
+</html>

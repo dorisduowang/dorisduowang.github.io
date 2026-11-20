@@ -26,7 +26,7 @@
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <nav class="header-inner" aria-label="Main navigation">
-        <a class="wordmark" href="#top" aria-label="Doris Wang, home">
+        <a class="wordmark" href="{{ '/' | relative_url }}" aria-label="Doris Wang, home">
           <span class="wordmark-seal" lang="zh-Hans" aria-hidden="true">朵</span>
           <span>Doris Wang</span>
         </a>
@@ -187,7 +187,7 @@
             </div>
           </div>
           <div class="photo-pair">
-            <figure class="graduation-photo">
+            <figure class="graduation-photo" id="graduation">
               <img
                 src="{{ '/assets/img/portfolio/kcl-graduation.webp' | relative_url }}"
                 alt="Doris Wang shaking hands onstage at her King’s College London graduation"
@@ -218,11 +218,12 @@
           <h2 id="contact-title">Let’s <em>talk.</em></h2>
           <a class="email-link" href="mailto:dorisduowang@uchicago.edu">dorisduowang@uchicago.edu</a>
         </div>
-        <div class="footer-socials" aria-label="Social profiles">
+        <nav class="footer-socials" aria-label="Footer navigation">
+          <a href="{{ '/' | relative_url }}">Home</a>
           <a href="https://github.com/dorisduowang">GitHub</a>
           <a href="https://www.linkedin.com/in/duodoriswang/">LinkedIn</a>
           <a href="https://www.instagram.com/dorisduowang/">Instagram</a>
-        </div>
+        </nav>
         <span class="footer-seal" lang="zh-Hans">王朵</span>
       </div>
     </footer>
