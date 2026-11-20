@@ -51,25 +51,34 @@
 
       <main class="landing-main" id="main">
         <div class="portrait-stage">
-          <div class="portrait-plate">
-            <div class="portrait-motion">
-              <img
-                class="landing-portrait"
-                src="{{ '/assets/img/portfolio/doris-cutout.webp' | relative_url }}"
-                srcset="
-                  {{ '/assets/img/portfolio/doris-cutout-small.webp' | relative_url }} 800w,
-                  {{ '/assets/img/portfolio/doris-cutout.webp' | relative_url }} 1392w
-                "
-                sizes="(max-width: 45rem) 150vw, 81vw"
-                width="1392"
-                height="1080"
-                alt="Portrait of Doris Wang"
-                fetchpriority="high"
-              >
-              <div class="scan-zone" aria-hidden="true">
-                <div class="scan-grid"></div>
-                <div class="scan-beam"></div>
-              </div>
+          <div class="portrait-plate" role="img" aria-label="Portrait of Doris Wang">
+            <img
+              class="landing-portrait"
+              src="{{ '/assets/img/portfolio/doris-cutout.webp' | relative_url }}"
+              srcset="
+                {{ '/assets/img/portfolio/doris-cutout-small.webp' | relative_url }} 800w,
+                {{ '/assets/img/portfolio/doris-cutout.webp' | relative_url }} 1392w
+              "
+              sizes="(max-width: 45rem) 150vw, 81vw"
+              width="1392"
+              height="1080"
+              alt=""
+              fetchpriority="high"
+            >
+            <video
+              class="landing-video"
+              data-hevc="{{ '/assets/video/doris-portrait-loop-hevc.mp4' | relative_url }}"
+              data-webm="{{ '/assets/video/doris-portrait-loop.webm' | relative_url }}"
+              data-mp4="{{ '/assets/video/doris-portrait-loop.mp4' | relative_url }}"
+              muted
+              loop
+              playsinline
+              preload="none"
+              aria-hidden="true"
+            ></video>
+            <div class="scan-zone" aria-hidden="true">
+              <div class="scan-grid"></div>
+              <div class="scan-beam"></div>
             </div>
           </div>
         </div>
