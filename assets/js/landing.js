@@ -18,15 +18,7 @@
   const motionToggle = landing.querySelector("[data-motion-toggle]");
   const motionLabel = motionToggle.querySelector("span");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  // On Apple browsers, use HEVC for alpha rather than relying on WebM compositing.
-  const appleBrowser = navigator.vendor === "Apple Computer, Inc." || /iPhone|iPad|iPod/.test(navigator.userAgent);
-  const transparentSource = appleBrowser ? video.dataset.hevc : video.canPlayType('video/webm; codecs="vp9"') && video.dataset.webm;
   let motionRequested = false;
-
-  function setVideoSource(source) {
-    landing.classList.toggle("has-matte", source === video.dataset.mp4);
-    video.src = source;
-  }
 
   function requestMotion(playing) {
     motionRequested = playing;
@@ -38,10 +30,9 @@
       return;
     }
 
-    if (!video.getAttribute("src")) setVideoSource(transparentSource || video.dataset.mp4);
-    const requestedSource = video.getAttribute("src");
+    if (!video.getAttribute("src")) video.src = video.dataset.source;
     video.play().catch((error) => {
-      if (error.name !== "AbortError" && !video.error && video.getAttribute("src") === requestedSource) requestMotion(false);
+      if (error.name !== "AbortError" && motionRequested) requestMotion(false);
     });
   }
 
@@ -50,20 +41,8 @@
     landing.classList.add("has-video");
     landing.dataset.motion = "running";
   });
-  function pauseScan() {
-    landing.dataset.motion = "paused";
-  }
-
-  video.addEventListener("pause", pauseScan);
-  video.addEventListener("waiting", pauseScan);
   video.addEventListener("error", () => {
     landing.classList.remove("has-video");
-    landing.dataset.motion = "paused";
-    if (!landing.classList.contains("has-matte")) {
-      setVideoSource(video.dataset.mp4);
-      if (motionRequested) requestMotion(true);
-      return;
-    }
     requestMotion(false);
     motionToggle.hidden = true;
   });
