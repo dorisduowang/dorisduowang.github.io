@@ -619,26 +619,52 @@ a {
   }
 }
 
-@media (max-width: 55rem) and (max-height: 30rem) and (orientation: landscape) {
+@media (max-height: 42rem) and (orientation: landscape) {
+  .landing-header {
+    min-height: 3.3rem;
+  }
+
+  .landing-footer {
+    min-height: 2.85rem;
+  }
+
   .landing-main {
     align-items: center;
-    min-height: 24rem;
-    padding-top: 1.7rem;
-    padding-bottom: 1.9rem;
+    min-height: 0;
+    padding-block: 0.85rem;
   }
 
   .hero-content {
     width: 60%;
   }
 
+  .hero-content h1 {
+    margin-block: 0.55rem 0.7rem;
+    font-size: clamp(2.55rem, 12.3svh, 6rem);
+  }
+
+  .hero-deck {
+    font-size: clamp(0.9rem, 2.7svh, 1.05rem);
+    line-height: 1.45;
+  }
+
+  .hero-actions {
+    margin-top: 0.65rem;
+  }
+
+  .primary-link,
+  .graduation-link {
+    min-height: 2.5rem;
+  }
+
   .portrait-plate {
-    top: 48%;
-    right: -12%;
-    width: 85%;
+    top: 49%;
+    right: -7%;
+    width: min(85vw, 160svh);
     transform: translateY(-50%);
   }
 
   .portrait-stage::after {
-    background: linear-gradient(90deg, var(--black) 23%, #100f10b5 44%, transparent 66%, #100f1088 100%);
+    background: linear-gradient(90deg, var(--black) 23%, #100f10d4 39%, transparent 62%, #100f1088 100%);
   }
 }
