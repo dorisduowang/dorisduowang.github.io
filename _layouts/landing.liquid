@@ -8,11 +8,11 @@
       | Research
     </title>
     <meta name="description" content="{{ page.description | escape }}">
-    <meta name="theme-color" content="#050505">
+    <meta name="theme-color" content="#000000">
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ page.title | escape }}">
     <meta property="og:description" content="{{ page.description | escape }}">
-    <meta property="og:image" content="{{ '/assets/img/portfolio/doris-cutout.webp' | absolute_url }}">
+    <meta property="og:image" content="{{ '/assets/img/portfolio/doris-centered-poster.webp' | absolute_url }}">
     <meta property="og:image:alt" content="Doris Wang wearing a black sleeveless top and a heart pendant">
     <link rel="canonical" href="{{ page.url | absolute_url }}">
     <link rel="icon" type="image/png" href="{{ '/assets/img/portfolio/doris-mark.png' | relative_url }}">
@@ -33,10 +33,6 @@
       <header class="landing-header">
         <a class="identity" href="{{ '/' | relative_url }}" aria-label="Doris Wang, home">
           <span class="identity-mark" aria-hidden="true">DW</span>
-          <span class="identity-text">
-            <span class="identity-name">Doris Wang</span>
-            <span class="identity-name-alt"><span lang="zh-Hans">王朵</span> <span aria-hidden="true">/</span> Wáng Duǒ</span>
-          </span>
         </a>
         <nav class="desktop-nav" aria-label="Main navigation">
           {{ navigation }}
@@ -50,19 +46,33 @@
       </header>
 
       <main class="landing-main" id="main">
+        <section class="hero-meta" aria-label="Profile and research focus">
+          <div class="profile-heading">
+            <p class="profile-name">Doris Wang</p>
+            <p class="profile-name-alt"><span lang="zh-Hans">王朵</span><span aria-hidden="true">·</span> Wáng Duǒ</p>
+          </div>
+          <div class="research-heading">
+            <p class="meta-label">Research focus</p>
+            <p class="meta-copy">I study cooperation and incentives using experiments, data, and AI agents.</p>
+          </div>
+          <div class="affiliation-heading">
+            <p class="meta-label">University of Chicago</p>
+            <p class="meta-copy">Computational Social Science · Economics</p>
+          </div>
+        </section>
         <div class="portrait-stage">
-          <div class="portrait-plate" role="img" aria-label="Stylized portrait of Doris Wang">
+          <div class="portrait-plate" role="img" aria-label="Animated portrait of Doris Wang in a black sleeveless top">
             <img
               class="landing-portrait"
-              src="{{ '/assets/img/portfolio/doris-director-poster.webp' | relative_url }}"
-              width="864"
-              height="672"
+              src="{{ '/assets/img/portfolio/doris-centered-poster.webp' | relative_url }}"
+              width="1104"
+              height="1024"
               alt=""
               fetchpriority="high"
             >
             <video
               class="landing-video"
-              data-source="{{ '/assets/video/doris-director-loop.mp4' | relative_url }}"
+              data-source="{{ '/assets/video/doris-centered-loop.mp4' | relative_url }}"
               muted
               loop
               playsinline
@@ -73,11 +83,7 @@
         </div>
 
         <div class="hero-content">
-          <p class="field-label">
-            <span aria-hidden="true"></span> Behavioral economics <span class="field-divider" aria-hidden="true">/</span> Computational social science
-          </p>
           <h1>The rules of <em>cooperation.</em></h1>
-          <p class="hero-deck">I use experiments, data, and AI agents to study how people cooperate when the rules change.</p>
           <div class="hero-actions">
             <a class="primary-link" href="{{ portfolio_url }}#research">Explore research</a>
             <a class="graduation-link" href="{{ portfolio_url }}#graduation">KCL graduation</a>
