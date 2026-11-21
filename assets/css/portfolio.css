@@ -987,12 +987,9 @@ button {
 }
 
 .about-inner {
-  min-height: 28rem;
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  align-items: center;
-  gap: clamp(2rem, 7vw, 7.5rem);
-  padding-block: clamp(4.5rem, 9vw, 8rem);
+  gap: clamp(2rem, 4.5vw, 3.75rem);
+  padding-block: clamp(3.5rem, 7vw, 6rem);
 }
 
 .about-copy > p:not(.eyebrow) {
@@ -1005,24 +1002,87 @@ button {
   text-decoration-color: #777;
 }
 
-.graduation-photo {
-  width: min(100%, 22rem);
-  justify-self: center;
-  padding: 0.5rem;
-  border: 1px solid var(--rule);
-  background: var(--card);
+.about-photo-spread {
+  width: min(100%, 57rem);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.4rem, 1.35vw, 1.2rem);
+  padding: 0.65rem clamp(0.55rem, 2.1vw, 1.65rem) 0.75rem;
 }
 
-.graduation-photo img {
+.about-photo-card {
+  --card-edge: clamp(0.5rem, 1vw, 0.85rem);
+  display: grid;
+  grid-template-rows: auto auto 3rem;
+  align-content: start;
+  position: relative;
+  min-width: 0;
+  padding: var(--card-edge) var(--card-edge) 0;
+  border: 1px solid #c9c0ae;
+  border-radius: 0.6rem;
+  color: #211e19;
+  background: #fbf8f0;
+  box-shadow: 0 0.55rem 1.3rem #231d181c;
+}
+
+.about-photo-card:nth-child(1) {
+  transform: rotate(-3deg);
+}
+
+.about-photo-card:nth-child(2) {
+  transform: translateY(-0.55rem) rotate(-0.7deg);
+}
+
+.about-photo-card:nth-child(3) {
+  transform: rotate(3deg);
+}
+
+.about-photo-card-flowers {
+  --card-photo-position: 66% center;
+}
+
+.about-card-corner {
+  display: inline-grid;
+  justify-items: center;
+  justify-self: start;
+  margin: 0 0 0.5rem 0.12rem;
+  font:
+    700 1.25rem/0.86 Georgia,
+    "Times New Roman",
+    serif;
+}
+
+.about-card-corner span + span {
+  font:
+    0.82rem/1.12 Georgia,
+    "Times New Roman",
+    serif;
+}
+
+.about-card-corner-reversed {
+  position: absolute;
+  right: var(--card-edge);
+  bottom: var(--card-edge);
+  margin: 0 0.12rem 0 0;
+  transform: rotate(180deg);
+}
+
+.about-photo-card img {
   width: 100%;
+  aspect-ratio: 836 / 1150;
   height: auto;
+  object-fit: cover;
+  object-position: var(--card-photo-position, center);
+  border-radius: 0.15rem;
+  background: #e9e2d6;
 }
 
-.graduation-photo figcaption {
-  color: var(--muted);
-  margin: 0.55rem 0.25rem 0.25rem;
-  font-size: 0.8rem;
-  line-height: 1.3;
+.about-photo-card figcaption {
+  align-self: center;
+  margin-inline: 0.1rem 1.7rem;
+  color: #51483c;
+  font-size: clamp(0.68rem, 1.1vw, 0.78rem);
+  line-height: 1.23;
 }
 
 .site-footer {
@@ -1069,8 +1129,7 @@ button {
     min-height: 4.25rem;
   }
 
-  .feature,
-  .about-inner {
+  .feature {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -1174,6 +1233,18 @@ button {
   .feature-links,
   .about-links {
     column-gap: 0.75rem;
+  }
+
+  .about-photo-spread {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.1rem;
+    max-width: 21rem;
+    justify-self: center;
+    padding: 0;
+  }
+
+  .about-photo-card:nth-child(n) {
+    transform: none;
   }
 }
 

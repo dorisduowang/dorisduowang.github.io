@@ -524,6 +524,12 @@ a {
   max-width: 41ch;
   font-size: 0.96rem;
 }
+.project-next {
+  margin-top: 0.85rem;
+}
+.project-next strong {
+  color: var(--ink);
+}
 .project-link {
   display: inline-block;
   margin-top: 1rem;
