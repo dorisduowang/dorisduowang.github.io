@@ -12,6 +12,8 @@
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const mobile = window.matchMedia("(max-width: 767px)");
   const laneCount = 6;
+  const arrivalHold = 0.3;
+  const arrivalFade = 0.48;
   const particles = Array.from({ length: 36 }, (_, index) => {
     const order = ((index * 17) % 37) / 37;
     const spread = ((index * 13) % 31) / 31;
@@ -21,12 +23,15 @@
       duration: 3.55 + 0.31 * spread,
       size: 0.75 + 1.05 * spread,
       opacity: 0.42 + 0.42 * order,
+      restX: (spread - 0.5) * 12,
+      restY: (order - 0.5) * 1.1,
       color: index % 4 === 0 ? "#e8a23a" : "#f4f2ed",
       trail: index % 3 === 0,
     };
   });
 
   let tracks = [];
+  let head;
   let finishTime = 0;
   let width = 0;
   let height = 0;
@@ -60,13 +65,25 @@
     return {
       x: left ** 3 * start.x + 3 * left ** 2 * t * first.x + 3 * left * t ** 2 * second.x + t ** 3 * end.x,
       y: left ** 3 * start.y + 3 * left ** 2 * t * first.y + 3 * left * t ** 2 * second.y + t ** 3 * end.y,
+      depth: mix(start.depth ?? 0, end.depth ?? 0, ease(t)),
     };
   }
 
-  function uniformTrack(points, checkpoint = 0) {
+  function interpolatePoint(from, to, ratio) {
+    return {
+      x: mix(from.x, to.x, ratio),
+      y: mix(from.y, to.y, ratio),
+      depth: mix(from.depth ?? 0, to.depth ?? 0, ratio),
+    };
+  }
+
+  function uniformTrack(points, depthScale, checkpoint = 0) {
     const lengths = [0];
     for (let index = 1; index < points.length; index += 1) {
-      lengths.push(lengths[index - 1] + Math.hypot(points[index].x - points[index - 1].x, points[index].y - points[index - 1].y));
+      const previous = points[index - 1];
+      const current = points[index];
+      const depth = (current.depth ?? 0) - (previous.depth ?? 0);
+      lengths.push(lengths[index - 1] + Math.hypot(current.x - previous.x, current.y - previous.y, depth * depthScale));
     }
 
     // The transfer is sampled by distance so changes in path curvature do not cause speed jumps.
@@ -76,9 +93,7 @@
       const distance = (total * index) / 160;
       while (lengths[next] < distance && next < points.length - 1) next += 1;
       const ratio = (distance - lengths[next - 1]) / (lengths[next] - lengths[next - 1]);
-      const from = points[next - 1];
-      const to = points[next];
-      return { x: mix(from.x, to.x, ratio), y: mix(from.y, to.y, ratio) };
+      return interpolatePoint(points[next - 1], points[next], ratio);
     });
     return { samples, length: total, seam: lengths[checkpoint] / total };
   }
@@ -102,13 +117,30 @@
 
   function makeTrack(plate, message, selector, buttons, lane) {
     const spread = lane / (laneCount - 1);
-    const center = point(plate, 0.486, 0.331);
-    const radiusX = plate.width * mix(0.252, 0.297, spread);
-    const radiusY = plate.height * mix(0.265, 0.297, spread);
-    const crown = { x: center.x, y: center.y - radiusY };
+    const center = point(plate, 0.486, 0.355);
+    const radiusX = plate.width * mix(0.254, 0.29, spread);
+    const radiusY = plate.height * mix(0.09, 0.112, spread);
+    const seamAngle = -0.48;
+    const depthScale = plate.width * 0.21;
 
-    // Both travel segments meet the orbit at the crown, where its tangent points right.
-    // The loop goes outside the facial scan rather than crossing its eyes or mouth.
+    // Project a tilted ring. The near arc passes below the eyes, and the far arc crosses behind the portrait.
+    function ringPoint(angle) {
+      const depth = Math.sin(angle);
+      const across = Math.cos(angle);
+      const perspective = 1 / (1 - 0.13 * depth);
+      return {
+        x: center.x + radiusX * across * perspective,
+        y: center.y + (radiusY * depth - plate.height * 0.026 * across) * perspective,
+        depth,
+      };
+    }
+
+    const seam = ringPoint(seamAngle);
+    const nearby = ringPoint(seamAngle + 0.01);
+    const length = Math.hypot(nearby.x - seam.x, nearby.y - seam.y);
+    const tangent = { x: (nearby.x - seam.x) / length, y: (nearby.y - seam.y) / length };
+    const handle = (signedDistance) => ({ x: seam.x + tangent.x * signedDistance, y: seam.y + tangent.y * signedDistance });
+
     const outgoing =
       message && !mobile.matches
         ? { x: mix(message.x + message.width, plate.x, 0.22), y: point(plate, 0, 0.24 + 0.16 * spread).y }
@@ -119,27 +151,15 @@
       : { x: selector.x - 10 - 6 * spread, y: selector.y + selector.height * mix(0.19, 0.43, spread) };
 
     const points = [outgoing];
-    appendCurve(
-      points,
-      outgoing,
-      { x: mix(outgoing.x, crown.x, 0.31), y: outgoing.y - plate.height * 0.081 },
-      { x: crown.x - plate.width * 0.26, y: crown.y },
-      crown
-    );
+    appendCurve(points, outgoing, { x: mix(outgoing.x, seam.x, 0.46), y: plate.y - plate.height * 0.02 }, handle(-plate.width * 0.32), seam);
     for (let step = 1; step <= 104; step += 1) {
-      const angle = -Math.PI / 2 + (Math.PI * 2 * step) / 104;
-      const vertical = Math.sin(angle);
-      const below = Math.max(0, vertical);
-      points.push({
-        x: center.x + (radiusX + plate.width * 0.025 * below) * Math.cos(angle),
-        y: center.y + radiusY * vertical + plate.height * 0.047 * below ** 2,
-      });
+      points.push(ringPoint(seamAngle + (Math.PI * 2 * step) / 104));
     }
     const checkpoint = points.length - 1;
-    // Keep the incoming lap on its original media timing, independent of the selected player.
+    // Use a shared exit reference to keep the orbit's timing independent of the eventual target.
     if (mobile.matches) {
-      const shoulder = { x: railX, y: point(plate, 0, 0.45 + 0.05 * spread).y };
-      appendCurve(points, crown, { x: crown.x + plate.width * 0.3, y: crown.y }, { x: shoulder.x, y: shoulder.y - plate.height * 0.22 }, shoulder);
+      const shoulder = { x: railX, y: point(plate, 0, 0.53 + 0.05 * spread).y };
+      appendCurve(points, seam, handle(plate.width * 0.23), { x: shoulder.x, y: shoulder.y - plate.height * 0.1 }, shoulder);
       appendCurve(
         points,
         shoulder,
@@ -148,19 +168,13 @@
         incoming
       );
     } else {
-      appendCurve(
-        points,
-        crown,
-        { x: crown.x + plate.width * 0.3, y: crown.y },
-        { x: mix(crown.x, incoming.x, 0.91), y: incoming.y - plate.height * 0.07 },
-        incoming
-      );
+      appendCurve(points, seam, handle(plate.width * 0.23), { x: mix(seam.x, incoming.x, 0.91), y: incoming.y - plate.height * 0.07 }, incoming);
     }
-    const loop = uniformTrack(points, checkpoint);
+    const loop = uniformTrack(points, depthScale, checkpoint);
     const departure = loopTimeAt(loop.seam);
     const speed = loop.length * (0.76 + 1.44 * departure * (1 - departure));
     const from = sample(loop.samples, loop.seam);
-    const landings = buttons.map((button) => makeLanding(from, plate, selector, button, buttons[0].y, spread));
+    const landings = buttons.map((button) => makeLanding(from, tangent, plate, selector, button, buttons[0].y, spread, depthScale));
     const duration = (1.48 * Math.max(...landings.map(({ length }) => length))) / speed;
 
     return {
@@ -172,33 +186,34 @@
     };
   }
 
-  function makeLanding(from, plate, selector, button, firstRow, spread) {
+  function makeLanding(from, tangent, plate, selector, button, firstRow, spread, depthScale) {
     const below = !mobile.matches && button.y > firstRow + 1;
     const edge = below ? button.y + button.height : button.y;
     const y = edge + (below ? 1 : -1) * (3.8 + 0.7 * spread);
     const target = { x: button.x + button.width / 2 + 8 * (spread - 0.5), y };
     const path = [from];
+    const first = { x: from.x + tangent.x * plate.width * 0.23, y: from.y + tangent.y * plate.width * 0.23 };
 
     if (mobile.matches) {
       // The right gutter and the strip above the buttons stay clear of their labels and numbers.
       const railX = selector.x + selector.width + 4.1 + 0.6 * spread;
-      const shoulder = { x: railX, y: point(plate, 0, 0.45 + 0.05 * spread).y };
+      const shoulder = { x: railX, y: point(plate, 0, 0.53 + 0.05 * spread).y };
       const bend = { x: railX - 12, y };
-      appendCurve(path, from, { x: from.x + plate.width * 0.3, y: from.y }, { x: railX, y: shoulder.y - plate.height * 0.22 }, shoulder);
+      appendCurve(path, from, first, { x: railX, y: shoulder.y - plate.height * 0.1 }, shoulder);
       appendCurve(path, shoulder, { x: railX, y: y - 18 }, { x: bend.x + 8, y }, bend);
     } else {
       const edgeOfGrid = { x: selector.x - 11 - 4 * spread, y };
-      appendCurve(path, from, { x: from.x + plate.width * 0.3, y: from.y }, { x: edgeOfGrid.x - 64, y }, edgeOfGrid);
+      appendCurve(path, from, first, { x: edgeOfGrid.x - 64, y }, edgeOfGrid);
     }
     path.push(target);
-    return uniformTrack(path);
+    return uniformTrack(path, depthScale);
   }
 
   function sample(track, progress) {
     const distance = clamp(progress) * (track.length - 1);
     const index = Math.min(Math.floor(distance), track.length - 2);
     const ratio = distance - index;
-    return { x: mix(track[index].x, track[index + 1].x, ratio), y: mix(track[index].y, track[index + 1].y, ratio) };
+    return interpolatePoint(track[index], track[index + 1], ratio);
   }
 
   function travelPoint(track, time, weights) {
@@ -206,13 +221,14 @@
 
     // Match the lap's exit velocity, then slow continuously to zero at the button edge.
     const remaining = 1 - clamp((time - track.departure) / track.duration);
-    const center = { x: 0, y: 0 };
+    const center = { x: 0, y: 0, depth: 0 };
     weights.forEach((weight, index) => {
       if (weight <= 0) return;
       const landing = track.landings[index];
       const position = sample(landing.samples, 1 - remaining ** landing.exponent);
       center.x += weight * position.x;
       center.y += weight * position.y;
+      center.depth += weight * position.depth;
     });
     return center;
   }
@@ -223,32 +239,45 @@
     painted = false;
   }
 
+  function depthOpacity(position) {
+    const { x, y, depth } = position;
+    const silhouette = Math.hypot((x - head.x) / head.radiusX, (y - head.y) / head.radiusY);
+    const behind = ease(-depth / 0.4);
+    const rim = ease((silhouette - 0.94) / 0.13);
+    return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2);
+  }
+
   function draw(time) {
     clear();
     if (!tracks.length || time < 1.92 || time >= finishTime) return;
 
     const weights = weightsAt(performance.now());
+    const fade = ease((finishTime - time) / arrivalFade);
     particles.forEach((particle) => {
       const track = tracks[particle.lane];
       const elapsed = time - particle.begin;
-      const remaining = particle.duration * track.end - elapsed;
-      if (elapsed <= 0 || remaining <= 0) return;
-
+      if (elapsed <= 0) return;
       const travel = elapsed / particle.duration;
       const current = travelPoint(track, travel, weights);
-      const alpha = particle.opacity * ease(elapsed / 0.28) * ease(remaining / 0.38);
-      if (particle.trail && travel > 0.008) {
+      const parking = ease((travel - track.departure - track.duration * 0.65) / (track.duration * 0.35));
+      const light = particle.opacity * ease(elapsed / 0.28) * fade * mix(1, 0.27, parking);
+      const alpha = light * depthOpacity(current);
+      if (alpha < 0.006) return;
+      const x = current.x + particle.restX * parking;
+      const y = current.y + particle.restY * parking;
+      if (particle.trail && travel > 0.008 && travel < track.end - 0.01) {
         const behind = travelPoint(track, travel - 0.007, weights);
         context.beginPath();
-        context.moveTo(behind.x, behind.y);
-        context.lineTo(current.x, current.y);
+        context.moveTo(behind.x + particle.restX * parking, behind.y + particle.restY * parking);
+        context.lineTo(x, y);
         context.strokeStyle = particle.color;
         context.lineWidth = 0.65;
-        context.globalAlpha = alpha * 0.24;
+        context.globalAlpha = Math.min(alpha, light * depthOpacity(behind)) * 0.24;
         context.stroke();
       }
       context.beginPath();
-      context.arc(current.x, current.y, particle.size * (mobile.matches ? 0.85 : 1), 0, Math.PI * 2);
+      const size = particle.size * (mobile.matches ? 0.85 : 1) * mix(0.63, 1.31, (current.depth + 1) / 2) * mix(1, 0.82, parking);
+      context.arc(x, y, size, 0, Math.PI * 2);
       context.fillStyle = particle.color;
       context.globalAlpha = alpha;
       context.fill();
@@ -318,8 +347,10 @@
       painted = false;
     }
     const message = bounds(speech);
+    head = { ...point(plate, 0.486, 0.322), radiusX: plate.width * 0.174, radiusY: plate.height * 0.23 };
     tracks = Array.from({ length: laneCount }, (_, lane) => makeTrack(plate, message, selector, buttons, lane));
-    finishTime = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].end));
+    const lastArrival = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].end));
+    finishTime = lastArrival + arrivalHold + arrivalFade;
     lastTime = -1;
     synchronize();
   }
