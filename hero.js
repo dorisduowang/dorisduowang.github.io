@@ -44,6 +44,7 @@
   const smallScreen = window.matchMedia("(max-width: 767px)");
   const crystalCanvas = roundReader?.querySelector("[data-crystal-renderer]");
   const portrait = crystalCanvas?.closest(".portrait-plate");
+  const smoothSource = video.dataset.smoothSource;
   let crystalModule;
   let portraitPoseAt;
   let crystalRenderer;
@@ -56,6 +57,7 @@
   let paintedTime = -1;
   let visible = false;
   let mediaFailed = false;
+  let smoothSourceFailed = false;
   let autoplayBlocked = false;
   let userChoice = null;
   let playAttempt = 0;
@@ -255,6 +257,28 @@
     landing.dataset.motion = "paused";
   }
 
+  function fallBackToOriginalVideo() {
+    if (!smoothSource || video.getAttribute("src") !== smoothSource) return false;
+
+    smoothSourceFailed = true;
+    const position = video.currentTime;
+    stopPlayback();
+    video.removeAttribute("src");
+    video.load();
+    if (position > 0) {
+      // Both encodes use the same clock, including the eye tracking and scan.
+      video.addEventListener(
+        "loadedmetadata",
+        () => {
+          video.currentTime = Math.min(position, video.duration);
+        },
+        { once: true }
+      );
+    }
+    synchronizePlayback();
+    return true;
+  }
+
   function synchronizePlayback() {
     motionLabel.textContent = wantsMotion() ? "Pause motion" : "Play motion";
     if (!shouldPlay()) {
@@ -264,12 +288,16 @@
 
     // Avoid loading the portrait video until it can play on screen.
     loadCrystal();
-    if (!video.getAttribute("src")) video.src = video.dataset.source;
+    if (!video.getAttribute("src")) {
+      const useSmoothSource = smoothSource && !smoothSourceFailed && !smallScreen.matches && !reducedMotion.matches;
+      video.src = useSmoothSource ? smoothSource : video.dataset.source;
+    }
     if (!video.paused) return;
 
     const attempt = ++playAttempt;
     video.play().catch((error) => {
       if (attempt !== playAttempt || error.name === "AbortError") return;
+      if (error.name === "NotSupportedError" && fallBackToOriginalVideo()) return;
 
       autoplayBlocked = true;
       if (userChoice === true) userChoice = false;
@@ -294,7 +322,7 @@
     landing.dataset.motion = "paused";
   });
   video.addEventListener("error", () => {
-    if (!video.hasAttribute("src")) return;
+    if (!video.getAttribute("src") || fallBackToOriginalVideo()) return;
 
     mediaFailed = true;
     stopPlayback();

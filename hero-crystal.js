@@ -1,5 +1,4 @@
 import * as THREE from "./assets/third-party/three-0.170.0/three.module.min.js";
-import { RoomEnvironment } from "./assets/third-party/three-0.170.0/RoomEnvironment.js";
 
 export const heroCrystalConfig = {
   // The timeline controller may opt into a locally supplied pre-rendered alpha clip.
@@ -18,20 +17,22 @@ export const heroCrystalConfig = {
   occluder: { x: 0.485, y: 0.323, z: -0.17, scale: [0.365, 0.478, 0.205], roll: 0.045 },
   // A seed fixes the exact geometry and spark trajectories on every loop.
   density: { seed: 22721, branches: 8, droplets: 4, sparks: 48, maxOrbitPoints: 420 },
-  // Thin splinters, larger shards and liquid bases share refraction and have different thicknesses.
+  // The iris cap and the base of each chrome spike transmit the live portrait.
   material: {
     transmission: 1,
     ior: 1.5,
     roughness: 0.053,
-    thickness: [0.42, 0.72, 1.04],
+    thickness: [0.42, 0.74, 1.14],
     clearcoat: 1,
     clearcoatRoughness: 0.05,
-    iridescence: 0.28,
+    iridescence: 0.19,
     iridescenceThicknessRange: [110, 315],
     attenuationDistance: 0.83,
-    dispersion: 0.038,
-    envMapIntensity: 1.88,
+    dispersion: 0.027,
+    envMapIntensity: 1.16,
   },
+  chrome: { color: "#e8ecf2", roughnessRange: [0.04, 0.12], anisotropyRange: [0.6, 0.9], iridescence: 0.21 },
+  mercury: { color: "#d9dde3", metalness: 1, roughness: 0.02, envMapIntensity: 1.6 },
   // Pale neutral glass, cool attenuation through thick sections, and two restrained spark colors.
   colors: { glass: "#f4fbff", attenuation: "#d3edf5", gleam: "#eafaff", coolGleam: "#a8d9f1" },
   // Device pixel ratio and pixel budget cap the cost of the transmission pass on large or dense displays.
@@ -42,12 +43,62 @@ export const crystalCentroid = { x: 0.532, y: 0.269 };
 
 const aspect = 1104 / 1024;
 const up = new THREE.Vector3(0, 1, 0);
+const cameraDirection = new THREE.Vector3(0, 0, 1);
+const studioKey = new THREE.Vector3(2.7, 3.5, 3.6);
 const clamp = (value) => Math.max(0, Math.min(1, value));
 const mix = (a, b, progress) => a + (b - a) * progress;
 const smooth = (value) => {
   const u = clamp(value);
   return u * u * (3 - 2 * u);
 };
+
+function makeReflectionStudio(renderer) {
+  const room = new THREE.Scene();
+  room.background = new THREE.Color().setRGB(0.072, 0.082, 0.105);
+  const geometry = new THREE.PlaneGeometry(1, 1);
+  // Put the narrow key above and to the right, the rim behind to the left, and a lower-output fill opposite it.
+  const fixtures = [
+    { position: studioKey, width: 0.94, height: 4.8, roll: -0.46, color: "#f5f8ff", power: 8.7 },
+    { position: new THREE.Vector3(-3.9, 1.8, -1.8), width: 1.6, height: 4.3, roll: 0.21, color: "#ffffff", power: 6.8 },
+    { position: new THREE.Vector3(-1.9, 0.24, 5), width: 2.7, height: 3.8, roll: -0.13, color: "#eaf3ff", power: 2.65 },
+  ];
+  for (const fixture of fixtures) {
+    const softbox = new THREE.Mesh(
+      geometry,
+      new THREE.ShaderMaterial({
+        toneMapped: false,
+        uniforms: { radiance: { value: new THREE.Color(fixture.color).multiplyScalar(fixture.power) } },
+        vertexShader: `
+          varying vec2 panelUv;
+          void main() {
+            panelUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 radiance;
+          varying vec2 panelUv;
+          void main() {
+            vec2 border = abs(panelUv * 2.0 - 1.0);
+            vec2 falloff = 1.0 - smoothstep(vec2(0.74, 0.87), vec2(1.0), border);
+            gl_FragColor = vec4(radiance * falloff.x * falloff.y, 1.0);
+          }
+        `,
+      })
+    );
+    softbox.position.copy(fixture.position);
+    softbox.scale.set(fixture.width, fixture.height, 1);
+    softbox.lookAt(0, 0, 0);
+    softbox.rotateZ(fixture.roll);
+    room.add(softbox);
+  }
+  const generator = new THREE.PMREMGenerator(renderer);
+  const reflections = generator.fromScene(room, 0.012);
+  generator.dispose();
+  geometry.dispose();
+  for (const softbox of room.children) softbox.material.dispose();
+  return reflections;
+}
 
 function point(x, y, z = 0) {
   return new THREE.Vector3((x - 0.5) * 2 * aspect, (0.5 - y) * 2, z);
@@ -119,44 +170,143 @@ function makeShardGeometry(sides, twist, random) {
   return geometry;
 }
 
-function makeDropletGeometry() {
-  const geometry = new THREE.IcosahedronGeometry(1, 3);
+function makeDropletGeometry(mercury) {
+  const geometry = mercury ? new THREE.SphereGeometry(1, 40, 28) : new THREE.IcosahedronGeometry(1, 3);
   const positions = geometry.getAttribute("position");
   for (let index = 0; index < positions.count; index += 1) {
     const x = positions.getX(index);
     const y = positions.getY(index);
     const z = positions.getZ(index);
     const bulge = 1 + 0.12 * Math.sin(3.8 * x + y) * Math.sin(4.1 * y - 2.3 * z) + 0.075 * Math.cos(4.6 * z - x);
-    positions.setXYZ(index, x * bulge, y * bulge + 0.26 * x, z * bulge);
+    // The asymmetric lobes make neighboring beads read as coalesced drops under mirror reflections.
+    const lobe = mercury ? 0.16 * Math.exp(-4.5 * ((x - 0.7) ** 2 + (y + 0.42) ** 2 + (z - 0.34) ** 2)) : 0;
+    positions.setXYZ(index, x * (bulge + lobe), y * (bulge + lobe) + 0.26 * x, z * (bulge + lobe));
   }
+  if (mercury) geometry.computeVertexNormals();
   return geometry;
 }
 
-function makeGlass(thickness, faceted = false) {
+function makeGlass(thickness) {
   const { thickness: thicknessOptions, ...material } = heroCrystalConfig.material;
-  const glass = new THREE.MeshPhysicalMaterial({
+  return new THREE.MeshPhysicalMaterial({
     ...material,
     thickness: thicknessOptions[thickness],
-    roughness: faceted ? material.roughness + (thickness === 0 ? 0.013 : 0) : material.roughness * 0.67,
+    roughness: material.roughness * 0.67,
     color: heroCrystalConfig.colors.glass,
     attenuationColor: heroCrystalConfig.colors.attenuation,
   });
-  if (faceted) {
-    // An instance-specific base-to-tip cut adds a short advancing bevel during growth or descent.
-    glass.onBeforeCompile = (shader) => {
-      shader.vertexShader = `attribute float crystalReveal; varying float vCrystalReveal; varying float vCrystalTip;\n${shader.vertexShader}`;
-      shader.vertexShader = shader.vertexShader.replace(
-        "#include <begin_vertex>",
-        "#include <begin_vertex>\nvCrystalReveal = crystalReveal; vCrystalTip = position.y;"
-      );
-      shader.fragmentShader = `varying float vCrystalReveal; varying float vCrystalTip;\n${shader.fragmentShader}`;
-      shader.fragmentShader = shader.fragmentShader.replace(
+}
+
+function addChromeHighlights(shader, strength) {
+  shader.fragmentShader = shader.fragmentShader.replace(
+    "#include <opaque_fragment>",
+    `
+    float brightness = max(outgoingLight.r, max(outgoingLight.g, outgoingLight.b));
+    float glint = smoothstep(2.4, 6.3, brightness) * (${strength});
+    float edge = pow(1.0 - saturate(dot(normal, geometryViewDir)), 2.6);
+    outgoingLight += glint * (vec3(0.07) + edge * vec3(0.08, -0.035, 0.10));
+    #include <opaque_fragment>
+    `
+  );
+}
+
+function makeChromeBlend(thickness) {
+  const blend = makeGlass(thickness);
+  const chrome = heroCrystalConfig.chrome;
+  blend.color.set(chrome.color);
+  blend.metalness = 1;
+  blend.clearcoatRoughness = 0.02;
+  blend.anisotropy = chrome.anisotropyRange[0];
+  blend.iridescence = chrome.iridescence;
+  blend.iridescenceThicknessRange = [155, 245];
+  blend.envMapIntensity = 1.44;
+  blend.onBeforeCompile = (shader) => {
+    shader.uniforms.glassTint = { value: new THREE.Color(heroCrystalConfig.colors.glass) };
+    shader.vertexShader = `
+      attribute float crystalReveal;
+      attribute vec3 crystalFinish;
+      varying float vCrystalReveal;
+      varying float vCrystalTip;
+      varying vec3 vCrystalFinish;
+      varying vec3 vCrystalAxis;
+      ${shader.vertexShader}
+    `.replace(
+      "#include <project_vertex>",
+      `#include <project_vertex>
+      vCrystalReveal = crystalReveal;
+      vCrystalTip = position.y;
+      vCrystalFinish = crystalFinish;
+      vCrystalAxis = (modelViewMatrix * instanceMatrix * vec4(0.0, 1.0, 0.0, 0.0)).xyz;`
+    );
+    shader.fragmentShader = `
+      uniform vec3 glassTint;
+      varying float vCrystalReveal;
+      varying float vCrystalTip;
+      varying vec3 vCrystalFinish;
+      varying vec3 vCrystalAxis;
+      ${shader.fragmentShader}
+    `
+      .replace(
         "#include <clipping_planes_fragment>",
-        "#include <clipping_planes_fragment>\nif (vCrystalReveal < 1.0 && vCrystalTip > vCrystalReveal) discard;"
+        `#include <clipping_planes_fragment>
+        if (vCrystalReveal < 1.0 && vCrystalTip > vCrystalReveal) discard;
+        float chromeCover = smoothstep(vCrystalFinish.x, vCrystalFinish.x + 0.17, vCrystalTip);`
+      )
+      .replace(
+        "#include <metalnessmap_fragment>",
+        `#include <metalnessmap_fragment>
+        metalnessFactor *= chromeCover;
+        roughnessFactor = mix(roughnessFactor, vCrystalFinish.y, chromeCover);
+        diffuseColor.rgb = mix(glassTint, diffuseColor.rgb, chromeCover);`
+      )
+      .replace(
+        "#include <lights_physical_fragment>",
+        `#include <lights_physical_fragment>
+        vec3 axis = normalize(vCrystalAxis);
+        vec3 tangent = axis - normal * dot(axis, normal);
+        if (dot(tangent, tangent) > 0.0001) {
+          material.anisotropyT = normalize(tangent);
+          material.anisotropyB = normalize(cross(normal, material.anisotropyT));
+        }
+        material.anisotropy = chromeCover * vCrystalFinish.z;
+        material.alphaT = mix(pow2(material.roughness), 1.0, pow2(material.anisotropy));
+        float grazing = 1.0 - saturate(dot(normal, normalize(vViewPosition)));
+        material.iridescence *= mix(0.05, 1.0, smoothstep(0.27, 0.95, grazing));`
+      )
+      .replace(
+        "#include <transmission_fragment>",
+        THREE.ShaderChunk.transmission_fragment
+          .replace("material.transmission = transmission;", "material.transmission = transmission * (1.0 - chromeCover);")
+          .replace("material.dispersion, material.ior", "material.dispersion * (1.0 - chromeCover), material.ior")
       );
-    };
-  }
-  return glass;
+    addChromeHighlights(shader, "chromeCover");
+  };
+  return blend;
+}
+
+function makeChromeTendril() {
+  const chrome = heroCrystalConfig.chrome;
+  const material = new THREE.MeshPhysicalMaterial({
+    color: chrome.color,
+    metalness: 1,
+    roughness: 0.07,
+    clearcoat: 1,
+    clearcoatRoughness: 0.02,
+    anisotropy: 0.78,
+    iridescence: chrome.iridescence,
+    iridescenceThicknessRange: [155, 245],
+    envMapIntensity: 1.44,
+  });
+  material.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <lights_physical_fragment>",
+      `#include <lights_physical_fragment>
+      float grazing = 1.0 - saturate(dot(normal, normalize(vViewPosition)));
+      material.iridescence *= mix(0.05, 1.0, smoothstep(0.27, 0.95, grazing));`
+    );
+    addChromeHighlights(shader, "1.0");
+  };
+  return material;
 }
 
 function makePieces(random) {
@@ -213,14 +363,17 @@ function makePieces(random) {
     for (let index = 0; index < heroCrystalConfig.density.droplets; index += 1) {
       const focal = index === 0;
       const irisLens = focal && anchor.iris;
-      const radius = irisLens ? 0.067 : anchor.size * (focal ? mix(0.06, 0.104, random()) : mix(0.026, 0.076, random()));
+      const mercury = !(irisLens || (focal && anchor.delay < 1) || (anchor.iris && index === 1));
+      const radius =
+        (irisLens ? 0.067 : anchor.size * (focal ? mix(0.06, 0.104, random()) : mix(0.026, 0.076, random()))) * (mercury ? (focal ? 0.86 : 0.67) : 1);
       const offset = new THREE.Vector3(
-        irisLens ? 0 : mix(-0.021, 0.035, random()),
+        irisLens ? 0 : mix(-0.021, 0.035, random()) + (mercury ? 0.027 : 0),
         irisLens ? 0.003 : mix(-0.027, 0.031, random()),
         focal ? 0.033 : mix(0.021, 0.053, random())
       );
       drops.push({
         base: anchor.base.clone().add(offset),
+        mercury,
         size: new THREE.Vector3(
           radius,
           radius * (irisLens ? 0.59 : mix(0.56, 1.18, random())),
@@ -238,7 +391,7 @@ function makePieces(random) {
 
 function makePoints() {
   const { maxOrbitPoints, sparks } = heroCrystalConfig.density;
-  const count = maxOrbitPoints + sparks;
+  const count = maxOrbitPoints + sparks + 3;
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
   const sizes = new Float32Array(count);
@@ -348,18 +501,18 @@ export function createHeroCrystal(canvas, plate) {
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 12);
   camera.position.set(0, 0, 5);
-  const environment = new RoomEnvironment();
-  const generator = new THREE.PMREMGenerator(renderer);
-  const studio = generator.fromScene(environment, 0.024);
+  const studio = makeReflectionStudio(renderer);
   scene.environment = studio.texture;
-  environment.dispose();
-  generator.dispose();
 
-  const backdropMaterial = new THREE.MeshBasicMaterial({ toneMapped: false });
+  const backdropMaterial = new THREE.MeshBasicMaterial({ toneMapped: false, depthWrite: false });
   const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(aspect * 2, 2), backdropMaterial);
   backdrop.position.z = -1.22;
   backdrop.renderOrder = -10;
   backdrop.visible = false;
+  // The internal refraction buffer needs the video. The screen pass is transparent over the same DOM video.
+  backdrop.onBeforeRender = (activeRenderer) => {
+    backdropMaterial.colorWrite = activeRenderer.getRenderTarget() !== null;
+  };
   scene.add(backdrop);
 
   const attachment = new THREE.Group();
@@ -376,9 +529,9 @@ export function createHeroCrystal(canvas, plate) {
   occluder.renderOrder = -8;
   attachment.add(occluder);
 
-  const lights = [new THREE.DirectionalLight(0xe4f5ff, 3.85), new THREE.DirectionalLight(0xc0d9ff, 1.65)];
-  lights[0].position.set(-1.7, 2.1, -0.03);
-  lights[1].position.set(1.42, 0.71, 0.86);
+  const lights = [new THREE.DirectionalLight(0xf7faff, 2.1), new THREE.DirectionalLight(0xdbeaff, 1.35)];
+  lights[0].position.copy(studioKey);
+  lights[1].position.set(-3.9, 1.8, -1.8);
   scene.add(...lights);
 
   const random = randomGenerator(heroCrystalConfig.density.seed);
@@ -389,22 +542,48 @@ export function createHeroCrystal(canvas, plate) {
     const geometry = makeShardGeometry(5 + index, 0.2 * (index - 1), random);
     const reveal = new THREE.InstancedBufferAttribute(new Float32Array(pieces.length), 1).setUsage(THREE.DynamicDrawUsage);
     geometry.setAttribute("crystalReveal", reveal);
-    const mesh = new THREE.InstancedMesh(geometry, makeGlass(index, true), pieces.length);
+    const { roughnessRange, anisotropyRange } = heroCrystalConfig.chrome;
+    const finish = new Float32Array(pieces.length * 3);
+    const finishRandom = randomGenerator(heroCrystalConfig.density.seed + index * 113);
+    // With the shipped layout this yields 35 chrome pieces, 15 mercury drops and 29 clear-glass pieces.
+    const chromeShare = [0.6, 0.4, 0.6][index];
+    const chromeCount = Math.round(pieces.length * chromeShare);
+    for (let piece = 0; piece < pieces.length; piece += 1) {
+      const glassRoot = mix(0.15, 0.31, finishRandom()) + index * 0.032;
+      const chromeFinish = (piece * 17) % pieces.length < chromeCount;
+      finish.set([chromeFinish ? glassRoot : 2, mix(...roughnessRange, finishRandom()), mix(...anisotropyRange, finishRandom())], piece * 3);
+    }
+    geometry.setAttribute("crystalFinish", new THREE.InstancedBufferAttribute(finish, 3));
+    const mesh = new THREE.InstancedMesh(geometry, makeChromeBlend(index), pieces.length);
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     mesh.frustumCulled = false;
     crystalGroup.add(mesh);
     return { mesh, pieces, reveal };
   });
-  const dropletGeometry = makeDropletGeometry();
+  const dropletGeometry = makeDropletGeometry(false);
+  const mercuryGeometry = makeDropletGeometry(true);
   const dropletMaterial = makeGlass(2);
+  const mercuryMaterial = new THREE.MeshPhysicalMaterial({
+    ...heroCrystalConfig.mercury,
+    clearcoat: 1,
+    clearcoatRoughness: 0.02,
+  });
+  mercuryMaterial.onBeforeCompile = (shader) => addChromeHighlights(shader, "0.75");
   for (const drop of drops) {
-    drop.mesh = new THREE.Mesh(dropletGeometry, dropletMaterial);
+    drop.mesh = drop.mercury ? new THREE.Mesh(mercuryGeometry, mercuryMaterial) : new THREE.Mesh(dropletGeometry, dropletMaterial);
     drop.mesh.rotation.z = drop.turn;
     drop.mesh.position.copy(drop.base);
     crystalGroup.add(drop.mesh);
   }
+  const highlightDrops = drops
+    .filter((drop) => drop.mercury)
+    .sort((a, b) => b.size.x - a.size.x)
+    .slice(0, 3);
+  const highlightNormal = new THREE.Vector3();
+  const highlightPoint = new THREE.Vector3();
+  const inversePose = new THREE.Quaternion();
 
-  const tubeGlass = makeGlass(0);
+  const tubeChrome = makeChromeTendril();
   const tendrils = anchors.slice(1).map((anchor, index) => {
     const origin = anchors[index].base;
     const end = anchor.base;
@@ -415,7 +594,7 @@ export function createHeroCrystal(canvas, plate) {
       end
     );
     const geometry = new THREE.TubeGeometry(curve, 34, mix(0.0041, 0.0071, random()), 6, false);
-    const mesh = new THREE.Mesh(geometry, tubeGlass);
+    const mesh = new THREE.Mesh(geometry, tubeChrome);
     crystalGroup.add(mesh);
     return { mesh, count: geometry.index.count, birth: 0.47 + index * 0.58, grow: 2.85, dissolve: 0.91 + index * 0.08 };
   });
@@ -490,9 +669,43 @@ export function createHeroCrystal(canvas, plate) {
       const growth = pieceScale(time, piece);
       piece.mesh.geometry.setDrawRange(0, Math.floor((piece.count * growth) / 36) * 36);
     }
-    // Sweep the highlights independently of the movement in the source video.
-    scene.environmentRotation.y = Math.sin(time * 0.73) * 0.19;
-    lights[1].position.x = 1.42 + Math.sin(time * 0.74) * 0.31;
+    // During the hold, a small rotation lets the key sweep over the ridges and settle before transfer.
+    const { growthEnd, holdEnd } = heroCrystalConfig.timeline;
+    const holdProgress = clamp((time - growthEnd) / (holdEnd - growthEnd));
+    const reflectionTurn = Math.sin(holdProgress * Math.PI) ** 2;
+    scene.environmentRotation.y = reflectionTurn * 0.065;
+    scene.environmentRotation.x = reflectionTurn * -0.024;
+  }
+
+  function addMetalHighlights(time) {
+    // Add a small optical halo only at the strongest key-light reflection of three smooth beads.
+    const { growthEnd, holdEnd } = heroCrystalConfig.timeline;
+    const strength = smooth((time - growthEnd + 1.3) / 1.3) * smooth((holdEnd + 1.35 - time) / 1.35);
+    if (strength <= 0) return;
+    inversePose.copy(attachment.quaternion).invert();
+    highlightNormal.copy(studioKey).normalize().applyEuler(scene.environmentRotation).add(cameraDirection).normalize();
+    highlightNormal.applyQuaternion(inversePose);
+    for (const [index, drop] of highlightDrops.entries()) {
+      highlightPoint
+        .copy(highlightNormal)
+        .applyAxisAngle(cameraDirection, -drop.turn)
+        .multiply(drop.size)
+        .normalize()
+        .multiply(drop.size)
+        .multiplyScalar(pieceScale(time, drop))
+        .applyAxisAngle(cameraDirection, drop.turn)
+        .add(drop.base);
+      highlightPoint.z += 0.009;
+      highlightPoint.applyMatrix4(attachment.matrix);
+      sprites.add(
+        highlightPoint.x,
+        highlightPoint.y,
+        highlightPoint.z,
+        3.4 - index * 0.44,
+        strength * (0.25 - index * 0.045),
+        heroCrystalConfig.colors.gleam
+      );
+    }
   }
 
   function updateSprites(time, orbitPoints, crystals) {
@@ -509,6 +722,7 @@ export function createHeroCrystal(canvas, plate) {
       );
     }
     if (crystals) {
+      addMetalHighlights(time);
       const { growthEnd, transferEnd, duration } = heroCrystalConfig.timeline;
       const glints = smooth((time - growthEnd + 1.5) / 1.8) * smooth((duration - time) / 0.62);
       if (glints > 0) {
