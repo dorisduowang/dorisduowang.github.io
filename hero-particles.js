@@ -3,6 +3,9 @@
   const stage = canvas?.closest(".hero-stage");
   const portrait = stage?.querySelector(".portrait-plate");
   const video = portrait?.querySelector(".landing-video");
+  const model = portrait?.querySelector("[data-bionic-portrait]");
+  const neutral = model?.querySelector(".portrait-neutral");
+  const armor = model?.querySelector(".portrait-armor");
   const speech = stage?.querySelector(".round-speech");
   const choices = stage?.querySelector(".round-selector");
   const players = Array.from(choices?.querySelectorAll("[data-hero-player]") ?? []);
@@ -35,11 +38,14 @@
 
   let tracks = [];
   let head;
+  let lastDeparture = 0;
+  let lastArrival = 0;
   let finishTime = 0;
   let width = 0;
   let height = 0;
   let animationFrame = 0;
   let lastTime = -1;
+  let lastPortraitFrame = "";
   let painted = false;
   let visible = typeof IntersectionObserver === "undefined";
   let selected = players.findIndex((player) => player.getAttribute("aria-pressed") === "true");
@@ -274,7 +280,43 @@
     return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2) * visibility * cheekShade;
   }
 
+  function resetPortrait() {
+    if (!lastPortraitFrame) return;
+    model.removeAttribute("style");
+    lastPortraitFrame = "";
+  }
+
+  function drawPortrait(time) {
+    if (!neutral?.complete || !neutral.naturalWidth || !armor?.complete || !armor.naturalWidth || !lastDeparture) return;
+
+    // A single aligned frame keeps her expression unchanged throughout the transfer.
+    // Hand the portrait back to the original motion as its ending pose settles.
+    const stillness = ease((time - 0.94) / 0.48) * (1 - ease((time - 11.2) / 0.44));
+    if (!stillness) {
+      resetPortrait();
+      return;
+    }
+
+    // Use the last particle in each phase so the face stays human for the whole lap.
+    const sweep = clamp((time - 1.92) / (lastDeparture - 1.92));
+    const build = clamp((time - lastDeparture) / 0.54);
+    const restore = ease((time - lastArrival) / 0.52);
+    const material = ease(build) * (1 - restore);
+    const reveal = mix(12, 74, build);
+    const scan = sweep < 1 ? mix(14, 53, sweep) : reveal;
+    const light = sweep < 1 ? 0.4 * Math.sin(Math.PI * sweep) : 0.78 * Math.sin(Math.PI * build);
+    const frame = [stillness, material, reveal, scan, light].map((value) => value.toFixed(3)).join(" ");
+    if (frame === lastPortraitFrame) return;
+    lastPortraitFrame = frame;
+    model.style.setProperty("--neutral-opacity", stillness.toFixed(3));
+    model.style.setProperty("--armor-opacity", material.toFixed(3));
+    model.style.setProperty("--armor-reveal", `${reveal.toFixed(2)}%`);
+    model.style.setProperty("--scan-position", `${scan.toFixed(2)}%`);
+    model.style.setProperty("--scan-opacity", light.toFixed(3));
+  }
+
   function draw(time) {
+    drawPortrait(time);
     clear();
     if (!tracks.length || time < 1.92 || time >= finishTime) return;
 
@@ -380,7 +422,8 @@
     const message = bounds(speech);
     head = { ...point(plate, 0.486, 0.322), radiusX: plate.width * 0.174, radiusY: plate.height * 0.23 };
     tracks = Array.from({ length: laneCount }, (_, lane) => makeTrack(plate, message, selector, buttons, lane));
-    const lastArrival = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].end));
+    lastDeparture = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].departure));
+    lastArrival = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].end));
     finishTime = lastArrival + arrivalHold + arrivalFade;
     lastTime = -1;
     synchronize();
@@ -388,8 +431,12 @@
 
   video.addEventListener("playing", synchronize);
   ["pause", "waiting", "ended", "emptied", "error"].forEach((event) => video.addEventListener(event, suspend));
+  ["emptied", "error"].forEach((event) => video.addEventListener(event, resetPortrait));
   document.addEventListener("visibilitychange", synchronize);
-  reducedMotion.addEventListener("change", synchronize);
+  reducedMotion.addEventListener("change", ({ matches }) => {
+    if (matches) resetPortrait();
+    synchronize();
+  });
   const selectionObserver = new MutationObserver(() => {
     const next = players.findIndex((player) => player.getAttribute("aria-pressed") === "true");
     if (next === selected || next < 0) return;
