@@ -14,8 +14,8 @@
     <link rel="canonical" href="https://dorisduowang.github.io/" />
     <link rel="icon" type="image/png" href="/assets/img/portfolio/doris-mark.png" />
     <link rel="preload" href="/assets/fonts/portfolio/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="styles.css?v=399864be" />
-    <script defer src="hero.js?v=eac08832"></script>
+    <link rel="stylesheet" href="styles.css?v=537a770b" />
+    <script defer src="hero.js?v=2d9b54bd"></script>
   </head>
   <body id="top" data-landing data-portfolio-url="/portfolio/" data-motion="paused">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -47,42 +47,11 @@
     <main id="main">
       <section class="hero page-width" aria-labelledby="hero-title">
         <div class="hero-intro">
-          <p>I study what people and AI agents know, say, and choose under different rules.</p>
+          <p>I study how information and incentives shape decisions.</p>
           <p class="affiliation"><strong>University of Chicago</strong><span>M.A. student in Computational Social Science (Economics)</span></p>
         </div>
 
-        <p class="visually-hidden">A payoff matrix and a shared pool lead to illustrative rounds showing AI agent contributions and sanctions.</p>
-
-        <div class="hero-stage" data-hero data-hero-phase="1">
-          <canvas class="game-canvas" data-game-canvas aria-hidden="true"></canvas>
-
-          <div class="game-panel human-panel" data-human-panel aria-hidden="true">
-            <div class="panel-heading"><span>Human</span><i></i><small class="schematic-label">Prisoner’s dilemma</small></div>
-            <div class="matrix" data-matrix>
-              <svg viewBox="0 0 250 120" focusable="false" aria-hidden="true">
-                <!-- The Prisoner's Dilemma values are illustrative. The token pool below depicts the public goods game. -->
-                <g class="matrix-lines" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round">
-                  <path d="M77 30 Q157 30 239 29.5 M77 72 Q154 71.4 239 72.5 M78 113 Q157 113.4 239 113"></path>
-                  <path d="M77 30 Q77.7 71 78 113 M158 30 Q157.7 72 158.1 113 M239 29.5 Q239.4 72 239 113"></path>
-                </g>
-                <g class="matrix-label" text-anchor="middle">
-                  <text x="118" y="19">Cooperate</text>
-                  <text x="198" y="19">Defect</text>
-                  <text x="36" y="55">Cooperate</text>
-                  <text x="36" y="97">Defect</text>
-                </g>
-                <g class="matrix-payoffs" text-anchor="middle">
-                  <text class="cooperate-payoff" x="118" y="55">3, 3</text>
-                  <text x="198" y="55">0, 5</text>
-                  <text x="118" y="97">5, 0</text>
-                  <text class="defect-payoff" x="198" y="97">1, 1</text>
-                </g>
-              </svg>
-            </div>
-            <div class="human-pool" data-human-pool></div>
-            <p class="panel-caption">Humans · bounded rationality</p>
-          </div>
-
+        <div class="hero-stage" data-round-reader data-round-source="/pgg-feasibility/data.json">
           <div class="portrait-plate">
             <!-- Swap poster and data-source here to use another portrait. Leave src unset for reduced-motion viewers. -->
             <video
@@ -100,42 +69,39 @@
             ></video>
           </div>
 
-          <div class="game-panel agent-panel" data-agent-panel aria-hidden="true">
-            <div class="panel-heading"><span>Agent</span><i></i><small class="schematic-label">Illustrative rounds</small></div>
-            <div class="agent-graph" data-agent-graph></div>
-            <div class="agent-readouts" data-agent-readouts>
-              <div class="agent-readout" data-agent-readout>
-                <span class="agent-node">01</span>
-                <span>round <b data-agent-round>01</b></span>
-                <span>contribute <b data-agent-contribution>10</b></span>
-                <span>sanction <b data-agent-sanction>0</b></span>
-              </div>
-              <div class="agent-readout" data-agent-readout>
-                <span class="agent-node">02</span>
-                <span>round <b data-agent-round>01</b></span>
-                <span>contribute <b data-agent-contribution>08</b></span>
-                <span>sanction <b data-agent-sanction>0</b></span>
-              </div>
-              <div class="agent-readout" data-agent-readout>
-                <span class="agent-node">03</span>
-                <span>round <b data-agent-round>01</b></span>
-                <span>contribute <b data-agent-contribution>12</b></span>
-                <span>sanction <b data-agent-sanction>0</b></span>
-              </div>
-              <div class="agent-readout" data-agent-readout>
-                <span class="agent-node">04</span>
-                <span>round <b data-agent-round>01</b></span>
-                <span>contribute <b data-agent-contribution>06</b></span>
-                <span>sanction <b data-agent-sanction>0</b></span>
+          <div class="hero-title-row">
+            <h1 id="hero-title">The rules of <em>cooperation.</em></h1>
+            <button class="motion-toggle" type="button" data-motion-toggle hidden><i aria-hidden="true"></i><span>Play motion</span></button>
+          </div>
+
+          <div class="round-speech">
+            <div class="round-toolbar">
+              <label class="visually-hidden" for="hero-round">Game round</label>
+              <select id="hero-round" disabled>
+                <option value="10">Round 10</option>
+              </select>
+              <p class="round-rule" data-hero-rule>Punishment active</p>
+            </div>
+            <div class="round-quote" aria-live="polite" aria-atomic="true">
+              <p data-hero-speaker>P4 said</p>
+              <blockquote data-hero-message>
+                Let's contribute 5 each to maintain the public fund and avoid sanctions. Cooperation ensures mutual gains!
+              </blockquote>
+            </div>
+          </div>
+
+          <div class="round-choices">
+            <div class="round-selector">
+              <h2 id="hero-choices">Contributed <span>tokens</span></h2>
+              <div class="round-players" role="group" aria-labelledby="hero-choices">
+                <button type="button" data-hero-player="P1" aria-pressed="false" disabled><span>P1</span><strong>10</strong></button>
+                <button type="button" data-hero-player="P2" aria-pressed="false" disabled><span>P2</span><strong>10</strong></button>
+                <button type="button" data-hero-player="P3" aria-pressed="false" disabled><span>P3</span><strong>10</strong></button>
+                <button type="button" data-hero-player="P4" aria-pressed="true" disabled><span>P4</span><strong>10</strong></button>
               </div>
             </div>
-            <p class="panel-caption">Agents · respond to rules</p>
+            <a class="text-link round-study" data-hero-study href="/portfolio/?round=10&amp;player=P4#public-goods">Explore this round</a>
           </div>
-        </div>
-
-        <div class="hero-title-row">
-          <h1 id="hero-title">The rules of <em>cooperation.</em></h1>
-          <button class="motion-toggle" type="button" data-motion-toggle hidden><i aria-hidden="true"></i><span>Play motion</span></button>
         </div>
 
         <nav class="interest-nav" aria-label="Research interests">
@@ -161,11 +127,6 @@
             <p class="project-next"><strong>Next,</strong> I’ll vary what agents can see about the sanction rule and track what they say and give.</p>
             <a class="text-link project-link" href="/pgg-feasibility/">Compare messages and contributions</a>
           </div>
-          <figure class="project-evidence">
-            <figcaption>Round 10 · Player 4</figcaption>
-            <blockquote>“Let’s contribute 5 each to maintain the public fund and avoid sanctions.”</blockquote>
-            <p>P4 put in <strong>10 tokens</strong>.</p>
-          </figure>
         </article>
 
         <div class="research-topics">
