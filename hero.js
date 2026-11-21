@@ -169,7 +169,7 @@
       });
       const publicMessage = round.messages?.find(({ player }) => player === selectedPlayer.id);
       speaker.textContent = selectedPlayer.id + " said";
-      message.textContent = publicMessage?.message ?? "No public message recorded.";
+      renderQuote(message, publicMessage?.message ?? "No public message recorded.");
       studyUrl.searchParams.set("round", String(round.round));
       studyUrl.searchParams.set("player", selectedPlayer.id);
       study.href = studyUrl.href;
@@ -187,5 +187,19 @@
       });
     });
     showSelection();
+  }
+
+  function renderQuote(element, quote) {
+    const recommendation = /\b(?:contribute|put in)\s+(\d+(?:\.\d+)?)\b/i.exec(quote);
+    if (!recommendation) {
+      element.textContent = quote;
+      return;
+    }
+
+    const [, amount] = recommendation;
+    const end = recommendation.index + recommendation[0].length;
+    const mark = document.createElement("mark");
+    mark.textContent = amount;
+    element.replaceChildren(quote.slice(0, end - amount.length), mark, quote.slice(end));
   }
 })();

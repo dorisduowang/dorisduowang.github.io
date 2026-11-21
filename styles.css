@@ -235,10 +235,23 @@ a {
   grid-template-rows: minmax(var(--stage-height), auto) auto;
   align-items: center;
   column-gap: clamp(0.6rem, 3.3vw, 3rem);
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .round-speech,
 .round-choices {
+  position: relative;
+  z-index: 3;
   width: min(100%, 16rem);
   min-width: 0;
   padding-top: 0.75rem;
@@ -336,6 +349,19 @@ a {
   font-size: 1rem;
 }
 
+.round-quote mark,
+.round-players button strong {
+  padding-inline: 0.18em;
+  border-radius: 0.16rem;
+}
+
+.round-quote mark,
+.round-players button[aria-pressed="true"] strong {
+  background-color: rgb(255 255 255 / 15%);
+  box-shadow: inset 0 -1px rgb(255 255 255 / 21%);
+  color: var(--ink);
+}
+
 .round-study {
   display: inline-flex;
   align-items: center;
@@ -366,7 +392,7 @@ a {
   position: relative;
   margin-top: -1.45rem;
   text-align: center;
-  z-index: 1;
+  z-index: 3;
 }
 .hero-title-row h1 {
   color: var(--ink);
@@ -597,6 +623,13 @@ a {
   .round-speech,
   .round-choices {
     display: contents;
+  }
+  .round-toolbar,
+  .round-selector,
+  .round-quote,
+  .round-study {
+    position: relative;
+    z-index: 3;
   }
   .round-toolbar {
     grid-area: round;
