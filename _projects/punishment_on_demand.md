@@ -9,13 +9,16 @@ category: research
 
 ## Overview
 
-This project investigates whether language-based monitoring can improve the efficiency of peer punishment in sustaining cooperation. I use **transformer-based surprisal scores** from a frozen DistilGPT-2 model to detect unexpected behavioral shifts and trigger punishment selectively.
+When should a group use peer punishment? In a repeated public goods simulation, I used **surprisal scores** from a frozen DistilGPT-2 model to detect changes in chat and time sanctions.
 
 ## Key Results (v5)
 
-- **Adaptive punishment** achieves cooperation of **0.763** vs. **0.695** under always-on punishment
-- Enforcement cost reduced: **132** vs. **306** punishment points
-- Highest efficiency (**106.1**), while always-on drops below no-punishment baseline
+|                   | Adaptive punishment | Always on punishment |
+| ----------------- | ------------------: | -------------------: |
+| Cooperation       |               0.763 |                0.695 |
+| Punishment points |                 132 |                  306 |
+
+Adaptive punishment had the highest efficiency at **106.1**. Constant punishment was less efficient than leaving punishment off.
 
 ### Main Results
 

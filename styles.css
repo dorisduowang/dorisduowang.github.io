@@ -534,28 +534,25 @@ a {
   display: inline-block;
   margin-top: 1rem;
 }
-.project-facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.project-evidence {
+  margin: 0;
+  padding: 0.75rem 0 0.75rem 1rem;
+  border-inline-start: 1px solid var(--rule);
 }
-.project-facts > div {
-  padding: 0.6rem 0.55rem 0.8rem 0;
-  border-top: 1px solid var(--rule);
-}
-.project-facts dt {
+.project-evidence figcaption {
   color: var(--muted);
   font: 400 0.72rem/1.3 var(--mono);
 }
-.project-facts dd {
-  margin-top: 0.14rem;
-  font: 400 2.2rem/1 var(--serif);
+.project-evidence blockquote {
+  margin: 0.6rem 0 0.7rem;
+  font: 400 clamp(1.45rem, 2.5vw, 2.35rem) / 1.14 var(--serif);
 }
-.project-facts .game-rule {
-  grid-column: 1 / -1;
+.project-evidence p {
+  color: #bcbcbc;
+  font-size: 0.9rem;
 }
-.project-facts .game-rule dd {
-  margin-top: 0.28rem;
-  font-size: 1.35rem;
+.project-evidence strong {
+  color: var(--ink);
 }
 
 .research-topics {

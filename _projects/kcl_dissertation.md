@@ -9,13 +9,13 @@ category: research
 
 ## Overview
 
-My undergraduate dissertation at **King's College London** examined how cooperation is sustained in large-scale repeated strategic environments. Using a panel of over **1.5 million interaction observations** across approximately **135,000 agents**, I studied the interplay between punishment, regrouping, and stable social structure.
+Does peer punishment sustain cooperation when groups keep changing? My dissertation at **King’s College London** compares fixed and regrouped players across enforcement rules, drawing on a source panel of more than **1.5 million interaction records** across about **135,000 agents**.
 
 ## Key Findings
 
-- **Stable social structure** is necessary for decentralized punishment to sustain cooperation over time
-- Dynamic regrouping alone is insufficient — the combination of enforcement and group stability produces the highest cooperation rates
-- Free riding is significantly reduced under enforcement regimes, with effects quantified through cluster-robust inference
+- Decentralized punishment sustained cooperation in stable groups. Regrouping alone was insufficient to sustain cooperation.
+- Cooperation was highest when enforcement and stable group membership were both present.
+- Free riding was significantly lower under enforcement, based on inference with cluster-robust standard errors.
 
 ## Methods
 

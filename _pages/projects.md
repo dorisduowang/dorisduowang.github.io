@@ -2,12 +2,14 @@
 layout: page
 title: Projects
 permalink: /projects/
-description: Research projects in behavioral economics, computational social science, and AI system design.
+description: Research and coursework by Doris Wang.
 nav: true
 nav_order: 1
 display_categories: [research, coursework]
 horizontal: false
 ---
+
+For a closer look at how I study conversations and decisions, start with the [research portfolio](/portfolio/#research).
 
 <div class="projects">
 {% if site.enable_project_categories and page.display_categories %}

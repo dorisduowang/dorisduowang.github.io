@@ -194,28 +194,41 @@ async function loadPgg(source) {
   const position = panel.querySelector(".round-position");
   const output = panel.querySelector(".round-detail");
   const agents = panel.querySelector("[data-pgg-agents]");
+  const messageRegion = panel.querySelector(".pgg-message");
+  const messageLabel = panel.querySelector("[data-pgg-message-label]");
+  const messageText = panel.querySelector("[data-pgg-message]");
   const next = panel.querySelector("[data-pgg-next]");
   const playerCount = rounds[0].contributions?.length ?? 0;
   const endowment = 20;
   const agentRows = [];
   let activeIndex = Number(input.value) - 1;
+  let activePlayer = Math.max(0, playerCount - 1);
   let timer;
 
   if (agents) {
     for (let i = 0; i < playerCount; i += 1) {
       const item = document.createElement("li");
+      const button = document.createElement("button");
       const player = document.createElement("span");
       const bar = document.createElement("span");
       const value = document.createElement("span");
-      item.className = "pgg-agent";
+      const name = rounds[0].messages?.[i]?.player ?? `P${i + 1}`;
+      button.type = "button";
+      button.className = "pgg-agent";
       player.className = "pgg-agent-name";
-      player.textContent = rounds[0].messages?.[i]?.player ?? `P${i + 1}`;
+      player.textContent = name;
       bar.className = "pgg-agent-bar";
       bar.setAttribute("aria-hidden", "true");
       value.className = "pgg-agent-value";
-      item.append(player, bar, value);
+      button.addEventListener("click", () => {
+        stopPlayback();
+        activePlayer = i;
+        showMessage(rounds[activeIndex]);
+      });
+      button.append(player, bar, value);
+      item.append(button);
       agents.append(item);
-      agentRows.push({ item, value });
+      agentRows.push({ button, value, name });
     }
   }
 
@@ -223,6 +236,20 @@ async function loadPgg(source) {
   activeIndex = Math.min(activeIndex, rounds.length - 1);
   figure.classList.add("is-interactive");
   panel.hidden = false;
+
+  function showMessage(row) {
+    const selected = agentRows[activePlayer];
+    messageRegion.hidden = !selected;
+    if (!selected) return;
+
+    const spoken = row.messages?.find(({ player }) => player === selected.name);
+    const contribution = row.contributions?.[activePlayer];
+    agentRows.forEach(({ button }, i) => button.setAttribute("aria-pressed", String(i === activePlayer)));
+    messageLabel.textContent = Number.isFinite(contribution)
+      ? `${selected.name}’s message · contributed ${contribution} tokens`
+      : `${selected.name}’s message`;
+    messageText.textContent = spoken?.message ?? "No public message recorded.";
+  }
 
   function selectRound(index) {
     activeIndex = index;
@@ -232,15 +259,20 @@ async function loadPgg(source) {
     input.setAttribute("aria-valuetext", `Round ${row.round} of ${rounds.length}`);
     position.textContent = `${row.round} / ${rounds.length}`;
     output.value = `Round ${row.round} · ${row.mean_contribution} tokens per player · ${rule}`;
-    agentRows.forEach(({ item, value }, i) => {
+    agentRows.forEach(({ button, value, name }, i) => {
       const contribution = row.contributions?.[i];
       value.textContent = Number.isFinite(contribution) ? contribution : "Unavailable";
-      item.style.setProperty("--contribution", `${Number.isFinite(contribution) ? (contribution / endowment) * 100 : 0}%`);
+      button.style.setProperty("--contribution", `${Number.isFinite(contribution) ? (contribution / endowment) * 100 : 0}%`);
+      button.setAttribute(
+        "aria-label",
+        Number.isFinite(contribution) ? `${name} contributed ${contribution} tokens. Read message.` : `${name}. Read message.`
+      );
     });
+    showMessage(row);
     if (next) {
       const nextRound = rounds[index + 1];
       next.textContent = nextRound
-        ? `Round ${nextRound.round} averaged ${nextRound.mean_contribution} tokens per player.`
+        ? `Round ${nextRound.round} · ${nextRound.mean_contribution} tokens per player · punishment ${nextRound.active ? "active" : "inactive"}`
         : `Round ${row.round} was the final round.`;
     }
     if (canvas.clientWidth) drawContributionChart(canvas, context, rounds, activeIndex);
@@ -252,6 +284,7 @@ async function loadPgg(source) {
     play.setAttribute("aria-label", "Play rounds");
     playIcon.textContent = "▶";
     output.removeAttribute("aria-live");
+    messageRegion.setAttribute("aria-live", "polite");
   }
 
   input.addEventListener("input", () => {
@@ -278,6 +311,7 @@ async function loadPgg(source) {
     }
 
     output.setAttribute("aria-live", "off");
+    messageRegion.setAttribute("aria-live", "off");
     if (activeIndex === rounds.length - 1) selectRound(0);
     play.setAttribute("aria-label", "Pause rounds");
     playIcon.textContent = "Ⅱ";

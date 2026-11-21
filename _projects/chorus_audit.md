@@ -9,7 +9,7 @@ category: research
 
 ## Overview
 
-Developed for the **AI Agents for Social Science and Society** course, this project audits the reliability of text-based reward signals used in AI-driven scientific discovery systems. Specifically, I test whether the Chorus system's text-based rewards track genuine scientific value or merely reflect citation-neutral linguistic surprise.
+Can rewarding surprising text help an AI system find influential papers? For **AI Agents for Social Science and Society**, I simulated how Chorus would rank **443 publications** under different rewards.
 
 ## Approach
 
@@ -19,5 +19,5 @@ Developed for the **AI Agents for Social Science and Society** course, this proj
 
 ## Key Findings
 
-- Audited **443 publications** and identified **three systematic reward inversions** where text-based signals misaligned with scientific impact
+- Found **3 systematic reward inversions** where rewards based on text misaligned with scientific impact
 - Proposed a **multimodal ranking metric** that successfully surfaced high-impact papers missed by baseline text-only reward signals

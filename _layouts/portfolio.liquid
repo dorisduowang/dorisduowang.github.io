@@ -18,9 +18,7 @@
     <link rel="icon" type="image/png" href="{{ '/assets/img/portfolio/doris-mark.png' | relative_url }}">
     <link rel="preload" href="{{ '/assets/fonts/portfolio/dm-sans.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{{ '/assets/css/portfolio.css' | relative_url | bust_file_cache }}">
-    <link rel="stylesheet" href="{{ '/assets/css/research-figures.css' | relative_url }}">
     <script defer src="{{ '/assets/js/portfolio.js' | relative_url | bust_file_cache }}"></script>
-    <script defer src="{{ '/assets/js/research-figures.js' | relative_url | bust_file_cache }}"></script>
   </head>
   <body id="top">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -49,11 +47,12 @@
         >
           <header class="section-heading">
             <div>
-              <p class="eyebrow section-kicker">Research portfolio</p>
-              <h1 id="research-title">How do incentives and information shape decisions?</h1>
+              <h1 id="research-title">From conversation to choice</h1>
+              <p>What do people and AI agents know before they decide, and what do they share along the way?</p>
             </div>
             <nav class="research-jumps" aria-label="On this page">
-              <a href="#public-goods">Cooperation in a game</a>
+              <a href="#public-goods">A public goods game</a>
+              <a href="#project-twins">A team choosing a city</a>
               <a href="#fomc">Fed communication and markets</a>
               <a href="#more-projects">More projects</a>
             </nav>
@@ -61,26 +60,11 @@
 
           <article class="feature" id="public-goods" aria-labelledby="pgg-title">
             <div class="feature-copy">
-              <p class="eyebrow feature-kicker">Cooperation · Agent experiments</p>
-              <h2 id="pgg-title">Public Goods Game Feasibility</h2>
+              <h2 id="pgg-title">What players say before they contribute</h2>
               <p>
-                Can surprising messages tell us what agents will contribute next? Four language-model agents play one repeated game. I score their
-                public messages and compare those scores with what happens in the next round.
+                In round 10 of a public goods game I ran with 4 AI agents, P4 asked everyone to contribute 5 tokens and then put in 10. Choose a round
+                and a player to read the message beside the contribution.
               </p>
-              <dl class="study-facts">
-                <div>
-                  <dt>Agents</dt>
-                  <dd>4</dd>
-                </div>
-                <div>
-                  <dt>Rounds</dt>
-                  <dd>15</dd>
-                </div>
-                <div>
-                  <dt>Public messages</dt>
-                  <dd>60</dd>
-                </div>
-              </dl>
               <div class="feature-links">
                 <a class="solid-link" href="{{ '/pgg-feasibility/' | relative_url }}">Open the interactive study</a>
                 <a class="text-link" href="https://github.com/dorisduowang/pgg-feasibility">Code &amp; data</a>
@@ -89,7 +73,6 @@
             </div>
             <figure class="pgg-figure">
               <div class="pgg-figure-header">
-                <p class="eyebrow">One observed game</p>
                 <h3>Mean contribution per agent</h3>
               </div>
               <div class="pgg-canvas">
@@ -104,13 +87,17 @@
               <div class="round-panel" hidden>
                 <div class="round-input">
                   <button class="round-play" type="button" aria-label="Play rounds"><span aria-hidden="true">▶</span></button>
-                  <input id="round-input" type="range" min="1" max="15" value="4" step="1" aria-label="Select game round">
-                  <span class="round-position" aria-hidden="true">4 / 15</span>
+                  <input id="round-input" type="range" min="1" max="15" value="10" step="1" aria-label="Select game round">
+                  <span class="round-position" aria-hidden="true">10 / 15</span>
                 </div>
                 <output class="round-detail" for="round-input"></output>
                 <div class="pgg-agents">
                   <p class="pgg-agents-heading"><strong>Individual contributions</strong> <span>of 20 tokens</span></p>
                   <ul data-pgg-agents aria-label="Individual contributions in tokens"></ul>
+                  <div class="pgg-message" aria-live="polite" aria-atomic="true">
+                    <p data-pgg-message-label></p>
+                    <blockquote data-pgg-message></blockquote>
+                  </div>
                   <p data-pgg-next></p>
                 </div>
               </div>
@@ -120,10 +107,34 @@
             </figure>
           </article>
 
+          {% assign grail = site.data.portfolio | where: 'figure', 'twins' | first %}
+          <article class="feature grail-feature" id="project-twins" aria-labelledby="grail-title">
+            <div class="feature-copy">
+              <h2 id="grail-title">What a team shares before choosing a city</h2>
+              <p>I designed a GRAIL comparison in which teams of 5 AI agents read private reports, discuss the evidence and make a joint choice.</p>
+              <div class="feature-links">
+                <a class="text-link" href="{{ grail.url | escape }}">Read the public GRAIL protocol</a>
+              </div>
+            </div>
+            <dl class="grail-design" aria-label="GRAIL study design">
+              <div>
+                <dt>What changes</dt>
+                <dd>Who sits on each team.</dd>
+              </div>
+              <div>
+                <dt>What stays fixed</dt>
+                <dd>The report each seat receives and the information made public.</dd>
+              </div>
+              <div>
+                <dt>What I compare</dt>
+                <dd>The facts each team discusses and the city it chooses.</dd>
+              </div>
+            </dl>
+          </article>
+
           {% assign fomc = site.data.portfolio | where: 'figure', 'fomc' | first %}
           <article class="feature market-feature" id="fomc" aria-labelledby="fomc-title">
             <div class="feature-copy">
-              <p class="eyebrow feature-kicker">{{ fomc.field | escape }} · Text as data</p>
               <h2 id="fomc-title">{{ fomc.title | escape }}</h2>
               <p>{{ fomc.description | escape }}</p>
               <ol class="event-sequence" aria-label="Temporal validation study design">
@@ -139,7 +150,7 @@
             <figure class="market-figure" data-market-chart>
               {% assign initial_lag = fomc.lags | where: 'primary', true | first %}
               <p class="eyebrow">Earlier analysis · 33 meetings</p>
-              <h3>When was the association strongest?</h3>
+              <h3>How much did the timing matter?</h3>
               <div class="market-plot-heading">
                 <p class="market-axis-label">Pearson correlation (r)</p>
                 <p class="market-hint" data-market-hint hidden>Choose a day for details</p>
@@ -197,24 +208,16 @@
           </div>
           <p class="visually-hidden" id="filter-status" aria-live="polite"></p>
           <div class="work-grid">
-            {% assign other_projects = site.data.portfolio | where_exp: 'item', "item.figure != 'fomc'" %}
+            {% assign other_projects = site.data.portfolio | where_exp: 'item', "item.figure != 'fomc' and item.figure != 'twins'" %}
             {% for project in other_projects %}
               <article class="work-card" data-topic="{{ project.topic }}" aria-labelledby="project-{{ project.figure }}">
                 <div class="work-copy">
-                  <p class="eyebrow">{{ project.field | escape }}</p>
                   <h3 id="project-{{ project.figure }}">{{ project.title | escape }}</h3>
-                  <div class="work-fact">
-                    <strong>{{ project.fact | escape }}</strong> {{ project.fact_label | escape }}
-                  </div>
                   <p>{{ project.description | escape }}</p>
                 </div>
                 <details class="work-details">
                   <summary class="work-toggle" aria-label="Study details for {{ project.title | escape }}">
-                    <span class="work-figure">
-                      <canvas data-research-figure="{{ project.figure }}" aria-hidden="true"></canvas>
-                      <span class="work-figure-caption">{{ project.caption | escape }}</span>
-                    </span>
-                    <span class="work-toggle-label">Study details <span class="work-toggle-icon" aria-hidden="true"></span></span>
+                    <span class="work-toggle-label">Question, data and method <span class="work-toggle-icon" aria-hidden="true"></span></span>
                   </summary>
                   <dl class="work-detail-list">
                     <div>
@@ -255,12 +258,9 @@
               I received my B.Sc. in Political Economy from King’s College London in 2025.
             </p>
             <p>
-              In round 10 of a game I ran with 4 AI agents, one player asked everyone to put 5 tokens into a shared pot and then put in 10 itself. I
-              paired the players’ messages with their contributions over 15 rounds and scored the messages to see what they could tell me about the
-              next round once I knew whether punishment would be active. I used the same pairing of talk and action to design a comparison for GRAIL,
-              where teams of 5 AI agents choose a city together. I vary who sits on each team, keeping the private report assigned to each seat and
-              the information made public fixed across teams. The design lines up the facts that come up in each discussion with the team’s final
-              choice.
+              I study what happens between a conversation and a decision. In a public goods game, I match what players say with what they contribute.
+              In GRAIL, I designed a comparison that changes who’s on the team while holding private reports fixed, then pairs what each team
+              discusses with the city it chooses.
             </p>
             <div class="about-links">
               <a class="text-link" href="{{ '/cv/' | relative_url }}">Curriculum vitae</a>

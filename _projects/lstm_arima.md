@@ -9,12 +9,11 @@ category: coursework
 
 ## Overview
 
-Conducted at **MIT** (Summer 2022), this project benchmarked ARIMA and LSTM models for forecasting gold log returns from 2000 to 2020.
+Could LSTM forecast gold returns more accurately than ARIMA? At **MIT** in summer 2022, I compared both models on gold log returns from 2000 to 2020.
 
 ## Approach
 
-- Implemented both models with an end-to-end Python pipeline
-- Standardized preprocessing, fixed train-test splits, and hyperparameter search
+- Implemented both models in a Python pipeline with common preprocessing and fixed splits for hyperparameter search
 - Evaluated out-of-sample accuracy using MAE and RMSE
 
 ## Deliverables

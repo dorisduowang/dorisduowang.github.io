@@ -10,13 +10,13 @@ github: https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/tempo
 
 ## Overview
 
-This project (co-led with Yuzhao Jin) examines the relationship between **FOMC communication**, **New York Times media narratives**, and **S&P 500 volatility** over the 2021–2025 period.
+Does news about Fed meetings track the Fed’s message and the market’s response? Yuzhao Jin and I studied **40 meetings** from 2021 to 2025.
 
-The [latest FOMC Media Alignment project](https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/temporal-validation) documents the temporal validation workflow for the 2015–2025 extension. The earlier course version is summarized below.
+The latest project documents temporal validation for the extension from 2015 to 2025. [Latest FOMC Media Alignment project](https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/temporal-validation)
 
 ## Data
 
-- **40 FOMC meetings** · **2,740 NYT articles** · **11 FRED series** · S&P 500 event-window measures
+The course study pairs **2,740 New York Times articles** with **11 FRED series** and S&P 500 volatility around each meeting.
 
 ## Methods
 

@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Doris Wang · 王朵 | Research</title>
-    <meta name="description" content="Doris Wang studies how information and incentives shape strategic behavior in people and AI agents." />
+    <meta name="description" content="Doris Wang studies what people and AI agents know, say, and choose under different rules." />
     <meta name="theme-color" content="#000000" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Doris Wang · 王朵 | Research" />
-    <meta property="og:description" content="Research in experimental economics, information economics, and the economics of AI." />
+    <meta property="og:description" content="Research on information, incentives, and cooperation in people and AI agents." />
     <meta property="og:image" content="https://dorisduowang.github.io/assets/img/portfolio/doris-centered-poster.webp" />
     <meta property="og:image:alt" content="Portrait of Doris Wang" />
     <link rel="canonical" href="https://dorisduowang.github.io/" />
     <link rel="icon" type="image/png" href="/assets/img/portfolio/doris-mark.png" />
     <link rel="preload" href="/assets/fonts/portfolio/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="styles.css?v=ea4282a1" />
+    <link rel="stylesheet" href="styles.css?v=399864be" />
     <script defer src="hero.js?v=eac08832"></script>
   </head>
   <body id="top" data-landing data-portfolio-url="/portfolio/" data-motion="paused">
@@ -47,14 +47,11 @@
     <main id="main">
       <section class="hero page-width" aria-labelledby="hero-title">
         <div class="hero-intro">
-          <p>I study how information and incentives shape strategic behavior in people and AI agents.</p>
+          <p>I study what people and AI agents know, say, and choose under different rules.</p>
           <p class="affiliation"><strong>University of Chicago</strong><span>M.A. student in Computational Social Science (Economics)</span></p>
         </div>
 
-        <p class="visually-hidden">
-          The hero illustrates human players contributing to a shared pool, then shows AI agents responding to the same game through changing
-          contributions and sanctions.
-        </p>
+        <p class="visually-hidden">A payoff matrix and a shared pool lead to illustrative rounds showing AI agent contributions and sanctions.</p>
 
         <div class="hero-stage" data-hero data-hero-phase="1">
           <canvas class="game-canvas" data-game-canvas aria-hidden="true"></canvas>
@@ -158,74 +155,51 @@
 
         <article class="project-card">
           <div class="project-description">
-            <p class="project-type">Information economics · Feasibility study</p>
-            <h3><a href="/pgg-feasibility/">Cheap talk and enforcement in repeated public goods games</a></h3>
-            <p>
-              What can cheap talk reveal about cooperation when sanctions depend on contribution history? In one 15-round feasibility run, I compare
-              what four language-model agents say publicly with what they contribute in the next round.
-            </p>
-            <p class="project-next">
-              <strong>Next,</strong> I plan to vary how transparent sanction rules are and test when public communication helps groups sustain
-              cooperation and when it helps players evade sanctions.
-            </p>
-            <a class="text-link project-link" href="/pgg-feasibility/">Explore the interactive study</a>
+            <p class="project-type">Public goods game feasibility study</p>
+            <h3><a href="/pgg-feasibility/">What do agents say before they contribute?</a></h3>
+            <p>Over 15 rounds, I paired the public messages of 4 AI agents with what they actually contributed.</p>
+            <p class="project-next"><strong>Next,</strong> I’ll vary what agents can see about the sanction rule and track what they say and give.</p>
+            <a class="text-link project-link" href="/pgg-feasibility/">Compare messages and contributions</a>
           </div>
-          <dl class="project-facts" aria-label="Game design">
-            <div>
-              <dt>Players</dt>
-              <dd>4</dd>
-            </div>
-            <div>
-              <dt>Tokens per player</dt>
-              <dd>20</dd>
-            </div>
-            <div>
-              <dt>Pool multiplier</dt>
-              <dd>1.6×</dd>
-            </div>
-            <div>
-              <dt>Rounds</dt>
-              <dd>15</dd>
-            </div>
-            <div class="game-rule">
-              <dt>Sanctions</dt>
-              <dd>History-based punishment</dd>
-            </div>
-          </dl>
+          <figure class="project-evidence">
+            <figcaption>Round 10 · Player 4</figcaption>
+            <blockquote>“Let’s contribute 5 each to maintain the public fund and avoid sanctions.”</blockquote>
+            <p>P4 put in <strong>10 tokens</strong>.</p>
+          </figure>
         </article>
 
         <div class="research-topics">
           <article id="cooperation">
             <h3>Experimental Economics</h3>
-            <p>How does group stability shape cooperation across repeated interactions?</p>
+            <p>When does staying in the same group help people cooperate?</p>
             <a class="text-link" href="/projects/kcl_dissertation/">Group stability study</a>
           </article>
           <article id="language">
             <h3>Information Economics</h3>
-            <p>How does team composition shape the way AI agents aggregate private information?</p>
+            <p>In GRAIL, I hold private reports fixed and ask which facts different teams share before choosing a city.</p>
             <a
               class="text-link"
               href="https://github.com/dorisduowang/group_ai_lab/blob/feature/no-facilitator-agent-study/docs/TWIN2K_GRAIL_PROTOCOL.md"
-              >Public GRAIL study protocol</a
+              >Read the GRAIL protocol</a
             >
           </article>
           <article id="ai-agents">
             <h3>Economics of AI</h3>
-            <p>How do different AI agents choose strategies under the same incentives?</p>
+            <p>Do AI agents make different choices under the same incentives?</p>
           </article>
           <article id="incentives">
             <h3>Market &amp; Mechanism Design</h3>
-            <p>When is it worth making costly peer punishment available?</p>
+            <p>When does costly peer punishment sustain cooperation?</p>
             <a class="text-link" href="/projects/punishment_on_demand/">Punishment on Demand</a>
           </article>
           <article id="operations">
             <h3>Operations</h3>
-            <p>How do firms bargain and coordinate across multiple tiers of a supply chain?</p>
+            <p>How do firms bargain and coordinate across a supply chain?</p>
           </article>
         </div>
         <div class="other-work" id="institutions">
-          <h3>Other work</h3>
-          <a class="text-link" href="/portfolio/#fomc">FOMC communication study</a>
+          <h3>Fed communication</h3>
+          <a class="text-link" href="/portfolio/#fomc">FOMC news and market volatility</a>
         </div>
       </section>
     </main>
