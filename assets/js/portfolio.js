@@ -23,6 +23,31 @@ if (filters) {
   });
 }
 
+const marketChart = document.querySelector("[data-market-chart]");
+
+if (marketChart) {
+  const days = [...marketChart.querySelectorAll("[data-market-day]")];
+  const label = marketChart.querySelector("[data-market-selected-day]");
+  const correlation = marketChart.querySelector("[data-market-selected-r]");
+  const summary = marketChart.querySelector("[data-market-selected-summary]");
+  let activeDay = days.find((day) => day.getAttribute("aria-pressed") === "true");
+
+  marketChart.addEventListener("click", (event) => {
+    const day = event.target.closest("[data-market-day]");
+    if (!day || day === activeDay) return;
+
+    activeDay?.setAttribute("aria-pressed", "false");
+    day.setAttribute("aria-pressed", "true");
+    activeDay = day;
+    label.textContent = day.dataset.marketDay;
+    correlation.textContent = `r = ${day.dataset.marketR}`;
+    summary.textContent = day.dataset.marketSummary;
+  });
+
+  days.forEach((day) => (day.disabled = false));
+  marketChart.querySelector("[data-market-hint]").hidden = false;
+}
+
 const pggChartInset = { left: 26, right: 10, top: 16, bottom: 34 };
 const pggSource = document.querySelector("[data-pgg-source]");
 

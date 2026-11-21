@@ -136,29 +136,50 @@
               </div>
               <p class="validation-note">Temporal holdout validation is in progress.</p>
             </div>
-            <figure class="market-figure">
+            <figure class="market-figure" data-market-chart>
+              {% assign initial_lag = fomc.lags | where: 'primary', true | first %}
               <p class="eyebrow">Earlier analysis · 33 meetings</p>
               <h3>When was the association strongest?</h3>
-              <p class="market-axis-label">Pearson correlation (r)</p>
+              <div class="market-plot-heading">
+                <p class="market-axis-label">Pearson correlation (r)</p>
+                <p class="market-hint" data-market-hint hidden>Choose a day for details</p>
+              </div>
               <div class="market-plot">
                 <div class="market-ticks" aria-hidden="true"><span>0.6</span><span>0.3</span><span>0</span></div>
                 <div class="market-gridlines" aria-hidden="true"></div>
                 <ol class="market-bars" role="list" aria-label="Correlation for each day relative to the meeting">
                   {% for lag in fomc.lags %}
-                    <li
-                      class="market-bar{% if lag.primary %} market-bar-primary{% endif %}"
-                      style="--lag-height: {{ lag.r | divided_by: 0.6 | times: 100 }}%"
-                    >
-                      <div class="market-mark" aria-hidden="true"></div>
-                      <span class="market-day"><span class="visually-hidden">Day </span>{{ lag.day | escape }}</span>
-                      <strong class="market-value"><span class="visually-hidden">Correlation </span>{{ lag.r | round: 2 }}</strong>
+                    {% assign correlation = lag.r | round: 2 %}
+                    <li class="market-bar" style="--lag-height: {{ lag.r | divided_by: 0.6 | times: 100 }}%">
+                      <button
+                        class="market-select"
+                        type="button"
+                        aria-label="{{ lag.label | escape }}, Pearson r {{ correlation }}"
+                        aria-pressed="{% if lag.primary %}true{% else %}false{% endif %}"
+                        aria-controls="fomc-reading"
+                        data-market-day="{{ lag.label | escape }}"
+                        data-market-r="{{ correlation }}"
+                        data-market-summary="{{ lag.explanation | escape }}"
+                        disabled
+                      >
+                        <span class="market-mark" aria-hidden="true"></span>
+                        <span class="market-day">{{ lag.day | escape }}</span>
+                        <strong class="market-value">{{ correlation }}</strong>
+                      </button>
                     </li>
                   {% endfor %}
                 </ol>
               </div>
               <p class="market-day-label">Days relative to the meeting</p>
+              <div class="market-detail" id="fomc-reading" role="status" aria-atomic="true">
+                <div class="market-detail-heading">
+                  <strong data-market-selected-day>{{ initial_lag.label | escape }}</strong>
+                  <span data-market-selected-r>r = {{ initial_lag.r | round: 2 }}</span>
+                </div>
+                <p data-market-selected-summary>{{ initial_lag.explanation | escape }}</p>
+              </div>
               <figcaption>
-                At day −2, similarity between news and the eventual meeting minutes had the strongest correlation with post-meeting volatility. The 33
+                For each day, the analysis correlates GDELT news similarity to the eventual minutes with post-meeting S&amp;P 500 volatility. The 33
                 meetings span March 2015 to March 2019. <a href="{{ fomc.baseline_source | escape }}">View the source data</a>.
               </figcaption>
             </figure>

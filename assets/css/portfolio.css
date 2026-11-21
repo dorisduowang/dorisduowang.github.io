@@ -629,13 +629,22 @@ button {
 
 .market-axis-label,
 .market-day-label,
+.market-hint,
 .market-figure figcaption {
   color: var(--muted);
   font-size: 0.84rem;
 }
 
-.market-axis-label {
+.market-plot-heading {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.8rem;
   margin: 1.1rem 0 0.9rem;
+}
+
+.market-hint {
+  color: var(--market-accent);
 }
 
 .market-plot {
@@ -674,12 +683,31 @@ button {
 }
 
 .market-bar {
+  font: 0.72rem var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.market-select {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: end;
-  font: 0.72rem var(--mono);
-  font-variant-numeric: tabular-nums;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0.2rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.market-select:disabled {
+  cursor: default;
+}
+
+.market-select:focus-visible {
+  outline-offset: 2px;
 }
 
 .market-mark {
@@ -691,7 +719,12 @@ button {
   background: #8d87a8;
 }
 
-.market-bar-primary .market-mark {
+.market-select:not(:disabled):hover .market-mark {
+  background: #aaa1cf;
+}
+
+.market-select[aria-pressed="true"] .market-mark,
+.market-select[aria-pressed="true"]:hover .market-mark {
   background: var(--market-accent);
 }
 
@@ -712,13 +745,44 @@ button {
   color: var(--muted);
 }
 
-.market-bar-primary .market-day {
+.market-select[aria-pressed="true"] .market-day {
   color: var(--market-accent);
   font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 
 .market-day-label {
   text-align: center;
+}
+
+.market-detail {
+  margin-top: 0.75rem;
+  min-height: 6.4rem;
+  padding: 0.8rem 0.9rem;
+  border-left: 2px solid var(--market-accent);
+  border-radius: 0 0.25rem 0.25rem 0;
+  background: #2e2a3d;
+}
+
+.market-detail-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+}
+
+[data-market-selected-r] {
+  color: var(--market-accent);
+  font: 700 0.88rem var(--mono);
+  white-space: nowrap;
+}
+
+[data-market-selected-summary] {
+  color: var(--muted);
+  margin-top: 0.25rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 .market-figure figcaption {
@@ -1015,13 +1079,16 @@ button {
 
   .market-bars {
     grid-template-columns: minmax(0, 1fr);
-    grid-auto-rows: 1.4rem;
+    grid-auto-rows: 1.6rem;
   }
 
   .market-bar {
+    font-size: 0.82rem;
+  }
+
+  .market-select {
     justify-content: start;
     align-items: center;
-    font-size: 0.82rem;
   }
 
   .market-mark {

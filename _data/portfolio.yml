@@ -7,13 +7,35 @@
   link: View the latest project
   baseline_source: https://github.com/dorisduowang/fomc-media-alignment/blob/e15061c6b4b37308295d836f40da722e0752bd6b/results/tables/leadlag_profile.csv
   lags:
-    - { day: "−3", r: 0.5317738982122637 }
-    - { day: "−2", r: 0.5649391361568665, primary: true }
-    - { day: "−1", r: 0.3898334150280286 }
-    - { day: "0", r: 0.39231167375372344 }
-    - { day: "+1", r: 0.44074209894652233 }
-    - { day: "+2", r: 0.2228976855872419 }
-    - { day: "+3", r: 0.32394957181615747 }
+    - day: "−3"
+      label: 3 days before the meeting
+      r: 0.5317738982122637
+      explanation: News–minutes similarity had the second-strongest positive association with post-meeting volatility among the seven days shown.
+    - day: "−2"
+      label: 2 days before the meeting
+      r: 0.5649391361568665
+      primary: true
+      explanation: This was the strongest positive association between news–minutes similarity and post-meeting volatility in the chart.
+    - day: "−1"
+      label: 1 day before the meeting
+      r: 0.3898334150280286
+      explanation: News–minutes similarity was positively associated with post-meeting volatility, though less strongly than two days before.
+    - day: "0"
+      label: Meeting day
+      r: 0.39231167375372344
+      explanation: When same-day news more closely resembled the minutes released later, post-meeting volatility tended to be higher.
+    - day: "+1"
+      label: 1 day after the meeting
+      r: 0.44074209894652233
+      explanation: This was the strongest positive association with volatility among the three post-meeting days shown.
+    - day: "+2"
+      label: 2 days after the meeting
+      r: 0.2228976855872419
+      explanation: This was the weakest positive association between news–minutes similarity and volatility among the seven days shown.
+    - day: "+3"
+      label: 3 days after the meeting
+      r: 0.32394957181615747
+      explanation: The association with volatility was stronger than at day +2 and weaker than at day +1.
 - title: Auditing Text-Based Reward Signals
   field: AI and science
   topic: ai
