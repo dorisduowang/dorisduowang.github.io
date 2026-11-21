@@ -12,6 +12,7 @@
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const mobile = window.matchMedia("(max-width: 767px)");
   const laneCount = 6;
+  const revealDuration = 0.32;
   const arrivalHold = 0.3;
   const arrivalFade = 0.48;
   const particles = Array.from({ length: 36 }, (_, index) => {
@@ -77,7 +78,7 @@
     };
   }
 
-  function uniformTrack(points, depthScale, checkpoint = 0) {
+  function uniformTrack(points, depthScale, checkpoints = []) {
     const lengths = [0];
     for (let index = 1; index < points.length; index += 1) {
       const previous = points[index - 1];
@@ -95,7 +96,7 @@
       const ratio = (distance - lengths[next - 1]) / (lengths[next] - lengths[next - 1]);
       return interpolatePoint(points[next - 1], points[next], ratio);
     });
-    return { samples, length: total, seam: lengths[checkpoint] / total };
+    return { samples, length: total, checkpoints: checkpoints.map((index) => lengths[index] / total) };
   }
 
   function appendCurve(points, start, first, second, end) {
@@ -104,12 +105,10 @@
 
   const loopProgress = (time) => mix(time, ease(time), 0.24);
 
-  function loopTimeAt(distance) {
-    let low = 0;
-    let high = 1;
+  function crossing(low, high, before) {
     for (let step = 0; step < 18; step += 1) {
       const midpoint = (low + high) / 2;
-      if (loopProgress(midpoint) < distance) low = midpoint;
+      if (before(midpoint)) low = midpoint;
       else high = midpoint;
     }
     return (low + high) / 2;
@@ -152,8 +151,12 @@
 
     const points = [outgoing];
     appendCurve(points, outgoing, { x: mix(outgoing.x, seam.x, 0.46), y: plate.y - plate.height * 0.02 }, handle(-plate.width * 0.32), seam);
-    for (let step = 1; step <= 104; step += 1) {
-      points.push(ringPoint(seamAngle + (Math.PI * 2 * step) / 104));
+    const orbitSteps = 104;
+    const angleStep = (Math.PI * 2) / orbitSteps;
+    // Search for reappearance only after the still-occluded rear midpoint.
+    const rearCenter = points.length - 1 + Math.ceil(((Math.PI * 3) / 2 - seamAngle) / angleStep);
+    for (let step = 1; step <= orbitSteps; step += 1) {
+      points.push(ringPoint(seamAngle + (Math.PI * 2 * step) / orbitSteps));
     }
     const checkpoint = points.length - 1;
     // Use a shared exit reference to keep the orbit's timing independent of the eventual target.
@@ -170,15 +173,19 @@
     } else {
       appendCurve(points, seam, handle(plate.width * 0.23), { x: mix(seam.x, incoming.x, 0.91), y: incoming.y - plate.height * 0.07 }, incoming);
     }
-    const loop = uniformTrack(points, depthScale, checkpoint);
-    const departure = loopTimeAt(loop.seam);
+    const loop = uniformTrack(points, depthScale, [rearCenter, checkpoint]);
+    const [rearProgress, exitProgress] = loop.checkpoints;
+    const revealProgress = crossing(rearProgress, exitProgress, (progress) => headDistance(sample(loop.samples, progress)) < 0.94);
+    const revealFrom = crossing(0, 1, (time) => loopProgress(time) < revealProgress);
+    const departure = crossing(0, 1, (time) => loopProgress(time) < exitProgress);
     const speed = loop.length * (0.76 + 1.44 * departure * (1 - departure));
-    const from = sample(loop.samples, loop.seam);
+    const from = sample(loop.samples, exitProgress);
     const landings = buttons.map((button) => makeLanding(from, tangent, plate, selector, button, buttons[0].y, spread, depthScale));
     const duration = (1.48 * Math.max(...landings.map(({ length }) => length))) / speed;
 
     return {
       loop: loop.samples,
+      revealFrom,
       departure,
       duration,
       end: departure + duration,
@@ -239,12 +246,17 @@
     painted = false;
   }
 
-  function depthOpacity(position) {
-    const { x, y, depth } = position;
-    const silhouette = Math.hypot((x - head.x) / head.radiusX, (y - head.y) / head.radiusY);
+  function headDistance({ x, y }) {
+    return Math.hypot((x - head.x) / head.radiusX, (y - head.y) / head.radiusY);
+  }
+
+  function depthOpacity(position, revealAge) {
+    const { depth } = position;
     const behind = ease(-depth / 0.4);
-    const rim = ease((silhouette - 0.94) / 0.13);
-    return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2);
+    const rim = ease((headDistance(position) - 0.94) / 0.13);
+    // A media-time fade gives the reappearance the same length on narrow and wide screens.
+    const reveal = revealAge < 0 ? 1 : ease(revealAge / revealDuration);
+    return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2) * reveal;
   }
 
   function draw(time) {
@@ -258,21 +270,23 @@
       const elapsed = time - particle.begin;
       if (elapsed <= 0) return;
       const travel = elapsed / particle.duration;
+      const revealAge = elapsed - track.revealFrom * particle.duration;
       const current = travelPoint(track, travel, weights);
       const parking = ease((travel - track.departure - track.duration * 0.65) / (track.duration * 0.35));
       const light = particle.opacity * ease(elapsed / 0.28) * fade * mix(1, 0.27, parking);
-      const alpha = light * depthOpacity(current);
+      const alpha = light * depthOpacity(current, revealAge);
       if (alpha < 0.006) return;
       const x = current.x + particle.restX * parking;
       const y = current.y + particle.restY * parking;
       if (particle.trail && travel > 0.008 && travel < track.end - 0.01) {
-        const behind = travelPoint(track, travel - 0.007, weights);
+        const trailTime = travel - 0.007;
+        const behind = travelPoint(track, trailTime, weights);
         context.beginPath();
         context.moveTo(behind.x + particle.restX * parking, behind.y + particle.restY * parking);
         context.lineTo(x, y);
         context.strokeStyle = particle.color;
         context.lineWidth = 0.65;
-        context.globalAlpha = Math.min(alpha, light * depthOpacity(behind)) * 0.24;
+        context.globalAlpha = Math.min(alpha, light * depthOpacity(behind, revealAge - 0.007 * particle.duration)) * 0.24;
         context.stroke();
       }
       context.beginPath();
