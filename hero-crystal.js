@@ -632,15 +632,24 @@ export function createHeroCrystal(canvas, plate) {
     attachment.updateMatrix();
   }
 
-  function syncPortraitTexture() {
+  function syncPortraitTexture(time) {
     if (!liveTexture || video.readyState < video.HAVE_CURRENT_DATA || !video.videoWidth) return false;
     if (!backdropMaterial.map) {
       backdropMaterial.map = liveTexture;
       backdropMaterial.needsUpdate = true;
     }
-    if (!liveProgramsReady && renderer.extensions.has("KHR_parallel_shader_compile")) {
-      renderer.compile(scene, camera);
+    if (!liveProgramsReady && time < heroCrystalConfig.timeline.idleEnd) {
       liveProgramsReady = true;
+      // Initialize the transmission pass during the quiet opening. Clear it in the same frame.
+      backdrop.visible = true;
+      crystalGroup.visible = true;
+      occluder.visible = false;
+      sprites.mesh.visible = false;
+      updateCrystals(heroCrystalConfig.timeline.growthEnd);
+      renderer.render(scene, camera);
+      renderer.clear();
+      backdrop.visible = false;
+      crystalGroup.visible = false;
     }
     return true;
   }
@@ -760,7 +769,7 @@ export function createHeroCrystal(canvas, plate) {
     lastOptions = options;
 
     const { orbitEnd, duration } = heroCrystalConfig.timeline;
-    const textureReady = syncPortraitTexture();
+    const textureReady = syncPortraitTexture(time);
     const crystals = options.crystals !== false && textureReady && time >= orbitEnd && time < duration;
     if (!crystals && orbitPoints.length === 0) {
       if (drawable) renderer.clear();
