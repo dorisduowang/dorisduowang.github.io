@@ -1006,8 +1006,9 @@ button {
   width: min(100%, 57rem);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(0.4rem, 1.35vw, 1.2rem);
-  padding: 0.65rem clamp(0.55rem, 2.1vw, 1.65rem) 0.75rem;
+  gap: clamp(0.65rem, 0.9vw, 0.72rem);
+  padding: 1.3rem clamp(1.4rem, 2.7vw, 2.4rem);
+  isolation: isolate;
 }
 
 .about-photo-card {
@@ -1026,15 +1027,16 @@ button {
 }
 
 .about-photo-card:nth-child(1) {
-  transform: rotate(-3deg);
+  transform: rotate(-6.5deg);
 }
 
 .about-photo-card:nth-child(2) {
-  transform: translateY(-0.55rem) rotate(-0.7deg);
+  z-index: 1;
+  transform: translateY(-0.85rem);
 }
 
 .about-photo-card:nth-child(3) {
-  transform: rotate(3deg);
+  transform: rotate(6.5deg);
 }
 
 .about-photo-card-flowers {
@@ -1234,10 +1236,22 @@ button {
   .about-links {
     column-gap: 0.75rem;
   }
+}
 
+@media (max-width: 50rem) {
+  .about-photo-card:nth-child(1) {
+    transform: rotate(-5.25deg);
+  }
+
+  .about-photo-card:nth-child(3) {
+    transform: rotate(5.25deg);
+  }
+}
+
+@media (max-width: 40.625rem) {
   .about-photo-spread {
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.1rem;
+    gap: 1.35rem;
     max-width: 21rem;
     justify-self: center;
     padding: 0;
