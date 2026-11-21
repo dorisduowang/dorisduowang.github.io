@@ -267,45 +267,61 @@
           <div class="about-photo-spread">
             <figure class="about-photo-card graduation-photo" id="graduation">
               <span class="about-card-corner" aria-hidden="true"><span>A</span><span>♠</span></span>
-              <img
-                src="{{ '/assets/img/portfolio/kcl-graduation.webp' | relative_url }}"
-                alt="Doris Wang shaking hands onstage at her King’s College London graduation"
-                width="836"
-                height="1150"
-                loading="lazy"
-                decoding="async"
-              >
+              <button class="about-photo-open" type="button" data-about-photo-open aria-haspopup="dialog" disabled>
+                <img
+                  src="{{ '/assets/img/portfolio/kcl-graduation.webp' | relative_url }}"
+                  alt="Doris Wang shaking hands onstage at her King’s College London graduation"
+                  width="836"
+                  height="1150"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </button>
               <span class="about-card-corner about-card-corner-reversed" aria-hidden="true"><span>A</span><span>♠</span></span>
               <figcaption>King’s College London · 2025</figcaption>
             </figure>
             <figure class="about-photo-card">
               <span class="about-card-corner" aria-hidden="true"><span>K</span><span>♣</span></span>
-              <img
-                src="{{ '/assets/img/portfolio/doris-portrait.webp' | relative_url }}"
-                alt="Doris Wang in a white sleeveless top"
-                width="850"
-                height="573"
-                loading="lazy"
-                decoding="async"
-              >
+              <button class="about-photo-open" type="button" data-about-photo-open aria-haspopup="dialog" disabled>
+                <img
+                  src="{{ '/assets/img/portfolio/doris-portrait.webp' | relative_url }}"
+                  alt="Doris Wang in a white sleeveless top"
+                  width="850"
+                  height="573"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </button>
               <span class="about-card-corner about-card-corner-reversed" aria-hidden="true"><span>K</span><span>♣</span></span>
               <figcaption>Portrait</figcaption>
             </figure>
             <figure class="about-photo-card about-photo-card-flowers">
               <span class="about-card-corner" aria-hidden="true"><span>Q</span><span>♦</span></span>
-              <img
-                src="{{ '/assets/img/portfolio/flower-portrait.webp' | relative_url }}"
-                alt="Black-and-white portrait of Doris Wang holding a bouquet"
-                width="960"
-                height="665"
-                loading="lazy"
-                decoding="async"
-              >
+              <button class="about-photo-open" type="button" data-about-photo-open aria-haspopup="dialog" disabled>
+                <img
+                  src="{{ '/assets/img/portfolio/flower-portrait.webp' | relative_url }}"
+                  alt="Black-and-white portrait of Doris Wang holding a bouquet"
+                  width="960"
+                  height="665"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </button>
               <span class="about-card-corner about-card-corner-reversed" aria-hidden="true"><span>Q</span><span>♦</span></span>
               <figcaption>With flowers</figcaption>
             </figure>
           </div>
         </div>
+        <dialog class="about-photo-dialog" data-about-photo-dialog aria-labelledby="about-photo-caption" aria-describedby="about-photo-description">
+          <figure class="about-photo-enlarged">
+            <button class="about-photo-dismiss" type="button" data-about-photo-dismiss aria-label="Close enlarged photo" autofocus>
+              <span class="about-photo-close-icon" aria-hidden="true">×</span>
+              <span class="about-photo-frame" data-about-photo-frame></span>
+            </button>
+            <span class="visually-hidden" id="about-photo-description" data-about-photo-description></span>
+            <figcaption id="about-photo-caption" data-about-photo-caption></figcaption>
+          </figure>
+        </dialog>
       </section>
     </main>
 

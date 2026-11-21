@@ -48,6 +48,124 @@ if (marketChart) {
   marketChart.querySelector("[data-market-hint]").hidden = false;
 }
 
+const photoDialog = document.querySelector("[data-about-photo-dialog]");
+if (typeof photoDialog?.showModal === "function") setupPhotoSpread(photoDialog);
+
+function setupPhotoSpread(dialog) {
+  const spread = document.querySelector(".about-photo-spread");
+  const enlarged = dialog.querySelector(".about-photo-enlarged");
+  const dismiss = dialog.querySelector("[data-about-photo-dismiss]");
+  const frame = dialog.querySelector("[data-about-photo-frame]");
+  const caption = dialog.querySelector("[data-about-photo-caption]");
+  const description = dialog.querySelector("[data-about-photo-description]");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let opener;
+  let activeCard;
+  let movement;
+  let pressedBackdrop = false;
+
+  spread.querySelectorAll("[data-about-photo-open]").forEach((button) => {
+    const image = button.querySelector("img");
+    button.setAttribute("aria-label", `Enlarge photo: ${image.alt}`);
+    button.disabled = false;
+  });
+
+  function slotTransform() {
+    if (reducedMotion.matches || typeof enlarged.animate !== "function") return null;
+
+    const slot = activeCard.getBoundingClientRect();
+    const view = enlarged.getBoundingClientRect();
+    if (!slot.width || !view.width || slot.bottom < 0 || slot.top > window.innerHeight) return null;
+
+    const dx = slot.x + slot.width / 2 - (view.x + view.width / 2);
+    const dy = slot.y + slot.height / 2 - (view.y + view.height / 2);
+    const transform = getComputedStyle(activeCard).transform;
+    const rotation = new DOMMatrixReadOnly(transform === "none" ? undefined : transform);
+    const angle = Math.atan2(rotation.b, rotation.a);
+    const scale = Math.min(slot.width / view.width, slot.height / view.height);
+    return `translate(${dx}px, ${dy}px) rotate(${angle}rad) scale(${scale})`;
+  }
+
+  spread.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-about-photo-open]");
+    if (!button || button.disabled || opener) return;
+
+    opener = button;
+    activeCard = opener.closest(".about-photo-card");
+    const source = opener.querySelector("img");
+    const preview = source.cloneNode();
+    preview.classList.add("about-photo-preview");
+    preview.loading = "eager";
+    preview.alt = "";
+    frame.replaceChildren(preview);
+    enlarged.style.setProperty("--card-photo-position", getComputedStyle(source).objectPosition);
+    caption.textContent = activeCard.querySelector("figcaption").textContent;
+    description.textContent = source.alt;
+    const [corner, reversed] = activeCard.querySelectorAll(".about-card-corner");
+    dismiss.prepend(corner.cloneNode(true));
+    dismiss.append(reversed.cloneNode(true));
+
+    dialog.showModal();
+    activeCard.dataset.detached = "";
+    const from = slotTransform();
+    if (from) movement = enlarged.animate([{ transform: from }, { transform: "none" }], { duration: 310, easing: "cubic-bezier(.2,.76,.3,1)" });
+  });
+
+  function closePhoto() {
+    activeCard?.removeAttribute("data-detached");
+    dialog.close();
+  }
+
+  function returnPhoto() {
+    if (!dialog.open || dialog.hasAttribute("data-returning")) return;
+
+    const current = getComputedStyle(enlarged).transform;
+    movement?.cancel();
+    const to = slotTransform();
+    if (!to) {
+      closePhoto();
+      return;
+    }
+
+    dialog.dataset.returning = "";
+    movement = enlarged.animate([{ transform: current }, { transform: to }], {
+      duration: 240,
+      easing: "cubic-bezier(.54,.1,.68,.46)",
+      fill: "forwards",
+    });
+    movement.finished.then(closePhoto, () => {});
+  }
+
+  dismiss.addEventListener("click", returnPhoto);
+  dialog.addEventListener("pointerdown", (event) => {
+    pressedBackdrop = event.target === dialog;
+  });
+  dialog.addEventListener("click", (event) => {
+    if (pressedBackdrop && event.target === dialog) returnPhoto();
+  });
+  dialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    returnPhoto();
+  });
+  dialog.addEventListener("close", () => {
+    movement?.cancel();
+    movement = undefined;
+    dialog.removeAttribute("data-returning");
+    activeCard?.removeAttribute("data-detached");
+    opener?.focus({ preventScroll: true });
+    opener = undefined;
+    activeCard = undefined;
+    pressedBackdrop = false;
+    dismiss.querySelectorAll(".about-card-corner").forEach((corner) => corner.remove());
+    frame.replaceChildren();
+  });
+
+  // A change in viewport size invalidates an in-flight position. Resolve it using the final layout.
+  window.addEventListener("resize", () => {
+    if (movement?.playState === "running") movement.finish();
+  });
+}
+
 const pggChartInset = { left: 26, right: 10, top: 16, bottom: 34 };
 const pggSource = document.querySelector("[data-pgg-source]");
 

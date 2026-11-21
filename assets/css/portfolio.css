@@ -1003,10 +1003,14 @@ button {
 }
 
 .about-photo-spread {
-  width: min(100%, 57rem);
+  --fan-left: -6.5deg;
+  --fan-right: 6.5deg;
+  --fan-gap: clamp(0.65rem, 0.9vw, 0.72rem);
+  width: 100%;
+  max-width: var(--fan-width, 57rem);
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(0.65rem, 0.9vw, 0.72rem);
+  grid-template-columns: repeat(var(--fan-columns, 3), minmax(0, 1fr));
+  gap: var(--fan-gap);
   padding: 1.3rem clamp(1.4rem, 2.7vw, 2.4rem);
   isolation: isolate;
 }
@@ -1019,6 +1023,12 @@ button {
   position: relative;
   min-width: 0;
   padding: var(--card-edge) var(--card-edge) 0;
+  z-index: var(--fan-layer, auto);
+  transform: translateY(var(--fan-lift, 0px)) rotate(var(--fan-turn, 0deg));
+}
+
+.about-photo-card,
+.about-photo-enlarged {
   border: 1px solid #c9c0ae;
   border-radius: 0.6rem;
   color: #211e19;
@@ -1027,16 +1037,16 @@ button {
 }
 
 .about-photo-card:nth-child(1) {
-  transform: rotate(-6.5deg);
+  --fan-turn: var(--fan-left);
 }
 
 .about-photo-card:nth-child(2) {
-  z-index: 1;
-  transform: translateY(-0.85rem);
+  --fan-lift: -0.85rem;
+  --fan-layer: 1;
 }
 
 .about-photo-card:nth-child(3) {
-  transform: rotate(6.5deg);
+  --fan-turn: var(--fan-right);
 }
 
 .about-photo-card-flowers {
@@ -1069,7 +1079,36 @@ button {
   transform: rotate(180deg);
 }
 
-.about-photo-card img {
+.about-photo-open,
+.about-photo-dismiss {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+}
+
+.about-photo-open:disabled {
+  cursor: default;
+}
+
+.about-photo-open:enabled {
+  cursor: zoom-in;
+}
+
+.about-photo-open:focus-visible,
+.about-photo-dismiss:focus-visible {
+  outline-offset: 0.16rem;
+}
+
+.about-photo-card[data-detached] {
+  opacity: 0;
+}
+
+.about-photo-open img {
   width: 100%;
   aspect-ratio: 836 / 1150;
   height: auto;
@@ -1079,12 +1118,92 @@ button {
   background: #e9e2d6;
 }
 
-.about-photo-card figcaption {
+.about-photo-card figcaption,
+.about-photo-enlarged figcaption {
   align-self: center;
   margin-inline: 0.1rem 1.7rem;
   color: #51483c;
   font-size: clamp(0.68rem, 1.1vw, 0.78rem);
   line-height: 1.23;
+}
+
+.about-photo-dialog {
+  max-width: 95vw;
+  max-height: 94vh;
+  max-height: 94dvh;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.about-photo-dialog::backdrop {
+  background: #15120fdf;
+}
+
+.about-photo-dialog[open]::backdrop {
+  animation: about-photo-backdrop-in 240ms ease both;
+}
+
+.about-photo-dialog[data-returning]::backdrop {
+  animation: about-photo-backdrop-out 240ms ease both;
+}
+
+@keyframes about-photo-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes about-photo-backdrop-out {
+  to {
+    opacity: 0;
+  }
+}
+
+html:has(.about-photo-dialog[open]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+.about-photo-enlarged {
+  --card-edge: clamp(0.65rem, 1.5vw, 0.9rem);
+  position: relative;
+  padding: var(--card-edge) var(--card-edge) 0;
+}
+
+.about-photo-dismiss {
+  display: grid;
+  cursor: zoom-out;
+}
+
+.about-photo-close-icon {
+  position: absolute;
+  right: var(--card-edge);
+  top: var(--card-edge);
+  font: 1.5rem/1 var(--sans);
+}
+
+.about-photo-frame {
+  display: block;
+  min-width: 0;
+}
+
+.about-photo-preview {
+  width: auto;
+  height: auto;
+  max-width: min(86vw, 55rem);
+  max-height: min(72vh, 46rem);
+  max-height: min(72dvh, 46rem);
+  border-radius: 0.15rem;
+  object-fit: contain;
+}
+
+.about-photo-enlarged figcaption {
+  display: flex;
+  align-items: center;
+  min-height: 3.25rem;
 }
 
 .site-footer {
@@ -1239,12 +1358,82 @@ button {
 }
 
 @media (max-width: 50rem) {
-  .about-photo-card:nth-child(1) {
-    transform: rotate(-5.25deg);
+  .about-photo-spread {
+    --fan-left: -5.25deg;
+    --fan-right: 5.25deg;
+  }
+}
+
+.about-photo-spread:has(> .about-photo-card:nth-child(4)) {
+  --fan-columns: 2;
+  --fan-width: 45rem;
+  --fan-gap: 1.35rem;
+}
+
+.about-photo-spread:has(> .about-photo-card:nth-child(4)) > .about-photo-card {
+  --fan-turn: 0deg;
+  --fan-lift: 0px;
+  --fan-layer: auto;
+}
+
+@media (min-width: 53rem) {
+  .about-photo-spread:has(> .about-photo-card:nth-child(4):last-child) {
+    --fan-columns: 4;
+    --fan-width: 70rem;
+    --fan-gap: clamp(0.4rem, 0.7vw, 0.6rem);
   }
 
-  .about-photo-card:nth-child(3) {
-    transform: rotate(5.25deg);
+  .about-photo-spread:has(> .about-photo-card:nth-child(4):last-child) > :nth-child(1) {
+    --fan-turn: -7deg;
+  }
+
+  .about-photo-spread:has(> .about-photo-card:nth-child(4):last-child) > :nth-child(2) {
+    --fan-turn: -2.25deg;
+    --fan-lift: -0.65rem;
+    --fan-layer: 1;
+  }
+
+  .about-photo-spread:has(> .about-photo-card:nth-child(4):last-child) > :nth-child(3) {
+    --fan-turn: 2.25deg;
+    --fan-lift: -0.65rem;
+    --fan-layer: 1;
+  }
+
+  .about-photo-spread:has(> .about-photo-card:nth-child(4):last-child) > :nth-child(4) {
+    --fan-turn: 7deg;
+  }
+}
+
+@media (min-width: 64rem) {
+  .about-photo-spread:has(> .about-photo-card:nth-child(5):last-child) {
+    --fan-columns: 5;
+    --fan-width: 83.75rem;
+    --fan-gap: clamp(0.3rem, 0.55vw, 0.46rem);
+  }
+
+  .about-photo-spread:has(> .about-photo-card:nth-child(5):last-child) > :nth-child(1) {
+    --fan-turn: -7.5deg;
+  }
+
+  .about-photo-spread:has(> .about-photo-card:nth-child(5):last-child) > :nth-child(2) {
+    --fan-turn: -3.75deg;
+    --fan-lift: -0.5rem;
+    --fan-layer: 1;
+  }
+
+  .about-photo-spread:has(> .about-photo-card:nth-child(5):last-child) > :nth-child(3) {
+    --fan-lift: -1rem;
+    --fan-layer: 2;
+  }
+
+  .about-photo-spread:has(> .about-photo-card:nth-child(5):last-child) > :nth-child(4) {
+    --fan-turn: 3.75deg;
+    --fan-lift: -0.5rem;
+    --fan-layer: 1;
+  }
+
+  .about-photo-spread:has(> .about-photo-card:nth-child(5):last-child) > :nth-child(5) {
+    --fan-turn: 7.5deg;
   }
 }
 
@@ -1260,11 +1449,24 @@ button {
   .about-photo-card:nth-child(n) {
     transform: none;
   }
+
+  .about-photo-preview {
+    width: min(88vw, 52vh);
+    width: min(88vw, 52dvh);
+    max-width: none;
+    aspect-ratio: 836 / 1150;
+    object-fit: cover;
+    object-position: var(--card-photo-position, center);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .about-photo-dialog[open]::backdrop {
+    animation: none;
   }
 
   *,
