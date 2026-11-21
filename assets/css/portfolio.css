@@ -843,12 +843,12 @@ button {
 .work-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
   gap: 1.1rem;
 }
 
 .work-card {
-  display: flex;
-  flex-direction: column;
+  --work-inset: clamp(1rem, 2.05vw, 1.65rem);
   min-width: 0;
   border: 1px solid var(--rule);
   border-radius: 0.4rem;
@@ -867,28 +867,92 @@ button {
   box-shadow: 0 0.7rem 1.6rem #00000012;
 }
 
+.work-toggle {
+  display: block;
+  list-style: none;
+  cursor: pointer;
+}
+
+.work-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.work-toggle:focus-visible {
+  outline-offset: -3px;
+}
+
 .work-figure {
   --research-figure-paper: #f7f7f7;
-  margin: 0;
-  border-bottom: 1px solid var(--rule);
+  display: block;
   padding-inline: 0.75rem;
   background: #edecea;
 }
 
-.work-figure figcaption {
-  margin: 0;
+.work-figure-caption {
+  display: block;
   padding: 0.45rem 0.15rem;
   color: #454545;
   font-size: 0.76rem;
   line-height: 1.45;
 }
 
-.work-copy {
+.work-toggle-label {
+  min-height: 2.75rem;
   display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: start;
-  padding: 1.3rem clamp(1rem, 2.05vw, 1.65rem) 1.55rem;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem var(--work-inset);
+  border-block: 1px solid var(--rule);
+  background: #242826;
+  color: var(--research-accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.work-toggle:hover .work-toggle-label,
+.work-toggle:focus-visible .work-toggle-label {
+  background: #313a36;
+}
+
+.work-toggle-icon::before {
+  content: "+";
+  font: 1.2rem/1 var(--mono);
+}
+
+.work-details[open] .work-toggle-icon::before {
+  content: "−";
+}
+
+.work-detail-list {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 1rem var(--work-inset);
+  border-bottom: 1px solid var(--rule);
+  background: #222528;
+}
+
+.work-detail-list div + div {
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--rule);
+}
+
+.work-detail-list dt {
+  margin-bottom: 0.14rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.work-detail-list dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.5;
+}
+
+.work-copy {
+  padding: 1.3rem var(--work-inset) 1.05rem;
 }
 
 .work-copy h3 {
@@ -897,7 +961,6 @@ button {
 }
 
 .work-copy > p:not(.eyebrow) {
-  margin-bottom: 1rem;
   color: var(--muted);
 }
 
@@ -912,8 +975,8 @@ button {
   font-size: 1.08rem;
 }
 
-.work-copy .text-link {
-  margin-top: auto;
+.work-action {
+  padding: 0.75rem var(--work-inset);
 }
 
 .about {

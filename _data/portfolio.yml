@@ -46,16 +46,24 @@
   description: I examined how alternative reward signals change which papers an AI research system surfaces.
   url: /projects/chorus_audit/
   link: Read the project
+  details:
+    question: Can rewards for surprising language help an AI system surface high-impact scientific papers?
+    data: The course audit covered 443 publications, with links to researcher profiles and scientific concepts.
+    methods: I built a directed hypergraph and simulated three researcher personas, then compared ranking stability and the recovery of high-impact papers across reward rules.
 - title: Cooperation in Large-Scale Repeated Games
   field: Experimental economics
   topic: cooperation
   figure: cooperation
   caption: Study design · Track fixed and regrouped players across rounds.
   fact: 1.5M+
-  fact_label: interaction observations
+  fact_label: behavioral records in the Ikariam source
   description: My King's College London dissertation asks when peer punishment can sustain cooperation as groups change over time.
   url: /projects/kcl_dissertation/
   link: Read the dissertation summary
+  details:
+    question: How do group stability, peer punishment, and institutional enforcement shape contributions in repeated public goods games?
+    data: The pooled dataset contains 12,059 observations drawn from Ikariam game records and a controlled public goods experiment.
+    methods: I harmonized the two datasets and used pooled regressions with interaction terms and cluster-robust standard errors to compare grouping and enforcement conditions.
 - title: Facilitator-Free Digital Twins
   field: Group decision-making
   topic: cooperation
@@ -66,6 +74,10 @@
   description: A public GRAIL protocol contribution on simulating small-group deliberation with participant-matched digital twins.
   url: https://github.com/dorisduowang/group_ai_lab/blob/feature/no-facilitator-agent-study/docs/TWIN2K_GRAIL_PROTOCOL.md
   link: Read the protocol
+  details:
+    question: How does team composition shape what digital twins share and decide in groups without a facilitator?
+    data: The protocol uses Twin-2K-500 survey histories to build participant-matched personas and public GRAIL data as a descriptive reference.
+    methods: The protocol proposes comparing five-person teams under matched private-report assignments and tracking what members share, participation balance, final choices, and unanimity.
 - title: Gold Forecasting with ARIMA and LSTM
   field: Financial econometrics
   topic: markets
@@ -76,6 +88,10 @@
   description: I compare whether classical and neural models can forecast gold returns on data they have not seen.
   url: https://doi.org/10.54691/bcpbm.v38i.4123
   link: Read the paper
+  details:
+    question: How well do ARIMA and LSTM forecast gold returns on unseen data?
+    data: Daily US-dollar gold prices from Yahoo Finance from January 2000 through April 2020, with May 1, 2020 held out for forecasting.
+    methods: I fitted ARIMA and LSTM under competing specifications and compared forecast errors using mean absolute error and root mean squared error.
 - title: Gender Pay and Structural Inequality
   field: Applied microeconomics
   topic: inequality
@@ -86,6 +102,10 @@
   description: An analysis of UK gender pay disparities using census microdata, regression and model diagnostics.
   url: /cv/
   link: See research experience
+  details:
+    question: How does the estimated UK gender pay gap change after accounting for education and job tenure?
+    data: An analytical sample of UK census microdata with wages and worker characteristics.
+    methods: I compared the unadjusted pay gap with estimates from multivariable wage regressions and checked for multicollinearity and unequal error variance.
 - title: LLM Washing Machine
   field: Mechanistic interpretability
   topic: ai
@@ -96,3 +116,7 @@
   description: How do language models represent a compound concept such as “washing machine”? I compare it with its head word using similarity and sparse-feature analyses.
   url: https://github.com/dorisduowang/llm-washing-machine-claude/blob/main/REPORT.md
   link: Read the analysis
+  details:
+    question: Does GPT-2 encode compound concepts like “washing machine” through dedicated features, through their component words, or through both?
+    data: Twenty-one hand-curated compounds ranging from transparent phrases to idioms, with matched prompts for their component words.
+    methods: I compared GPT-2 Small activations using cosine similarity, measured sparse autoencoder feature overlap, and examined next-token probabilities.
