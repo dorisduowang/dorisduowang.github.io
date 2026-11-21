@@ -326,7 +326,7 @@ a {
   gap: 0.3rem;
   border: 1px solid #555;
   border-radius: 0.2rem;
-  background: transparent;
+  background: #000;
   color: var(--muted);
   font: 400 0.8rem/1.25 var(--mono);
   font-variant-numeric: tabular-nums;
@@ -588,6 +588,9 @@ a {
 }
 
 @media (max-width: 767px) {
+  .hero-particles {
+    width: calc(100% + 8px);
+  }
   .site-header {
     min-height: 4.25rem;
   }
