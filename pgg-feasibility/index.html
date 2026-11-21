@@ -50,12 +50,17 @@
     <div class="article-title" id="top">
       <h1>Reading communication in a repeated public goods game</h1>
       <p class="standfirst">
-        Players can benefit from a shared fund even when they contribute nothing, creating a conflict between individual earnings and group returns.
-        Repeated public goods games let us study that conflict as the same players meet again.
+        In round 10, with punishment active, P4 asked everyone to contribute 5 tokens to avoid sanctions. All 4 agents contributed 10. What can their
+        messages tell us about the choices that follow?
       </p>
       <p class="author-line">Doris Wang</p>
     </div>
     <article id="article">
+      <p id="feasibility-update">
+        I ran this game with 4 language model agents for 15 rounds. After play, I scored their public messages and compared the scores with changes in
+        the next round’s contributions. The comparison starts with what the agents already knew about punishment. You can
+        <a href="#path-figure">read the messages alongside the recorded choices</a>.
+      </p>
       <section id="the-dilemma">
         <h2>What is a repeated public goods game?</h2>
         <p>
@@ -89,8 +94,8 @@
           possible future responses, making communication and enforcement part of the strategic problem.
         </p>
         <p>
-          The repeated version used here keeps the same 4 players together for 15 rounds, with 20 new tokens supplied in each round. Earlier choices
-          remain visible to the group, giving players a history to consider when they meet again.
+          The same players meet again and can see each other’s earlier choices. That shared history lets them respond to what happened in previous
+          rounds.
         </p>
         <figure class="wide repetition-figure">
           <div
@@ -102,16 +107,11 @@
           <figcaption>The group stays together throughout the game, and cumulative payoff adds up earnings across all 15 rounds.</figcaption>
         </figure>
       </section>
-      <p id="feasibility-update">
-        Following our last discussion, I used neutral prompts to test whether 4 agents could complete 15 rounds and generate behavior worth analyzing.
-        The completed run includes history based punishment, and contributions repeatedly rise and fall with the announced punishment state.
-        DistilGPT2 was applied only after play, so the immediate measurement question is whether its scores add information beyond that known cycle.
-      </p>
       <section id="the-agents">
         <h2>Let 4 agents play the same game</h2>
         <p>
-          The observed players are 4 agent roles using Qwen3-8B, a language model that generates their public messages and contribution decisions. All
-          4 roles use the same checkpoint, and the robots below identify the agents whose recorded choices we examine.
+          I used the same model checkpoint for all 4 agents and gave them neutral prompts without assigned personalities. Each agent generated its own
+          public messages and contribution decisions.
         </p>
         <div class="agent-roster" aria-label="4 agent roles using the same Qwen3-8B checkpoint">
           <div>
@@ -133,21 +133,12 @@
           <div><span>Prompt</span>No assigned personality</div>
           <div><span>Source</span>Midway job 63458254</div>
         </div>
-        <p>
-          This note follows that completed game through 15 rounds, using its public messages to examine what a fixed language score captures. The
-          contribution path changes at every transition, giving 14 observed changes without an assigned personality.
-        </p>
-        <p>
-          The broader project asks whether adding a language warning to the history rule improves group payoff, and this audit examines what such a
-          warning would measure. A useful warning must add information beyond past contributions, including the punishment state already announced to
-          the players.
-        </p>
       </section>
       <section id="the-game">
         <h2>Start with the game clock</h2>
         <p>
-          The observed game repeats this allocation for 15 rounds, with 20 new tokens supplied to each agent every round. Agents are asked to maximize
-          their own cumulative net earnings, with no prescribed contribution.
+          At the start of each round, agents get a fresh endowment of 20 tokens. The prompts tell them to maximize their cumulative net earnings and
+          leave the contribution amount up to each agent.
         </p>
         <div class="with-note">
           <p>
@@ -263,12 +254,13 @@
         <span id="trajectory"></span>
         <h2>Follow the contribution path</h2>
         <p>
-          Mean contributions alternate between higher active rounds and lower inactive rounds, with punishment active in rounds 4, 6, 8, 10, 12 and
-          14. The language score fluctuates through this cycle, although it is computed offline and never enters the activation rule.
+          Mean contributions change at all 14 transitions. They are higher when punishment is active, in rounds 4, 6, 8, 10, 12 and 14. The rule uses
+          earlier contributions to decide when punishment is active. I calculated the language scores after the game.
         </p>
         <p>
-          Move across the rounds below to read the corresponding messages, or use the round control to keep one observation in view. Selecting a
-          player's score reveals the actual statement alongside that player's contribution, keeping the numerical measure attached to its source text.
+          Start at round 10 to see P4’s request beside the recorded choice. Move to round 11, when punishment was off and the average contribution
+          dropped to 2.5 tokens. The players already knew the next punishment state when round 10 ended. Select a round or a message score to read
+          what the players said and what they contributed.
         </p>
         <figure class="wide path-figure" id="path-figure">
           <div class="figure-controls">

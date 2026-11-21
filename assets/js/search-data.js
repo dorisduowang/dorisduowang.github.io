@@ -11,7 +11,7 @@ ninja.data = [{
     },
   },{id: "nav-projects",
           title: "Projects",
-          description: "Research projects in behavioral economics, computational social science, and AI system design.",
+          description: "Research and coursework by Doris Wang.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/projects/";
