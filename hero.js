@@ -124,6 +124,8 @@
   const matrixLines = [0.25, 0.6, 0.94];
   const matrixColumns = [0.31, 0.63, 0.956];
   const particlesPerNode = 18;
+  const mergeDuration = 0.24;
+  const edgeFadeDuration = 0.68;
   const particles = Array.from({ length: particlesPerNode * agentPositions.length }, (_, index) => {
     const agent = index % agentPositions.length;
     const order = Math.floor(index / agentPositions.length);
@@ -281,7 +283,7 @@
 
     let next = 1;
     const total = distances.at(-1);
-    return Array.from({ length: 81 }, (_, index) => {
+    const track = Array.from({ length: 81 }, (_, index) => {
       const distance = (total * index) / 80;
       while (distances[next] < distance && next < samples.length - 1) next += 1;
       const weight = (distance - distances[next - 1]) / (distances[next] - distances[next - 1]);
@@ -289,19 +291,57 @@
       const to = samples[next];
       return { x: mix(from.x, to.x, weight), y: mix(from.y, to.y, weight) };
     });
+    return { track, length: total };
+  }
+
+  function flightDistance(progress) {
+    return mix(progress, ease(progress), 0.67);
+  }
+
+  function planArrival({ track, length }, particle, plateRight) {
+    const node = track.at(-1);
+    // Keep the approved rhythm until the particle has cleared the whole portrait and is near its node.
+    const approachX = Math.min(node.x - 8, Math.max(plateRight + 4, node.x - 90));
+    const crossing = track.findIndex(({ x }) => x >= approachX);
+    const from = track[crossing - 1];
+    const to = track[crossing];
+    const entryDistance = (crossing - 1 + (approachX - from.x) / (to.x - from.x)) / (track.length - 1);
+    let low = 0;
+    let high = 1;
+    for (let step = 0; step < 20; step += 1) {
+      const middle = (low + high) / 2;
+      if (flightDistance(middle) < entryDistance) low = middle;
+      else high = middle;
+    }
+
+    const progress = (low + high) / 2;
+    const flightTime = particle.arrival - particle.release;
+    const entryTime = particle.release + flightTime * progress;
+    const speed = (0.33 + 4.02 * progress * (1 - progress)) / flightTime;
+    const remaining = 1 - entryDistance;
+    const timeAtSpeed = remaining / speed;
+
+    // Match the incoming speed, then continuously slow to rest. Progressively later arrivals light nodes 01–04.
+    const arrival = Math.max(particle.arrival + 0.14 + particle.agent * 0.105, entryTime + 1.55 * timeAtSpeed);
+    const duration = arrival - entryTime;
+    const exponent = duration / timeAtSpeed;
+    // Once within two pixels, the mote can merge visually into the node even as it finishes moving.
+    const capture = arrival - duration * (2 / (remaining * length)) ** (1 / exponent);
+    return { track, entryDistance, entryTime, duration, exponent, capture };
   }
 
   function makeMigrationTracks(layout) {
-    if (!layout.portrait || !layout.graph || !layout.matrix || !layout.pool) return [];
+    if (!layout.portrait || !layout.graph || !layout.matrix || !layout.pool) return null;
     const destinations = agentPoints(layout.graph, 0);
     const plate = layout.portrait;
 
     // These lanes rise alongside the plate and cross the dark space above the mesh.
-    return particles.map((particle) => {
+    const arrivalsByNode = agentPositions.map(() => []);
+    const tracks = particles.map((particle) => {
       const lane = particle.lane;
       const [x, y] = particle.origin;
       const start = point(particle.fromPool ? layout.pool : layout.matrix, x, y);
-      return sampleTrack([
+      const route = sampleTrack([
         start,
         point(plate, 0.065 + lane * 0.04, 0.37 + lane * 0.18),
         point(plate, 0.169, 0.137 + lane * 0.07),
@@ -312,28 +352,43 @@
         point(plate, 0.925, 0.23 + lane * 0.13),
         destinations[particle.agent],
       ]);
+      const plan = planArrival(route, particle, plate.x + plate.width);
+      arrivalsByNode[particle.agent].push(plan.capture);
+      return plan;
     });
+    const midpoints = arrivalsByNode.map((captures) => captures.sort((a, b) => a - b)[particlesPerNode / 2]);
+    return {
+      tracks,
+      end: Math.max(...tracks.map(({ capture }) => capture)) + mergeDuration,
+      // Bring up the links once each of the four nodes has visibly formed.
+      edgesStart: Math.max(...midpoints) + mergeDuration * 0.75,
+    };
   }
 
-  function paintMigration(time) {
+  function paintMigration(time, migration) {
     const formation = agentPositions.map(() => 0);
     particles.forEach((particle, index) => {
       const { agent, release, arrival } = particle;
-      formation[agent] += ease((time - arrival + 0.04) / 0.19) / particlesPerNode;
-      const track = bounds.tracks[index];
-      if (!track || time <= release || time >= arrival + 0.16) return;
+      const { track, entryDistance, entryTime, duration, exponent, capture } = migration.tracks[index];
+      const merge = ease((time - capture) / mergeDuration);
+      formation[agent] += merge / particlesPerNode;
+      if (time <= release || merge === 1) return;
 
       const progress = clamp((time - release) / (arrival - release));
-      const distance = mix(progress, ease(progress), 0.67) * (track.length - 1);
+      const approach = clamp((time - entryTime) / duration);
+      const traveled = time < entryTime ? flightDistance(progress) : mix(entryDistance, 1, 1 - (1 - approach) ** exponent);
+      const distance = traveled * (track.length - 1);
       const indexAt = Math.min(Math.floor(distance), track.length - 2);
       const from = track[indexAt];
       const to = track[indexAt + 1];
       const fraction = distance - indexAt;
       const position = { x: mix(from.x, to.x, fraction), y: mix(from.y, to.y, fraction) };
-      const alpha = ease((time - release) / 0.24) * (1 - ease((time - arrival + 0.03) / 0.19)) * particle.alpha;
+      const oldFade = ease((Math.min(time, entryTime) - arrival + 0.03) / 0.19);
+      const alpha = ease((time - release) / 0.24) * (1 - oldFade) * (1 - merge) * particle.alpha;
 
       if (index % 3 === 0 && indexAt > 1 && progress < 0.94) {
-        wire(track[indexAt - 2], position, particle.color, alpha * 0.28, 0.65);
+        const trail = 1 - ease((time - entryTime) / 0.18);
+        wire(track[indexAt - 2], position, particle.color, alpha * 0.28 * trail, 0.65);
       }
       circle(position, particle.radius * mix(1, 0.65, ease((progress - 0.78) / 0.22)), particle.color, alpha);
     });
@@ -359,13 +414,18 @@
     context.stroke();
   }
 
-  function paintAgents(points, time, state, opacity, convergence, formation) {
+  function paintAgents(points, time, state, opacity, convergence, formation, edgeFade, edgeActivity) {
     const { contributions, sanctions } = state;
     paths.forEach(([left, right], index) => {
       const mutual = contributions[left] >= 7 && contributions[right] >= 7;
-      const emphasis = 0.72 + 0.28 * Math.sin(time * 12 + index * 1.4);
-      const growth = formation ? mix(0.15, 1, Math.min(formation[left], formation[right])) : 1;
-      wire(points[left], points[right], mutual ? amber : guide, opacity * emphasis * growth * (mutual ? 0.48 : 0.34), 0.9);
+      if (edgeFade > 0 && edgeActivity < 1) {
+        // Use a steady neutral stroke while revealing; bring back the round accents only once it is in place.
+        wire(points[left], points[right], guide, opacity * 0.27 * edgeFade * (1 - edgeActivity), 0.9);
+      }
+      if (edgeActivity > 0) {
+        const emphasis = 0.72 + 0.28 * Math.sin(time * 12 + index * 1.4);
+        wire(points[left], points[right], mutual ? amber : guide, opacity * emphasis * edgeActivity * (mutual ? 0.48 : 0.34), 0.9);
+      }
     });
 
     const fullRadius = Math.min(12, bounds.graph.width * 0.057);
@@ -461,8 +521,12 @@
     const points = agentPoints(bounds.graph, convergence);
     const graphOpacity = schematic ? 0.78 : mix(0.34, 0.93, ease((time - 2.5) / 2.45));
     paintAgentGrid(bounds.graph, graphOpacity);
-    const formation = !schematic && phase <= 2 ? paintMigration(time) : null;
-    paintAgents(points, Math.min(time, 11), state, graphOpacity, convergence, formation);
+    const migration = bounds.migration;
+    const formation = !schematic && migration && time < migration.end ? paintMigration(time, migration) : null;
+    const edgeAge = schematic || !migration ? Infinity : time - migration.edgesStart;
+    const edgeFade = ease(edgeAge / edgeFadeDuration);
+    const edgeActivity = ease((edgeAge - edgeFadeDuration) / 0.35);
+    paintAgents(points, Math.min(time, 11), state, graphOpacity, convergence, formation, edgeFade, edgeActivity);
   }
 
   function updateLayout() {
@@ -493,7 +557,7 @@
       matrix: measure(matrix),
       portrait: measure(portrait),
     };
-    bounds.tracks = makeMigrationTracks(bounds);
+    bounds.migration = makeMigrationTracks(bounds);
     paint(landing.classList.contains("has-video") ? video.currentTime : 0, !landing.classList.contains("has-video"));
   }
 
