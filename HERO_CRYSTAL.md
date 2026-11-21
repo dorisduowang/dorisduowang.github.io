@@ -1,6 +1,6 @@
 # Crystal hero
 
-The desktop sequence uses procedural glass, chrome, and mercury rendered with the vendored Three.js 0.170.0. The core captures the playing portrait in the refraction pass, while the browser displays the portrait itself continuously. `hero.js` maps video time onto the 26-second sequence, and `hero-particles.js` uses that time for the ring, cold-white scan, and transfer to the selected Agent.
+The desktop sequence uses procedural glass, chrome, and mercury rendered with the vendored Three.js 0.170.0. The core captures the playing portrait in the refraction pass, while the browser displays the portrait itself continuously. `hero.js` maps video time onto the 26-second sequence, and `hero-particles.js` uses that time for the ring, cold-white scan, and transfer to the Agent chart.
 
 ## Timing
 
@@ -12,7 +12,7 @@ Edit `heroCrystalConfig.timeline` in [`hero-crystal.js`](hero-crystal.js). These
 | One orbit                                 | `orbitEnd`    |    10 s |
 | Crystal growth                            | `growthEnd`   |    16 s |
 | Crystal hold                              | `holdEnd`     |    20 s |
-| Transfer to the selected Agent            | `transferEnd` |    23 s |
+| Transfer to the Agent chart               | `transferEnd` |    23 s |
 | Dissolve and return to the human portrait | `duration`    |    26 s |
 
 ## Face and occlusion
@@ -28,7 +28,7 @@ Use `material.thickness` to change glass depth and `material.ior` to adjust its 
 
 ## Preview and fallback
 
-On desktop, let the animation load, then use **Pause motion**. In the browser console, run `heroCrystal.setTime(14)` and check 2, 7, 14, 18, 22, and 25 seconds in the same way. Use the Agent buttons to test where the stream lands. Narrow screens and browsers without WebGL2 play the portrait with the 2D particles and scan. Reduced-motion mode opens on the portrait still.
+On desktop, let the animation load, then use **Pause motion**. In the browser console, run `heroCrystal.setTime(14)` and check 2, 7, 14, 18, 22, and 25 seconds in the same way. At 22 seconds, check that the stream approaches the Agent chart along its edge. Narrow screens and browsers without WebGL2 play the portrait with the 2D particles and scan. Reduced-motion mode opens on the portrait still.
 
 Desktop playback prefers `data-smooth-source`, a motion-interpolated 72 fps encode of the 24 fps portrait. Both encodes use the same image dimensions, duration, and timestamps for the original frames, so they share the original eye calibration and particle clock. The player can fall back to `data-source` if the smoother encode cannot play.
 

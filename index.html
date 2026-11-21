@@ -14,9 +14,9 @@
     <link rel="canonical" href="https://dorisduowang.github.io/" />
     <link rel="icon" type="image/png" href="/assets/img/portfolio/doris-mark.png" />
     <link rel="preload" href="/assets/fonts/portfolio/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="styles.css?v=ee6fe023" />
-    <script defer src="hero.js?v=9c997147"></script>
-    <script defer src="hero-particles.js?v=400f0ce7"></script>
+    <link rel="stylesheet" href="styles.css?v=22a6ff44" />
+    <script defer src="hero.js?v=1bfc3cbd"></script>
+    <script defer src="hero-particles.js?v=cf085d51"></script>
   </head>
   <body id="top" data-landing data-portfolio-url="/portfolio/" data-motion="paused">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -52,7 +52,7 @@
           <p class="affiliation"><strong>University of Chicago</strong><span>M.A. student in Computational Social Science (Economics)</span></p>
         </div>
 
-        <div class="hero-stage" data-round-reader data-round-source="/pgg-feasibility/data.json">
+        <div class="hero-stage" data-hero-stage>
           <canvas class="hero-particles" data-hero-particles aria-hidden="true"></canvas>
           <div class="portrait-plate">
             <!-- Swap poster and data-source here to use another portrait. Leave src unset for reduced-motion viewers. -->
@@ -85,35 +85,103 @@
             <button class="motion-toggle" type="button" data-motion-toggle hidden><i aria-hidden="true"></i><span>Play motion</span></button>
           </div>
 
-          <div class="round-speech">
-            <div class="round-toolbar">
-              <label class="visually-hidden" for="hero-round">Game round</label>
-              <select id="hero-round" disabled>
-                <option value="10">Round 10</option>
-              </select>
-              <p class="round-rule" data-hero-rule>Punishment active</p>
-            </div>
-            <div class="round-quote" aria-live="polite" aria-atomic="true">
-              <p data-hero-speaker>P4 said</p>
-              <blockquote data-hero-message>
-                Let's contribute <mark>5</mark> each to maintain the public fund and avoid sanctions. Cooperation ensures mutual gains!
-              </blockquote>
-            </div>
-          </div>
-
-          <div class="round-choices">
-            <div class="round-selector">
-              <h2 id="hero-choices">Contributed <span>tokens</span></h2>
-              <div class="round-players" role="group" aria-labelledby="hero-choices">
-                <button type="button" data-hero-player="P1" aria-pressed="false" disabled><span>P1</span><strong>10</strong></button>
-                <button type="button" data-hero-player="P2" aria-pressed="false" disabled><span>P2</span><strong>10</strong></button>
-                <button type="button" data-hero-player="P3" aria-pressed="false" disabled><span>P3</span><strong>10</strong></button>
-                <button type="button" data-hero-player="P4" aria-pressed="true" disabled><span>P4</span><strong>10</strong></button>
+          <figure class="hero-chart hero-chart-human" data-hero-human aria-labelledby="hero-human-title">
+            <header class="hero-chart-header">
+              <h2 id="hero-human-title">Human</h2>
+              <p>110 group games</p>
+            </header>
+            <p class="chart-measure">Mean % of endowment given</p>
+            <svg class="hero-plot" viewBox="0 0 256 142" role="img" aria-labelledby="human-plot-title human-plot-description">
+              <title id="human-plot-title">Human contributions over 5 rounds</title>
+              <desc id="human-plot-description">
+                Each line averages 55 games in which participants could submit pregame comments. With enforcement, mean contributions were 81.8%,
+                83.9%, 82%, 81.7% and 76.1% of the 25-point endowment. Without enforcement, they were 70.7%, 65%, 58.5%, 52.9% and 40.3%.
+              </desc>
+              <path class="chart-grid" d="M36 12H244M36 62.5H244M36 113H244" />
+              <text x="0" y="16">100%</text>
+              <text x="7" y="66.5">50%</text>
+              <text x="14" y="117">0%</text>
+              <text x="36" y="134" text-anchor="middle">1</text>
+              <text x="140" y="134" text-anchor="middle">3</text>
+              <text x="244" y="134" text-anchor="middle">5</text>
+              <polyline class="chart-series chart-human-off" points="36,41.57 88,47.31 140,53.91 192,59.6 244,72.25" />
+              <polyline class="chart-series chart-human-on" points="36,30.42 88,28.29 140,30.18 192,30.51 244,36.18" />
+              <circle class="chart-dot chart-dot-off" cx="36" cy="41.57" r="2.3" />
+              <circle class="chart-dot chart-dot-off" cx="88" cy="47.31" r="2.3" />
+              <circle class="chart-dot chart-dot-off" cx="140" cy="53.91" r="2.3" />
+              <circle class="chart-dot chart-dot-off" cx="192" cy="59.6" r="2.3" />
+              <circle class="chart-dot chart-dot-off" cx="244" cy="72.25" r="2.3" />
+              <circle class="chart-dot" cx="36" cy="30.42" r="2.3" />
+              <circle class="chart-dot" cx="88" cy="28.29" r="2.3" />
+              <circle class="chart-dot" cx="140" cy="30.18" r="2.3" />
+              <circle class="chart-dot" cx="192" cy="30.51" r="2.3" />
+              <circle class="chart-dot" cx="244" cy="36.18" r="2.3" />
+            </svg>
+            <div class="chart-x-label">Round</div>
+            <figcaption class="chart-caption">
+              <div class="chart-legend">
+                <span><i class="legend-line" aria-hidden="true"></i>Enforcement</span>
+                <span><i class="legend-line legend-dashed" aria-hidden="true"></i>No enforcement</span>
               </div>
-            </div>
-            <a class="text-link round-study" data-hero-study href="/portfolio/?round=10&amp;player=P4#public-goods">Explore this round</a>
-          </div>
+              <a class="text-link chart-link" href="https://data.mendeley.com/datasets/wz77fd99cz/1">Morgan et al. data</a>
+            </figcaption>
+          </figure>
+
+          <figure class="hero-chart hero-chart-agent" data-hero-agent aria-labelledby="hero-agent-title">
+            <header class="hero-chart-header">
+              <h2 id="hero-agent-title">Agent</h2>
+              <p>4 agents · 1 game</p>
+            </header>
+            <p class="chart-measure">Mean % of endowment given</p>
+            <svg class="hero-plot" viewBox="0 0 256 142" role="img" aria-labelledby="agent-plot-title agent-plot-description">
+              <title id="agent-plot-title">Agent contributions over 15 rounds</title>
+              <desc id="agent-plot-description">
+                Mean contributions in order as a share of the 20-token endowment were 31.25%, 12.5%, 6.25%, 50%, 25%, 50%, 18.75%, 50%, 25%, 50%,
+                12.5%, 50%, 25%, 47.5% and 0%. Punishment was active in rounds 4, 6, 8, 10, 12 and 14.
+              </desc>
+              <rect class="chart-sanction" x="74.27" y="12" width="12.6" height="101" rx="1" />
+              <rect class="chart-sanction" x="103.99" y="12" width="12.6" height="101" rx="1" />
+              <rect class="chart-sanction" x="133.7" y="12" width="12.6" height="101" rx="1" />
+              <rect class="chart-sanction" x="163.41" y="12" width="12.6" height="101" rx="1" />
+              <rect class="chart-sanction" x="193.13" y="12" width="12.6" height="101" rx="1" />
+              <rect class="chart-sanction" x="222.84" y="12" width="12.6" height="101" rx="1" />
+              <path class="chart-grid" d="M36 12H244M36 62.5H244M36 113H244" />
+              <text x="0" y="16">100%</text>
+              <text x="7" y="66.5">50%</text>
+              <text x="14" y="117">0%</text>
+              <text x="36" y="134" text-anchor="middle">1</text>
+              <text x="140" y="134" text-anchor="middle">8</text>
+              <text x="244" y="134" text-anchor="middle">15</text>
+              <polyline
+                class="chart-series chart-agent-series"
+                points="36,81.44 50.86,100.38 65.71,106.69 80.57,62.5 95.43,87.75 110.29,62.5 125.14,94.06 140,62.5 154.86,87.75 169.71,62.5 184.57,100.38 199.43,62.5 214.29,87.75 229.14,65.03 244,113"
+              />
+              <circle class="chart-dot" cx="36" cy="81.44" r="2.3" />
+              <circle class="chart-dot" cx="50.86" cy="100.38" r="2.3" />
+              <circle class="chart-dot" cx="65.71" cy="106.69" r="2.3" />
+              <circle class="chart-dot" cx="80.57" cy="62.5" r="2.3" />
+              <circle class="chart-dot" cx="95.43" cy="87.75" r="2.3" />
+              <circle class="chart-dot" cx="110.29" cy="62.5" r="2.3" />
+              <circle class="chart-dot" cx="125.14" cy="94.06" r="2.3" />
+              <circle class="chart-dot" cx="140" cy="62.5" r="2.3" />
+              <circle class="chart-dot" cx="154.86" cy="87.75" r="2.3" />
+              <circle class="chart-dot" cx="169.71" cy="62.5" r="2.3" />
+              <circle class="chart-dot" cx="184.57" cy="100.38" r="2.3" />
+              <circle class="chart-dot" cx="199.43" cy="62.5" r="2.3" />
+              <circle class="chart-dot" cx="214.29" cy="87.75" r="2.3" />
+              <circle class="chart-dot" cx="229.14" cy="65.03" r="2.3" />
+              <circle class="chart-dot" cx="244" cy="113" r="2.3" />
+            </svg>
+            <div class="chart-x-label">Round</div>
+            <figcaption class="chart-caption">
+              <div class="chart-legend">
+                <span><i class="legend-band" aria-hidden="true"></i>Punishment active</span>
+              </div>
+              <a class="text-link chart-link" href="/pgg-feasibility/#the-path">Explore the PGG study</a>
+            </figcaption>
+          </figure>
         </div>
+        <p class="hero-chart-note">Separate experiments with different rules.</p>
 
         <nav class="interest-nav" aria-label="Research interests">
           <a href="#cooperation">Experimental Economics</a>

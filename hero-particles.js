@@ -4,11 +4,10 @@
   const portrait = stage?.querySelector(".portrait-plate");
   const video = portrait?.querySelector(".landing-video");
   const scan = portrait?.querySelector(".portrait-scan");
-  const speech = stage?.querySelector(".round-speech");
-  const choices = stage?.querySelector(".round-selector");
-  const players = Array.from(choices?.querySelectorAll("[data-hero-player]") ?? []);
+  const humanChart = stage?.querySelector("[data-hero-human]");
+  const agentChart = stage?.querySelector("[data-hero-agent]");
   const context = canvas?.getContext("2d");
-  if (!context || !video || !players.length) return;
+  if (!context || !video || !humanChart || !agentChart) return;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const mobile = window.matchMedia("(max-width: 767px)");
@@ -50,9 +49,6 @@
   let lastTime = -1;
   let painted = false;
   let visible = typeof IntersectionObserver === "undefined";
-  let selected = players.findIndex((player) => player.getAttribute("aria-pressed") === "true");
-  let previousWeights = players.map((_, index) => Number(index === selected));
-  let selectionTime = -Infinity;
 
   const clamp = (value) => Math.max(0, Math.min(1, value));
   const mix = (start, end, progress) => start + (end - start) * progress;
@@ -60,11 +56,6 @@
   function ease(value) {
     const unit = clamp(value);
     return unit * unit * (3 - 2 * unit);
-  }
-
-  function weightsAt(time) {
-    const blend = ease((time - selectionTime) / 300);
-    return previousWeights.map((weight, index) => mix(weight, Number(index === selected), blend));
   }
 
   function point(box, x, y) {
@@ -124,7 +115,17 @@
     return (low + high) / 2;
   }
 
-  function makeTrack(plate, message, selector, buttons, lane) {
+  function chartLanding(chart, stacked, spread) {
+    return stacked
+      ? { x: chart.x + chart.width * mix(0.74, 0.86, spread), y: chart.y - 4 - 1.5 * spread }
+      : { x: chart.x - 4 - 1.5 * spread, y: chart.y + chart.height * mix(0.42, 0.47, spread) };
+  }
+
+  function chartRail(chart, spread) {
+    return Math.min(width - 1, chart.x + chart.width + 4 + 0.7 * spread);
+  }
+
+  function makeTrack({ plate, human, agent, stacked }, lane) {
     const spread = lane / (laneCount - 1);
     const center = point(plate, 0.486, 0.355);
     const radiusX = plate.width * mix(0.254, 0.29, spread);
@@ -150,14 +151,11 @@
     const tangent = { x: (nearby.x - seam.x) / length, y: (nearby.y - seam.y) / length };
     const handle = (signedDistance) => ({ x: seam.x + tangent.x * signedDistance, y: seam.y + tangent.y * signedDistance });
 
-    const outgoing =
-      message && !mobile.matches
-        ? { x: mix(message.x + message.width, plate.x, 0.22), y: point(plate, 0, 0.24 + 0.16 * spread).y }
-        : point(plate, 0.008 + spread * 0.02, 0.25 + 0.15 * spread);
-    const railX = selector.x + selector.width - 3 - 3 * spread;
-    const incoming = mobile.matches
-      ? { x: railX, y: selector.y - 5 - 7 * spread }
-      : { x: selector.x - 10 - 6 * spread, y: selector.y + selector.height * mix(0.19, 0.43, spread) };
+    const outgoing = !stacked
+      ? { x: mix(human.x + human.width, plate.x, 0.22), y: point(plate, 0, 0.24 + 0.16 * spread).y }
+      : point(plate, 0.008 + spread * 0.02, 0.25 + 0.15 * spread);
+    const railX = chartRail(agent, spread);
+    const incoming = chartLanding(agent, stacked, spread);
 
     const points = [outgoing];
     appendCurve(points, outgoing, { x: mix(outgoing.x, seam.x, 0.46), y: plate.y - plate.height * 0.02 }, handle(-plate.width * 0.32), seam);
@@ -171,8 +169,8 @@
       points.push(ringPoint(seamAngle + (Math.PI * 2 * step) / orbitSteps));
     }
     const checkpoint = points.length - 1;
-    // Use a shared exit reference to keep the orbit's timing independent of the eventual target.
-    if (mobile.matches) {
+    // Sample the circle and its exit together to carry the same velocity into the chart approach.
+    if (stacked) {
       const shoulder = { x: railX, y: point(plate, 0, 0.53 + 0.05 * spread).y };
       appendCurve(points, seam, handle(plate.width * 0.23), { x: shoulder.x, y: shoulder.y - plate.height * 0.1 }, shoulder);
       appendCurve(
@@ -194,8 +192,8 @@
     const departure = crossing(0, 1, (time) => loopProgress(time) < exitProgress);
     const speed = loop.length * (0.76 + 1.44 * departure * (1 - departure));
     const from = sample(loop.samples, exitProgress);
-    const landings = buttons.map((button) => makeLanding(from, tangent, plate, selector, button, buttons[0].y, spread, depthScale));
-    const duration = (1.48 * Math.max(...landings.map(({ length }) => length))) / speed;
+    const landing = makeLanding(from, tangent, plate, agent, stacked, spread, depthScale);
+    const duration = (1.48 * landing.length) / speed;
 
     return {
       loop: loop.samples,
@@ -204,28 +202,26 @@
       departure,
       duration,
       end: departure + duration,
-      landings: landings.map(({ samples, length }) => ({ samples, exponent: (speed * duration) / length })),
+      landing: landing.samples,
     };
   }
 
-  function makeLanding(from, tangent, plate, selector, button, firstRow, spread, depthScale) {
-    const below = !mobile.matches && button.y > firstRow + 1;
-    const edge = below ? button.y + button.height : button.y;
-    const y = edge + (below ? 1 : -1) * (3.8 + 0.7 * spread);
-    const target = { x: button.x + button.width / 2 + 8 * (spread - 0.5), y };
+  function makeLanding(from, tangent, plate, chart, stacked, spread, depthScale) {
+    const target = chartLanding(chart, stacked, spread);
+    const { y } = target;
     const path = [from];
     const first = { x: from.x + tangent.x * plate.width * 0.23, y: from.y + tangent.y * plate.width * 0.23 };
 
-    if (mobile.matches) {
-      // The right gutter and the strip above the buttons stay clear of their labels and numbers.
-      const railX = selector.x + selector.width + 4.1 + 0.6 * spread;
+    if (stacked) {
+      // The right gutter and the strip above the chart stay clear of the data and source link.
+      const railX = chartRail(chart, spread);
       const shoulder = { x: railX, y: point(plate, 0, 0.53 + 0.05 * spread).y };
       const bend = { x: railX - 12, y };
       appendCurve(path, from, first, { x: railX, y: shoulder.y - plate.height * 0.1 }, shoulder);
       appendCurve(path, shoulder, { x: railX, y: y - 18 }, { x: bend.x + 8, y }, bend);
     } else {
-      const edgeOfGrid = { x: selector.x - 11 - 4 * spread, y };
-      appendCurve(path, from, first, { x: edgeOfGrid.x - 64, y }, edgeOfGrid);
+      const edgeOfChart = { x: chart.x - 17 - 4 * spread, y };
+      appendCurve(path, from, first, { x: edgeOfChart.x - 48, y }, edgeOfChart);
     }
     path.push(target);
     return uniformTrack(path, depthScale);
@@ -238,21 +234,12 @@
     return interpolatePoint(track[index], track[index + 1], ratio);
   }
 
-  function travelPoint(track, time, weights) {
+  function travelPoint(track, time) {
     if (time < track.departure) return sample(track.loop, loopProgress(clamp(time)));
 
-    // Match the lap's exit velocity, then slow continuously to zero at the button edge.
+    // Match the lap's exit velocity, then slow continuously at the chart edge.
     const remaining = 1 - clamp((time - track.departure) / track.duration);
-    const center = { x: 0, y: 0, depth: 0 };
-    weights.forEach((weight, index) => {
-      if (weight <= 0) return;
-      const landing = track.landings[index];
-      const position = sample(landing.samples, 1 - remaining ** landing.exponent);
-      center.x += weight * position.x;
-      center.y += weight * position.y;
-      center.depth += weight * position.depth;
-    });
-    return center;
+    return sample(track.landing, 1 - remaining ** 1.48);
   }
 
   function clear() {
@@ -339,40 +326,35 @@
     painted = true;
   }
 
-  function crystalTransferPoint(progress, from, plate, buttons, weights, mote) {
-    const location = { x: 0, y: 0 };
-    const firstRow = buttons[0].y;
-    buttons.forEach((button, index) => {
-      const weight = weights[index];
-      if (!weight) return;
-      const below = button.y > firstRow + 1;
-      const end = point(button, 0.42 + 0.16 * mote.spread, below ? 1 : 0);
-      end.y += (below ? 1 : -1) * (3.5 + 1.5 * mote.spread);
-      const first = { x: from.x + plate.width * 0.18, y: from.y + (mote.spread - 0.65) * plate.height * 0.17 };
-      const second = { x: end.x - 45, y: end.y + (below ? 9 : -9) };
-      const position = cubic(from, first, second, end, 1 - (1 - progress) ** 2.35);
-      location.x += position.x * weight;
-      location.y += position.y * weight;
-    });
-    return location;
+  function crystalTransferPoint(progress, from, { plate, agent, stacked }, spread) {
+    const end = chartLanding(agent, stacked, spread);
+    const first = { x: from.x + plate.width * 0.18, y: from.y + (spread - 0.65) * plate.height * 0.17 };
+    const travel = 1 - (1 - progress) ** 2.35;
+    if (!stacked) return cubic(from, first, { x: end.x - 45, y: end.y }, end, travel);
+
+    const bend = { x: chartRail(agent, spread), y: end.y - 13 };
+    if (travel < 0.82) {
+      return cubic(from, first, { x: bend.x, y: mix(from.y, bend.y, 0.65) }, bend, travel / 0.82);
+    }
+    return cubic(bend, { x: bend.x, y: end.y }, { x: mix(bend.x, end.x, 0.53), y: end.y }, end, (travel - 0.82) / 0.18);
   }
 
   function drawCrystalFrame({ detail: { time, sourceTime, loop, crystalCentroid, anchors, orbitPoints, place, pose } }) {
     drawScan(sourceTime, place, pose.roll);
     clear();
     if (!crystalLayout) return;
-    const { plate, message, buttons } = crystalLayout;
+    const { plate, human, stacked } = crystalLayout;
+    const launch = stacked ? { x: plate.x - 12, width: 0 } : human;
     const roots = anchors?.length ? anchors : [crystalCentroid];
     const idle = time < loop.idleEnd ? 0.23 * Math.sin((Math.PI * time) / loop.idleEnd) ** 2 : 0;
     const hold = time >= loop.growthEnd && time < loop.holdEnd ? 0.28 * Math.sin(((time - loop.growthEnd) * Math.PI) / 2) ** 2 : 0;
     const flash = ease((time - loop.transferEnd + 0.68) / 0.52) * (1 - ease((time - loop.transferEnd) / 0.46));
     stage.style.setProperty("--crystal-source", idle.toFixed(2));
     stage.style.setProperty("--crystal-arrival", Math.max(hold, flash * 0.86).toFixed(2));
-    stage.style.setProperty("--crystal-label", (flash * 0.75).toFixed(2));
 
     if (time >= loop.idleEnd && time < loop.orbitEnd + 0.32) {
       crystalMotes.forEach((mote, index) => {
-        const position = crystalOrbitPoint(time, loop, plate, message, roots[index % roots.length], mote, place);
+        const position = crystalOrbitPoint(time, loop, plate, launch, roots[index % roots.length], mote, place);
         if (!position || position.alpha < 0.012) return;
         const { x, y, depth, u, v, alpha } = position;
         if (u < 0.12 || u > 0.88) dot(x, y, mote, alpha);
@@ -380,7 +362,6 @@
       });
     }
     if (time >= loop.holdEnd && time < loop.transferEnd + 0.44) {
-      const weights = weightsAt(performance.now());
       crystalMotes.forEach((mote) => {
         const start = loop.holdEnd + 0.92 * mote.order;
         const arrival = loop.transferEnd - 0.08 - 0.65 * (1 - mote.order);
@@ -391,7 +372,7 @@
           y: crystalCentroid.y + (mote.order - 0.5) * 0.15,
         });
         const from = point(plate, origin.x, origin.y);
-        const { x, y } = crystalTransferPoint(progress, from, plate, buttons, weights, mote);
+        const { x, y } = crystalTransferPoint(progress, from, crystalLayout, mote.spread);
         const opacity = 0.87 * ease((time - start) / 0.28) * (1 - ease((time - arrival - 0.08) / 0.36));
         dot(x, y, mote, opacity);
       });
@@ -425,10 +406,11 @@
   function draw(time) {
     drawScan(time);
     clear();
+    const fade = ease((finishTime - time) / arrivalFade);
+    const arrival = ease((time - (finishTime - arrivalHold - arrivalFade) + 0.14) / 0.22) * fade;
+    stage.style.setProperty("--crystal-arrival", (0.68 * arrival).toFixed(2));
     if (!tracks.length || time < 1.92 || time >= finishTime) return;
 
-    const weights = weightsAt(performance.now());
-    const fade = ease((finishTime - time) / arrivalFade);
     particles.forEach((particle) => {
       const track = tracks[particle.lane];
       const elapsed = time - particle.begin;
@@ -436,7 +418,7 @@
       const travel = elapsed / particle.duration;
       const untilHidden = track.concealAt * particle.duration - elapsed;
       const revealAge = elapsed - track.revealFrom * particle.duration;
-      const current = travelPoint(track, travel, weights);
+      const current = travelPoint(track, travel);
       const parking = ease((travel - track.departure - track.duration * 0.65) / (track.duration * 0.35));
       const light = particle.opacity * ease(elapsed / 0.28) * fade * mix(1, 0.27, parking);
       const alpha = light * depthOpacity(current, untilHidden, revealAge);
@@ -446,7 +428,7 @@
       if (particle.trail && travel > 0.008 && travel < track.end - 0.01) {
         const trailTime = travel - 0.007;
         const trailDelay = (travel - trailTime) * particle.duration;
-        const behind = travelPoint(track, trailTime, weights);
+        const behind = travelPoint(track, trailTime);
         context.beginPath();
         context.moveTo(behind.x + particle.restX * parking, behind.y + particle.restY * parking);
         context.lineTo(x, y);
@@ -517,9 +499,9 @@
     }
 
     const plate = bounds(portrait);
-    const selector = bounds(choices);
-    const buttons = players.map(bounds);
-    if (!plate || !selector || buttons.some((button) => !button)) return;
+    const human = bounds(humanChart);
+    const agent = bounds(agentChart);
+    if (!plate || !human || !agent) return;
 
     const previousWidth = width;
     const previousHeight = height;
@@ -535,10 +517,9 @@
       context.setTransform(density, 0, 0, density, 0, 0);
       painted = false;
     }
-    const message = bounds(speech);
-    crystalLayout = { plate, message: message ?? plate, buttons };
+    crystalLayout = { plate, human, agent, stacked: agent.y > plate.y + 0.75 * plate.height };
     head = { ...point(plate, 0.486, 0.322), radiusX: plate.width * 0.174, radiusY: plate.height * 0.23 };
-    tracks = Array.from({ length: laneCount }, (_, lane) => makeTrack(plate, message, selector, buttons, lane));
+    tracks = Array.from({ length: laneCount }, (_, lane) => makeTrack(crystalLayout, lane));
     const lastArrival = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].end));
     finishTime = lastArrival + arrivalHold + arrivalFade;
     lastTime = -1;
@@ -549,29 +530,25 @@
   stage.addEventListener("hero-crystal-frame", drawCrystalFrame);
   stage.addEventListener("hero-crystal-mode", () => {
     clearScan();
+    stage.style.removeProperty("--crystal-arrival");
+    stage.style.removeProperty("--crystal-source");
     measure();
   });
   ["pause", "waiting", "ended", "emptied", "error"].forEach((event) => video.addEventListener(event, suspend));
   ["emptied", "error"].forEach((event) => video.addEventListener(event, clearScan));
   document.addEventListener("visibilitychange", synchronize);
   reducedMotion.addEventListener("change", ({ matches }) => {
-    if (matches) clearScan();
+    if (matches) {
+      clearScan();
+      stage.style.removeProperty("--crystal-arrival");
+      stage.style.removeProperty("--crystal-source");
+    }
     synchronize();
   });
-  const selectionObserver = new MutationObserver(() => {
-    const next = players.findIndex((player) => player.getAttribute("aria-pressed") === "true");
-    if (next === selected || next < 0) return;
-
-    const now = performance.now();
-    previousWeights = weightsAt(now);
-    selected = next;
-    selectionTime = now;
-  });
-  players.forEach((player) => selectionObserver.observe(player, { attributeFilter: ["aria-pressed"] }));
   window.addEventListener("resize", measure, { passive: true });
   if (typeof ResizeObserver !== "undefined") {
     const observer = new ResizeObserver(measure);
-    [stage, portrait, speech, choices].filter(Boolean).forEach((element) => observer.observe(element));
+    [stage, portrait, humanChart, agentChart].forEach((element) => observer.observe(element));
   }
   if (typeof IntersectionObserver !== "undefined") {
     const observer = new IntersectionObserver(
