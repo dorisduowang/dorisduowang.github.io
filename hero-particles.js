@@ -310,7 +310,8 @@
     lastPortraitFrame = frame;
     model.style.setProperty("--neutral-opacity", stillness.toFixed(3));
     model.style.setProperty("--armor-opacity", material.toFixed(3));
-    model.style.setProperty("--armor-reveal", `${reveal.toFixed(2)}%`);
+    model.style.setProperty("--armor-mask-start", `${(reveal - 5).toFixed(2)}%`);
+    model.style.setProperty("--armor-mask-end", `${(reveal + 5).toFixed(2)}%`);
     model.style.setProperty("--scan-position", `${scan.toFixed(2)}%`);
     model.style.setProperty("--scan-opacity", light.toFixed(3));
   }
