@@ -28,546 +28,24 @@
     if (event.target.closest("a")) menu.open = false;
   });
 
-  const stage = landing.querySelector("[data-hero]");
+  const roundReader = landing.querySelector("[data-round-reader]");
+  if (roundReader) {
+    loadRoundReader(roundReader).catch(() => {
+      // The recorded round 10 example and study link remain available without the data request.
+    });
+  }
+
   const video = landing.querySelector(".landing-video");
   const motionToggle = landing.querySelector("[data-motion-toggle]");
-  if (!stage || !video || !motionToggle || !video.dataset.source) return;
+  if (!video?.dataset.source || !motionToggle) return;
 
-  const motionLabel = motionToggle.querySelector("[data-motion-label], span");
-  const canvas = stage.querySelector("[data-game-canvas]");
-  const context = canvas?.getContext("2d");
-  const pool = stage.querySelector("[data-human-pool]");
-  const graph = stage.querySelector("[data-agent-graph]");
-  const matrix = stage.querySelector("[data-matrix]");
-  const portrait = stage.querySelector(".portrait-plate");
-  const readouts = Array.from(stage.querySelectorAll("[data-agent-readout]"), (element) => ({
-    element,
-    round: element.querySelector("[data-agent-round]"),
-    contribution: element.querySelector("[data-agent-contribution]"),
-    sanction: element.querySelector("[data-agent-sanction]"),
-  }));
+  const motionLabel = motionToggle.querySelector("span");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const mobile = window.matchMedia("(max-width: 767px)");
-
-  const amber = "#e8a23a";
-  const gray = "#6b6b6b";
-  const guide = "#d5d2cd";
-  const agentPositions = [
-    [0.2, 0.28],
-    [0.77, 0.23],
-    [0.29, 0.77],
-    [0.81, 0.72],
-  ];
-  const closePositions = [
-    [0.4, 0.33],
-    [0.62, 0.33],
-    [0.4, 0.67],
-    [0.62, 0.67],
-  ];
-  const playerPositions = [
-    [0.17, 0.25],
-    [0.83, 0.25],
-    [0.17, 0.75],
-    [0.83, 0.75],
-  ];
-  const playerTimings = [0.14, 0.51, 0.28, 0.68];
-  const paths = [
-    [0, 1],
-    [0, 2],
-    [0, 3],
-    [1, 2],
-    [1, 3],
-    [2, 3],
-  ];
-  const ambientPositions = [
-    [0.04, 0.2],
-    [0.16, 0.37],
-    [0.08, 0.63],
-    [0.19, 0.85],
-    [0.67, 0.2],
-    [0.88, 0.29],
-    [0.93, 0.55],
-    [0.82, 0.77],
-    [0.96, 0.93],
-  ];
-  const ambientPaths = [
-    [0, 1],
-    [0, 4],
-    [1, 2],
-    [1, 5],
-    [2, 3],
-    [2, 7],
-    [3, 7],
-    [4, 5],
-    [5, 6],
-    [6, 7],
-    [6, 8],
-    [7, 8],
-  ];
-  // These scripted rounds illustrate the rules. They are not study observations.
-  const demoRounds = [
-    { contributions: [8, 2, 9, 4], sanctions: [0, 0, 0, 0] },
-    { contributions: [4, 10, 5, 8], sanctions: [0, 1, 0, 1] },
-    { contributions: [9, 8, 10, 2], sanctions: [1, 0, 1, 0] },
-    { contributions: [3, 7, 4, 10], sanctions: [0, 0, 0, 0] },
-    { contributions: [10, 5, 9, 6], sanctions: [0, 0, 1, 0] },
-    { contributions: [6, 10, 3, 9], sanctions: [0, 1, 0, 1] },
-    { contributions: [10, 8, 9, 5], sanctions: [0, 0, 1, 0] },
-    { contributions: [8, 4, 10, 6], sanctions: [0, 0, 0, 0] },
-  ];
-  const finalRound = { contributions: [10, 10, 10, 10], sanctions: [0, 0, 0, 0] };
-
-  const clamp = (value) => Math.max(0, Math.min(value, 1));
-  const mix = (from, to, progress) => from + (to - from) * progress;
-
-  // Matrix particles start on its visible SVG strokes; pool particles start on its ring and players.
-  const matrixLines = [0.25, 0.6, 0.94];
-  const matrixColumns = [0.31, 0.63, 0.956];
-  const particlesPerNode = 18;
-  const mergeDuration = 0.24;
-  const edgeFadeDuration = 0.68;
-  const firstRoundHold = 0.5;
-  const roundsStart = 5;
-  const roundsEnd = 9;
-  const roundInterval = 0.5;
-  const particles = Array.from({ length: particlesPerNode * agentPositions.length }, (_, index) => {
-    const agent = index % agentPositions.length;
-    const order = Math.floor(index / agentPositions.length);
-    const stagger = ((order * 7 + agent * 5) % particlesPerNode) / (particlesPerNode - 1);
-    const along = ((index * 47) % 131) / 131;
-    const fromPool = order % 3 === 2;
-    const angle = along * Math.PI * 2;
-    let origin;
-
-    if (fromPool) {
-      origin = order % 2 ? playerPositions[agent] : [0.5 + Math.cos(angle) * 0.097, 0.5 + Math.sin(angle) * 0.2];
-    } else {
-      const line = Math.floor(order / 3) % 3;
-      origin = order % 2 ? [mix(0.31, 0.956, along), matrixLines[line]] : [matrixColumns[line], mix(0.25, 0.94, along)];
-    }
-
-    return {
-      origin,
-      fromPool,
-      agent,
-      lane: ((index * 29) % 101) / 101,
-      release: 2.02 + stagger * 1.03 + (fromPool ? 0.12 : 0),
-      arrival: 3.865 + stagger * 0.74 + agent * 0.075,
-      radius: 0.9 + along * 1.16,
-      alpha: 0.38 + along * 0.23,
-      color: index % 5 < 2 ? amber : guide,
-    };
-  });
-
-  let bounds;
   let visible = false;
   let mediaFailed = false;
   let autoplayBlocked = false;
   let userChoice = null;
   let playAttempt = 0;
-  let animationFrame = 0;
-  let lastPlaybackTime = -1;
-  let lastPhase;
-  let lastStageOpacity;
-  let lastRound;
-
-  function ease(value) {
-    const unit = clamp(value);
-    return unit * unit * (3 - 2 * unit);
-  }
-
-  function point(rect, x, y) {
-    return { x: rect.x + rect.width * x, y: rect.y + rect.height * y };
-  }
-
-  function curve(start, bend, end, progress) {
-    const left = 1 - progress;
-    return {
-      x: left * left * start.x + 2 * left * progress * bend.x + progress * progress * end.x,
-      y: left * left * start.y + 2 * left * progress * bend.y + progress * progress * end.y,
-    };
-  }
-
-  function circle(position, radius, color, alpha, fill = true) {
-    context.globalAlpha = alpha;
-    context.beginPath();
-    context.arc(position.x, position.y, radius, 0, Math.PI * 2);
-    if (fill) {
-      context.fillStyle = color;
-      context.fill();
-    } else {
-      context.strokeStyle = color;
-      context.lineWidth = 0.8;
-      context.stroke();
-    }
-  }
-
-  function wire(start, end, color, alpha, width = 1, curveDepth = 0) {
-    context.beginPath();
-    context.moveTo(start.x, start.y);
-    context.quadraticCurveTo((start.x + end.x) / 2, (start.y + end.y) / 2 + curveDepth, end.x, end.y);
-    context.strokeStyle = color;
-    context.globalAlpha = alpha;
-    context.lineWidth = width;
-    context.stroke();
-  }
-
-  function lettering(text, at, size, color, alpha) {
-    context.globalAlpha = alpha;
-    context.font = `500 ${size}px ui-monospace, Menlo, monospace`;
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.fillStyle = color;
-    context.fillText(text, at.x, at.y);
-  }
-
-  function paintPool(rect, time, opacity, schematic) {
-    const center = point(rect, 0.5, 0.5);
-    const radius = Math.min(rect.width * 0.14, rect.height * 0.31, 28);
-    const boost = ease((time - 0.82) / 0.33) * (1 - ease((time - 1.35) / 0.5));
-    circle(center, radius + 3 + boost * 6, guide, opacity * (0.2 + boost * 0.17), false);
-    circle(center, radius * 0.84, "#151310", opacity * 0.85);
-    circle(center, radius * 0.84, guide, opacity * (0.47 + boost * 0.35), false);
-    lettering("×1.6", center, Math.min(radius * 0.53, 13), guide, opacity * (0.81 + boost * 0.19));
-
-    playerPositions.forEach(([x, y], index) => {
-      const player = point(rect, x, y);
-      const color = index % 3 ? amber : gray;
-      const out = playerTimings[index];
-      wire(player, center, guide, opacity * 0.28, 0.7);
-      circle(player, 7, "#161412", opacity);
-      circle(player, 7, color, opacity * 0.88, false);
-      lettering(String(index + 1), player, 8.5, guide, opacity * 0.89);
-
-      if (schematic || time >= 2) return;
-      for (let token = 0; token < 3; token += 1) {
-        const launch = out + token * 0.095;
-        const toss = (time - launch) / 0.46;
-        const split = (time - 1.24 - index * 0.071 - token * 0.075) / 0.48;
-        const bend = { x: (player.x + center.x) / 2, y: (player.y + center.y) / 2 - 13 - token * 5 };
-        if (toss > 0 && toss < 1) {
-          circle(curve(player, bend, center, toss), 2.2, color, opacity * Math.sin(Math.PI * toss));
-        }
-        if (split > 0 && split < 1) {
-          circle(curve(center, bend, player, split), 1.8, guide, opacity * Math.sin(Math.PI * split));
-        }
-      }
-    });
-  }
-
-  function agentPoints(rect, convergence) {
-    return agentPositions.map(([x, y], index) => {
-      const [closeX, closeY] = closePositions[index];
-      return point(rect, mix(x, closeX, convergence), mix(y, closeY, convergence));
-    });
-  }
-
-  function sampleTrack(points) {
-    const steps = 10;
-    const samples = [points[0]];
-
-    // Sample a smooth cubic through the waypoints, then space the lookups evenly by distance.
-    for (let segment = 0; segment < points.length - 1; segment += 1) {
-      const [a, b, c, d] = [points[segment - 1] || points[0], points[segment], points[segment + 1], points[segment + 2] || points.at(-1)];
-      const coordinate = (axis, u) =>
-        b[axis] +
-        0.5 * u * (c[axis] - a[axis] + u * (2 * a[axis] - 5 * b[axis] + 4 * c[axis] - d[axis] + u * (3 * b[axis] - a[axis] - 3 * c[axis] + d[axis])));
-      for (let step = 1; step <= steps; step += 1) {
-        const u = step / steps;
-        samples.push({ x: coordinate("x", u), y: Math.max(4, coordinate("y", u)) });
-      }
-    }
-
-    const distances = [0];
-    for (let index = 1; index < samples.length; index += 1) {
-      const previous = samples[index - 1];
-      const sample = samples[index];
-      distances.push(distances[index - 1] + Math.hypot(sample.x - previous.x, sample.y - previous.y));
-    }
-
-    let next = 1;
-    const total = distances.at(-1);
-    const track = Array.from({ length: 81 }, (_, index) => {
-      const distance = (total * index) / 80;
-      while (distances[next] < distance && next < samples.length - 1) next += 1;
-      const weight = (distance - distances[next - 1]) / (distances[next] - distances[next - 1]);
-      const from = samples[next - 1];
-      const to = samples[next];
-      return { x: mix(from.x, to.x, weight), y: mix(from.y, to.y, weight) };
-    });
-    return { track, length: total };
-  }
-
-  function flightDistance(progress) {
-    return mix(progress, ease(progress), 0.67);
-  }
-
-  function planArrival({ track, length }, particle, plateRight) {
-    const node = track.at(-1);
-    // Keep the approved rhythm until the particle has cleared the whole portrait and is near its node.
-    const approachX = Math.min(node.x - 8, Math.max(plateRight + 4, node.x - 90));
-    const crossing = track.findIndex(({ x }) => x >= approachX);
-    const from = track[crossing - 1];
-    const to = track[crossing];
-    const entryDistance = (crossing - 1 + (approachX - from.x) / (to.x - from.x)) / (track.length - 1);
-    let low = 0;
-    let high = 1;
-    for (let step = 0; step < 20; step += 1) {
-      const middle = (low + high) / 2;
-      if (flightDistance(middle) < entryDistance) low = middle;
-      else high = middle;
-    }
-
-    const progress = (low + high) / 2;
-    const flightTime = particle.arrival - particle.release;
-    const entryTime = particle.release + flightTime * progress;
-    const speed = (0.33 + 4.02 * progress * (1 - progress)) / flightTime;
-    const remaining = 1 - entryDistance;
-    const timeAtSpeed = remaining / speed;
-
-    // Match the incoming speed, then continuously slow to rest. Progressively later arrivals light nodes 01–04.
-    const arrival = Math.max(particle.arrival + 0.14 + particle.agent * 0.105, entryTime + 1.55 * timeAtSpeed);
-    const duration = arrival - entryTime;
-    const exponent = duration / timeAtSpeed;
-    // Once within two pixels, the mote can merge visually into the node even as it finishes moving.
-    const capture = arrival - duration * (2 / (remaining * length)) ** (1 / exponent);
-    return { track, entryDistance, entryTime, duration, exponent, capture };
-  }
-
-  function makeMigrationTracks(layout) {
-    if (!layout.portrait || !layout.graph || !layout.matrix || !layout.pool) return null;
-    const destinations = agentPoints(layout.graph, 0);
-    const plate = layout.portrait;
-
-    // These lanes rise alongside the plate and cross the dark space above the mesh.
-    const arrivalsByNode = agentPositions.map(() => []);
-    const tracks = particles.map((particle) => {
-      const lane = particle.lane;
-      const [x, y] = particle.origin;
-      const start = point(particle.fromPool ? layout.pool : layout.matrix, x, y);
-      const route = sampleTrack([
-        start,
-        point(plate, 0.065 + lane * 0.04, 0.37 + lane * 0.18),
-        point(plate, 0.169, 0.137 + lane * 0.07),
-        point(plate, 0.348, 0.041 + lane * 0.025),
-        point(plate, 0.51, 0.012 + lane * 0.017),
-        point(plate, 0.675, 0.019 + lane * 0.012),
-        point(plate, 0.811, 0.085 + lane * 0.043),
-        point(plate, 0.925, 0.23 + lane * 0.13),
-        destinations[particle.agent],
-      ]);
-      const plan = planArrival(route, particle, plate.x + plate.width);
-      arrivalsByNode[particle.agent].push(plan.capture);
-      return plan;
-    });
-    const midpoints = arrivalsByNode.map((captures) => captures.sort((a, b) => a - b)[particlesPerNode / 2]);
-    return {
-      tracks,
-      end: Math.max(...tracks.map(({ capture }) => capture)) + mergeDuration,
-      // Bring up the links once each of the four nodes has visibly formed.
-      edgesStart: Math.max(...midpoints) + mergeDuration * 0.75,
-    };
-  }
-
-  function paintMigration(time, migration) {
-    const formation = agentPositions.map(() => 0);
-    particles.forEach((particle, index) => {
-      const { agent, release, arrival } = particle;
-      const { track, entryDistance, entryTime, duration, exponent, capture } = migration.tracks[index];
-      const merge = ease((time - capture) / mergeDuration);
-      formation[agent] += merge / particlesPerNode;
-      if (time <= release || merge === 1) return;
-
-      const progress = clamp((time - release) / (arrival - release));
-      const approach = clamp((time - entryTime) / duration);
-      const traveled = time < entryTime ? flightDistance(progress) : mix(entryDistance, 1, 1 - (1 - approach) ** exponent);
-      const distance = traveled * (track.length - 1);
-      const indexAt = Math.min(Math.floor(distance), track.length - 2);
-      const from = track[indexAt];
-      const to = track[indexAt + 1];
-      const fraction = distance - indexAt;
-      const position = { x: mix(from.x, to.x, fraction), y: mix(from.y, to.y, fraction) };
-      const oldFade = ease((Math.min(time, entryTime) - arrival + 0.03) / 0.19);
-      const alpha = ease((time - release) / 0.24) * (1 - oldFade) * (1 - merge) * particle.alpha;
-
-      if (index % 3 === 0 && indexAt > 1 && progress < 0.94) {
-        const trail = 1 - ease((time - entryTime) / 0.18);
-        wire(track[indexAt - 2], position, particle.color, alpha * 0.28 * trail, 0.65);
-      }
-      circle(position, particle.radius * mix(1, 0.65, ease((progress - 0.78) / 0.22)), particle.color, alpha);
-    });
-    return formation.map(clamp);
-  }
-
-  function paintAgentGrid(rect, opacity) {
-    const pitch = 16;
-    const right = rect.x + rect.width;
-    const bottom = rect.y + rect.height;
-    context.beginPath();
-    for (let x = rect.x + pitch / 2; x < right; x += pitch) {
-      context.moveTo(x, rect.y);
-      context.lineTo(x, bottom);
-    }
-    for (let y = rect.y + pitch / 2; y < bottom; y += pitch) {
-      context.moveTo(rect.x, y);
-      context.lineTo(right, y);
-    }
-    context.globalAlpha = opacity * 0.12;
-    context.strokeStyle = guide;
-    context.lineWidth = 1;
-    context.stroke();
-  }
-
-  function paintAgents(points, time, state, opacity, convergence, formation, edgeFade, edgeActivity) {
-    const { contributions, sanctions } = state;
-    paths.forEach(([left, right], index) => {
-      const mutual = contributions[left] >= 7 && contributions[right] >= 7;
-      if (edgeFade > 0 && edgeActivity < 1) {
-        // Keep the fully revealed edges steady until the first round update.
-        wire(points[left], points[right], guide, opacity * 0.27 * edgeFade * (1 - edgeActivity), 0.9);
-      }
-      if (edgeActivity > 0) {
-        const emphasis = 0.72 + 0.28 * Math.sin(time * 12 + index * 1.4);
-        wire(points[left], points[right], mutual ? amber : guide, opacity * emphasis * edgeActivity * (mutual ? 0.48 : 0.34), 0.9);
-      }
-    });
-
-    const fullRadius = Math.min(12, bounds.graph.width * 0.057);
-    points.forEach((position, index) => {
-      const built = formation ? formation[index] : 1;
-      const radius = fullRadius * mix(0.36, 1, built);
-      const strength = opacity * mix(0.34, 1, built);
-      const color = contributions[index] >= 7 ? amber : gray;
-      const pulse = 0.64 + Math.sin(time * 15.4 + index * 1.75) * 0.36;
-      if (sanctions[index]) {
-        circle(position, radius + 3 + pulse * 4, guide, strength * (0.32 + pulse * 0.34), false);
-      }
-      circle(position, radius, "#10100f", strength * 0.95);
-      const remainingGray = contributions[index] >= 7 ? 1 : 1 - convergence;
-      circle(position, radius, color, strength * remainingGray * 0.48);
-      circle(position, radius, color, strength * remainingGray * 0.89, false);
-      if (remainingGray < 1) {
-        circle(position, radius, amber, strength * convergence * 0.48);
-        circle(position, radius, amber, strength * convergence * 0.89, false);
-      }
-      const labelOpacity = ease((built - 0.23) / 0.52);
-      if (labelOpacity > 0)
-        lettering(String(index + 1).padStart(2, "0"), position, radius * 0.83, "#f5efe2", Math.min(1, strength * 1.35) * labelOpacity);
-    });
-  }
-
-  function paintAmbient(time) {
-    const positions = ambientPositions.map(([x, y], index) => ({
-      x: bounds.width * x + Math.sin(time * 0.68 + index) * 3,
-      y: bounds.height * y + Math.cos(time * 0.72 + index) * 4,
-    }));
-    ambientPaths.forEach(([left, right], index) => {
-      wire(positions[left], positions[right], guide, 0.13, 0.8, index % 2 ? -14 : 14);
-    });
-    positions.forEach((position, index) => {
-      const color = index % 3 ? guide : amber;
-      circle(position, index % 2 ? 2.2 : 1.55, color, 0.31 + Math.sin(time + index) * 0.085);
-    });
-  }
-
-  function setReadouts(round, state) {
-    if (round === lastRound) return;
-
-    const roundLabel = String(round).padStart(2, "0");
-    readouts.forEach((readout, index) => {
-      if (index >= state.contributions.length) return;
-
-      const contribution = state.contributions[index];
-      const sanction = state.sanctions[index];
-      if (readout.round) readout.round.textContent = roundLabel;
-      if (readout.contribution) readout.contribution.textContent = String(contribution);
-      if (readout.sanction) readout.sanction.textContent = String(sanction);
-      readout.element.dataset.active = String(contribution >= 7);
-      readout.element.dataset.sanction = String(sanction === 1);
-    });
-    lastRound = round;
-  }
-
-  function paint(time, schematic = false) {
-    lastPlaybackTime = time;
-    // Timings follow the looping portrait: human play, transfer, agent rounds, then settlement.
-    const phase = time < 2 ? 1 : time < roundsStart ? 2 : time < roundsEnd ? 3 : 4;
-    const matrixOpacity = (1 - ease((time - 2.04) / 1.65)).toFixed(3);
-    const poolOpacity = 1 - ease((time - 2.21) / 1.64);
-    const readoutOpacity = mix(0.72, 1, ease((time - 3.94) / 1.05)).toFixed(3);
-    const convergence = ease((time - roundsEnd) / 2);
-    const migration = bounds?.migration;
-    const edgesReady = migration ? migration.edgesStart + edgeFadeDuration : roundsStart;
-    const firstUpdate = edgesReady + firstRoundHold;
-    // Keep the original cadence and let convergence continue from the last round that fits.
-    const lastDemoRound = Math.min(demoRounds.length - 1, Math.max(0, Math.ceil((roundsEnd - firstUpdate) / roundInterval)));
-    const demoRound = time < firstUpdate ? 0 : Math.min(lastDemoRound, 1 + Math.floor((time - firstUpdate) / roundInterval));
-    const isFinal = convergence === 1;
-    const state = isFinal ? finalRound : demoRounds[demoRound];
-
-    if (phase !== lastPhase) {
-      stage.dataset.heroPhase = String(phase);
-      lastPhase = phase;
-    }
-    const stageOpacity = matrixOpacity + readoutOpacity;
-    if (stageOpacity !== lastStageOpacity) {
-      stage.style.setProperty("--matrix-visibility", matrixOpacity);
-      stage.style.setProperty("--readout-visibility", readoutOpacity);
-      lastStageOpacity = stageOpacity;
-    }
-    setReadouts(demoRound + (isFinal ? 2 : 1), state);
-    if (!context || !bounds) return;
-
-    context.setTransform(bounds.scale, 0, 0, bounds.scale, 0, 0);
-    context.clearRect(0, 0, bounds.width, bounds.height);
-    if (mobile.matches) {
-      paintAmbient(time);
-      return;
-    }
-    if (bounds.pool && poolOpacity > 0) paintPool(bounds.pool, time, poolOpacity, schematic);
-    if (!bounds.graph) return;
-
-    const points = agentPoints(bounds.graph, convergence);
-    const graphOpacity = schematic ? 0.78 : mix(0.34, 0.93, ease((time - 2.5) / 2.45));
-    paintAgentGrid(bounds.graph, graphOpacity);
-    const formation = !schematic && migration && time < migration.end ? paintMigration(time, migration) : null;
-    const edgeAge = schematic || !migration ? Infinity : time - migration.edgesStart;
-    const edgeFade = ease(edgeAge / edgeFadeDuration);
-    const edgeActivity = schematic || !migration ? 1 : ease((time - firstUpdate) / 0.35);
-    paintAgents(points, Math.min(time, 11), state, graphOpacity, convergence, formation, edgeFade, edgeActivity);
-  }
-
-  function updateLayout() {
-    if (!context) return;
-
-    const frame = canvas.getBoundingClientRect();
-    if (!frame.width || !frame.height) return;
-
-    function measure(element) {
-      const rect = element?.getBoundingClientRect();
-      if (!rect?.width || !rect.height) return null;
-
-      return { x: rect.left - frame.left, y: rect.top - frame.top, width: rect.width, height: rect.height };
-    }
-
-    // Cache DOM measurements and bound the bitmap size. The frame loop reads only media time.
-    const scale = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(4_000_000 / (frame.width * frame.height)));
-    const width = Math.ceil(frame.width * scale);
-    const height = Math.ceil(frame.height * scale);
-    if (canvas.width !== width) canvas.width = width;
-    if (canvas.height !== height) canvas.height = height;
-    bounds = {
-      width: frame.width,
-      height: frame.height,
-      scale,
-      pool: measure(pool),
-      graph: measure(graph),
-      matrix: measure(matrix),
-      portrait: measure(portrait),
-    };
-    bounds.migration = makeMigrationTracks(bounds);
-    paint(landing.classList.contains("has-video") ? video.currentTime : 0, !landing.classList.contains("has-video"));
-  }
 
   function wantsMotion() {
     return userChoice ?? (!reducedMotion.matches && !autoplayBlocked);
@@ -577,32 +55,20 @@
     return wantsMotion() && visible && !document.hidden && !mediaFailed;
   }
 
-  function animate() {
-    animationFrame = 0;
-    if (!shouldPlay() || video.paused) return;
-
-    const time = video.currentTime;
-    if (time !== lastPlaybackTime) paint(time);
-    animationFrame = window.requestAnimationFrame(animate);
-  }
-
   function stopPlayback() {
     playAttempt += 1;
     video.pause();
-    window.cancelAnimationFrame(animationFrame);
-    animationFrame = 0;
     landing.dataset.motion = "paused";
   }
 
   function synchronizePlayback() {
-    const label = wantsMotion() ? "Pause motion" : "Play motion";
-    if (motionLabel) motionLabel.textContent = label;
-    if (motionToggle.hasAttribute("aria-label")) motionToggle.setAttribute("aria-label", label);
+    motionLabel.textContent = wantsMotion() ? "Pause motion" : "Play motion";
     if (!shouldPlay()) {
       stopPlayback();
       return;
     }
-    // Defer the network request until motion is allowed and the stage enters the viewport.
+
+    // Avoid loading the portrait video until it can play on screen.
     if (!video.getAttribute("src")) video.src = video.dataset.source;
     if (!video.paused) return;
 
@@ -618,31 +84,19 @@
 
   video.muted = true;
   video.addEventListener("playing", () => {
-    if (!shouldPlay()) {
-      stopPlayback();
-      return;
-    }
-
-    landing.classList.add("has-video");
-    landing.dataset.motion = "running";
-    paint(video.currentTime);
-    if (!animationFrame) animationFrame = window.requestAnimationFrame(animate);
+    if (shouldPlay()) landing.dataset.motion = "running";
+    else stopPlayback();
   });
   video.addEventListener("pause", () => {
-    window.cancelAnimationFrame(animationFrame);
-    animationFrame = 0;
     landing.dataset.motion = "paused";
-  });
-  video.addEventListener("seeked", () => {
-    if (landing.classList.contains("has-video")) paint(video.currentTime);
   });
   video.addEventListener("error", () => {
     if (!video.hasAttribute("src")) return;
 
     mediaFailed = true;
-    landing.classList.remove("has-video");
     stopPlayback();
-    paint(0, true);
+    video.removeAttribute("src");
+    video.load();
     motionToggle.hidden = true;
   });
 
@@ -654,24 +108,16 @@
   reducedMotion.addEventListener("change", ({ matches }) => {
     if (matches) {
       if (userChoice === true) userChoice = null;
-      landing.classList.remove("has-video");
       stopPlayback();
       video.removeAttribute("src");
       video.load();
-      paint(0, true);
     }
     synchronizePlayback();
   });
   document.addEventListener("visibilitychange", synchronizePlayback);
   window.addEventListener("pagehide", stopPlayback);
   window.addEventListener("pageshow", synchronizePlayback);
-  window.addEventListener("resize", updateLayout, { passive: true });
-  mobile.addEventListener("change", updateLayout);
 
-  if ("ResizeObserver" in window) {
-    const layoutObserver = new ResizeObserver(updateLayout);
-    [stage, pool, graph, matrix, portrait].filter(Boolean).forEach((element) => layoutObserver.observe(element));
-  }
   if ("IntersectionObserver" in window) {
     const viewportObserver = new IntersectionObserver(
       ([entry]) => {
@@ -680,12 +126,66 @@
       },
       { threshold: [0, 0.02] }
     );
-    viewportObserver.observe(stage);
+    viewportObserver.observe(video);
   } else {
     visible = true;
   }
 
-  updateLayout();
-  if (!bounds) paint(0, true);
   synchronizePlayback();
+
+  async function loadRoundReader(reader) {
+    const response = await fetch(reader.dataset.roundSource);
+    if (!response.ok) return;
+
+    const { rounds } = await response.json();
+    if (!Array.isArray(rounds)) return;
+
+    const select = reader.querySelector("#hero-round");
+    const rule = reader.querySelector("[data-hero-rule]");
+    const speaker = reader.querySelector("[data-hero-speaker]");
+    const message = reader.querySelector("[data-hero-message]");
+    const study = reader.querySelector("[data-hero-study]");
+    const players = Array.from(reader.querySelectorAll("[data-hero-player]"), (button) => ({
+      button,
+      id: button.dataset.heroPlayer,
+      amount: button.querySelector("strong"),
+    }));
+    const records = new Map(rounds.map((round) => [String(round.round), round]));
+    const defaultRound = select.value;
+    if (!records.has(defaultRound)) return;
+
+    const studyUrl = new URL(study.href);
+    let selectedPlayer = players.find(({ button }) => button.getAttribute("aria-pressed") === "true");
+
+    function showSelection() {
+      const round = records.get(select.value);
+      if (!round) return;
+
+      rule.textContent = round.active ? "Punishment active" : "Punishment inactive";
+      players.forEach(({ button, amount }, index) => {
+        const contribution = round.contributions?.[index];
+        amount.textContent = Number.isFinite(contribution) ? contribution : "Unavailable";
+        button.setAttribute("aria-pressed", String(button === selectedPlayer.button));
+      });
+      const publicMessage = round.messages?.find(({ player }) => player === selectedPlayer.id);
+      speaker.textContent = selectedPlayer.id + " said";
+      message.textContent = publicMessage?.message ?? "No public message recorded.";
+      studyUrl.searchParams.set("round", String(round.round));
+      studyUrl.searchParams.set("player", selectedPlayer.id);
+      study.href = studyUrl.href;
+    }
+
+    select.replaceChildren(...rounds.map(({ round }) => new Option("Round " + round, round)));
+    select.value = defaultRound;
+    select.disabled = false;
+    select.addEventListener("change", showSelection);
+    players.forEach((player) => {
+      player.button.disabled = false;
+      player.button.addEventListener("click", () => {
+        selectedPlayer = player;
+        showSelection();
+      });
+    });
+    showSelection();
+  }
 })();

@@ -201,7 +201,9 @@ async function loadPgg(source) {
   const playerCount = rounds[0].contributions?.length ?? 0;
   const endowment = 20;
   const agentRows = [];
-  let activeIndex = Number(input.value) - 1;
+  const selection = new URLSearchParams(window.location.search);
+  const roundIndex = rounds.findIndex(({ round }) => String(round) === selection.get("round"));
+  let activeIndex = roundIndex < 0 ? Number(input.value) - 1 : roundIndex;
   let activePlayer = Math.max(0, playerCount - 1);
   let timer;
 
@@ -231,6 +233,9 @@ async function loadPgg(source) {
       agentRows.push({ button, value, name });
     }
   }
+
+  const playerIndex = agentRows.findIndex(({ name }) => name === selection.get("player"));
+  if (playerIndex >= 0) activePlayer = playerIndex;
 
   input.max = rounds.length;
   activeIndex = Math.min(activeIndex, rounds.length - 1);
