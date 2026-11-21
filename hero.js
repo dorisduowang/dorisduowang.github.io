@@ -126,6 +126,10 @@
   const particlesPerNode = 18;
   const mergeDuration = 0.24;
   const edgeFadeDuration = 0.68;
+  const firstRoundHold = 0.5;
+  const roundsStart = 5;
+  const roundsEnd = 9;
+  const roundInterval = 0.5;
   const particles = Array.from({ length: particlesPerNode * agentPositions.length }, (_, index) => {
     const agent = index % agentPositions.length;
     const order = Math.floor(index / agentPositions.length);
@@ -419,7 +423,7 @@
     paths.forEach(([left, right], index) => {
       const mutual = contributions[left] >= 7 && contributions[right] >= 7;
       if (edgeFade > 0 && edgeActivity < 1) {
-        // Use a steady neutral stroke while revealing; bring back the round accents only once it is in place.
+        // Keep the fully revealed edges steady until the first round update.
         wire(points[left], points[right], guide, opacity * 0.27 * edgeFade * (1 - edgeActivity), 0.9);
       }
       if (edgeActivity > 0) {
@@ -487,14 +491,19 @@
   function paint(time, schematic = false) {
     lastPlaybackTime = time;
     // Timings follow the looping portrait: human play, transfer, agent rounds, then settlement.
-    const phase = time < 2 ? 1 : time < 5 ? 2 : time < 9 ? 3 : 4;
+    const phase = time < 2 ? 1 : time < roundsStart ? 2 : time < roundsEnd ? 3 : 4;
     const matrixOpacity = (1 - ease((time - 2.04) / 1.65)).toFixed(3);
     const poolOpacity = 1 - ease((time - 2.21) / 1.64);
     const readoutOpacity = mix(0.72, 1, ease((time - 3.94) / 1.05)).toFixed(3);
-    const convergence = ease((time - 9) / 2);
-    const demoRound = Math.min(demoRounds.length - 1, Math.max(0, Math.floor((time - 5) * 2)));
+    const convergence = ease((time - roundsEnd) / 2);
+    const migration = bounds?.migration;
+    const edgesReady = migration ? migration.edgesStart + edgeFadeDuration : roundsStart;
+    const firstUpdate = edgesReady + firstRoundHold;
+    // Keep the original cadence and let convergence continue from the last round that fits.
+    const lastDemoRound = Math.min(demoRounds.length - 1, Math.max(0, Math.ceil((roundsEnd - firstUpdate) / roundInterval)));
+    const demoRound = time < firstUpdate ? 0 : Math.min(lastDemoRound, 1 + Math.floor((time - firstUpdate) / roundInterval));
     const isFinal = convergence === 1;
-    const state = isFinal ? finalRound : demoRounds[phase === 4 ? demoRounds.length - 1 : demoRound];
+    const state = isFinal ? finalRound : demoRounds[demoRound];
 
     if (phase !== lastPhase) {
       stage.dataset.heroPhase = String(phase);
@@ -506,7 +515,7 @@
       stage.style.setProperty("--readout-visibility", readoutOpacity);
       lastStageOpacity = stageOpacity;
     }
-    setReadouts(isFinal ? demoRounds.length + 1 : phase === 4 ? demoRounds.length : demoRound + 1, state);
+    setReadouts(demoRound + (isFinal ? 2 : 1), state);
     if (!context || !bounds) return;
 
     context.setTransform(bounds.scale, 0, 0, bounds.scale, 0, 0);
@@ -521,11 +530,10 @@
     const points = agentPoints(bounds.graph, convergence);
     const graphOpacity = schematic ? 0.78 : mix(0.34, 0.93, ease((time - 2.5) / 2.45));
     paintAgentGrid(bounds.graph, graphOpacity);
-    const migration = bounds.migration;
     const formation = !schematic && migration && time < migration.end ? paintMigration(time, migration) : null;
     const edgeAge = schematic || !migration ? Infinity : time - migration.edgesStart;
     const edgeFade = ease(edgeAge / edgeFadeDuration);
-    const edgeActivity = ease((edgeAge - edgeFadeDuration) / 0.35);
+    const edgeActivity = schematic || !migration ? 1 : ease((time - firstUpdate) / 0.35);
     paintAgents(points, Math.min(time, 11), state, graphOpacity, convergence, formation, edgeFade, edgeActivity);
   }
 

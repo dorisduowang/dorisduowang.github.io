@@ -4,21 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Doris Wang · 王朵 | Research</title>
-    <meta
-      name="description"
-      content="Doris Wang studies cooperation and incentives using experiments, data, and AI agents at the University of Chicago."
-    />
+    <meta name="description" content="Doris Wang studies how information and incentives shape strategic behavior in people and AI agents." />
     <meta name="theme-color" content="#000000" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Doris Wang · 王朵 | Research" />
-    <meta property="og:description" content="Research on cooperation, incentives, language, AI agents, and institutions." />
+    <meta property="og:description" content="Research in experimental economics, information economics, and the economics of AI." />
     <meta property="og:image" content="https://dorisduowang.github.io/assets/img/portfolio/doris-centered-poster.webp" />
     <meta property="og:image:alt" content="Portrait of Doris Wang" />
     <link rel="canonical" href="https://dorisduowang.github.io/" />
     <link rel="icon" type="image/png" href="/assets/img/portfolio/doris-mark.png" />
     <link rel="preload" href="/assets/fonts/portfolio/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="styles.css?v=286d2277" />
-    <script defer src="hero.js?v=cc8d52c1"></script>
+    <link rel="stylesheet" href="styles.css?v=748f0f43" />
+    <script defer src="hero.js?v=eac08832"></script>
   </head>
   <body id="top" data-landing data-portfolio-url="/portfolio/" data-motion="paused">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -50,8 +47,8 @@
     <main id="main">
       <section class="hero page-width" aria-labelledby="hero-title">
         <div class="hero-intro">
-          <p>I study cooperation and incentives using experiments, data, and AI agents.</p>
-          <p class="affiliation"><strong>University of Chicago</strong><span>Computational Social Science · Economics</span></p>
+          <p>I study how information and incentives shape strategic behavior in people and AI agents.</p>
+          <p class="affiliation"><strong>University of Chicago</strong><span>M.A. student in Computational Social Science (Economics)</span></p>
         </div>
 
         <p class="visually-hidden">
@@ -63,7 +60,7 @@
           <canvas class="game-canvas" data-game-canvas aria-hidden="true"></canvas>
 
           <div class="game-panel human-panel" data-human-panel aria-hidden="true">
-            <div class="panel-heading"><span>Human</span><i></i></div>
+            <div class="panel-heading"><span>Human</span><i></i><small class="schematic-label">Prisoner’s dilemma</small></div>
             <div class="matrix" data-matrix>
               <svg viewBox="0 0 250 120" focusable="false" aria-hidden="true">
                 <!-- The Prisoner's Dilemma values are illustrative. The token pool below depicts the public goods game. -->
@@ -135,7 +132,7 @@
                 <span>sanction <b data-agent-sanction>0</b></span>
               </div>
             </div>
-            <p class="panel-caption">Agents · exploit the rules</p>
+            <p class="panel-caption">Agents · respond to incentives</p>
           </div>
         </div>
 
@@ -145,11 +142,11 @@
         </div>
 
         <nav class="interest-nav" aria-label="Research interests">
-          <a href="#cooperation">Cooperation</a>
-          <a href="#incentives">Incentives</a>
-          <a href="#language">Language</a>
-          <a href="#ai-agents">AI Agents</a>
-          <a href="#institutions">Institutions</a>
+          <a href="#cooperation">Experimental Economics</a>
+          <a href="#language">Information Economics</a>
+          <a href="#ai-agents">Economics of AI</a>
+          <a href="#incentives">Market &amp; Mechanism Design</a>
+          <a href="#operations">Operations</a>
         </nav>
       </section>
 
@@ -161,11 +158,11 @@
 
         <article class="project-card">
           <div class="project-description">
-            <p class="project-type">Agent experiments · Public goods</p>
-            <h3><a href="/pgg-feasibility/">Language monitoring in repeated public goods games with LLM agents</a></h3>
+            <p class="project-type">Information economics · Feasibility study</p>
+            <h3><a href="/pgg-feasibility/">Cheap talk and enforcement in repeated public goods games</a></h3>
             <p>
-              Can agents’ public messages help predict their next contribution? I compare what four language-model agents say with what they do across
-              a repeated game.
+              What can cheap talk reveal about cooperation when sanctions depend on contribution history? In one 15-round feasibility run, I compare
+              what four language-model agents say publicly with what they contribute in the next round.
             </p>
             <a class="text-link project-link" href="/pgg-feasibility/">Explore the interactive study</a>
           </div>
@@ -195,30 +192,33 @@
 
         <div class="research-topics">
           <article id="cooperation">
-            <h3>Cooperation</h3>
+            <h3>Experimental Economics</h3>
             <p>How does group stability shape cooperation across repeated interactions?</p>
             <a class="text-link" href="/projects/kcl_dissertation/">Group stability study</a>
           </article>
-          <article id="incentives">
-            <h3>Incentives</h3>
-            <p>When do the gains from peer punishment justify its costs?</p>
-            <a class="text-link" href="/projects/punishment_on_demand/">Punishment on Demand</a>
-          </article>
           <article id="language">
-            <h3>Language</h3>
-            <p>What can public messages tell us about a player’s next decision?</p>
-            <a class="text-link" href="/pgg-feasibility/">Language monitoring study</a>
+            <h3>Information Economics</h3>
+            <p>How informative is communication when players have incentives to mislead?</p>
+            <a class="text-link" href="/pgg-feasibility/">Cheap talk in public goods games</a>
           </article>
           <article id="ai-agents">
-            <h3>AI Agents</h3>
-            <p>How do simulated participants respond to the same rules across different settings?</p>
-            <a class="text-link" href="/portfolio/#public-goods">Agent experiments</a>
+            <h3>Economics of AI</h3>
+            <p>How does team composition affect what AI agents share and decide?</p>
+            <a class="text-link" href="/portfolio/#project-twins">Public study protocol</a>
           </article>
-          <article id="institutions">
-            <h3>Institutions</h3>
-            <p>How does the language of central bank communications relate to market volatility?</p>
-            <a class="text-link" href="/portfolio/#fomc">FOMC communication study</a>
+          <article id="incentives">
+            <h3>Market &amp; Mechanism Design</h3>
+            <p>When is it worth making costly peer punishment available?</p>
+            <a class="text-link" href="/projects/punishment_on_demand/">Punishment on Demand</a>
           </article>
+          <article id="operations">
+            <h3>Operations</h3>
+            <p>How might differences in AI capabilities affect bargaining and coordination across supply chains?</p>
+          </article>
+        </div>
+        <div class="other-work" id="institutions">
+          <h3>Other work</h3>
+          <a class="text-link" href="/portfolio/#fomc">FOMC communication study</a>
         </div>
       </section>
     </main>

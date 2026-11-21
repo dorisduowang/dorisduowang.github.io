@@ -281,6 +281,10 @@ a {
   letter-spacing: 0.11em;
   text-transform: uppercase;
 }
+.human-panel .schematic-label {
+  font-family: var(--mono);
+  text-transform: uppercase;
+}
 .panel-heading i {
   flex: 1;
   height: 1px;
@@ -559,16 +563,29 @@ a {
   padding-top: 0.68rem;
   scroll-margin-top: 1.5rem;
 }
-.research-topics article:target {
+.research-topics article:target,
+.other-work:target {
   border-top-color: #eee;
 }
-.research-topics h3 {
+.research-topics h3,
+.other-work h3 {
   font: 400 1.6rem/1.2 var(--serif);
 }
 .research-topics p {
   margin: 0.45rem 0 0.65rem;
   color: #b5b5b5;
   font-size: 0.86rem;
+}
+
+.other-work {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.45rem 1.2rem;
+  margin-top: 1.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--rule);
+  scroll-margin-top: 1.5rem;
 }
 
 .site-footer {
