@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1104 1024" width="1104" height="1024">
+  <defs>
+    <linearGradient id="ceramic-left" x1="0" y1="0" x2="1" y2="0.65" gradientUnits="objectBoundingBox">
+      <stop stop-color="#849099"/>
+      <stop offset="0.2" stop-color="#d6dcda"/>
+      <stop offset="0.39" stop-color="#f6f4eb"/>
+      <stop offset="0.6" stop-color="#e0e1d9"/>
+      <stop offset="0.81" stop-color="#aeb8b6"/>
+      <stop offset="1" stop-color="#737e83"/>
+    </linearGradient>
+    <linearGradient id="ceramic-right" x1="0" y1="0" x2="1" y2="0.44" gradientUnits="objectBoundingBox">
+      <stop stop-color="#7f8c92"/>
+      <stop offset="0.2" stop-color="#d4dad9"/>
+      <stop offset="0.4" stop-color="#f2f2e9"/>
+      <stop offset="0.69" stop-color="#c7cfce"/>
+      <stop offset="0.85" stop-color="#a0abb0"/>
+      <stop offset="1" stop-color="#647079"/>
+    </linearGradient>
+    <linearGradient id="ceramic-shadow" x1="0.18" y1="0" x2="0.85" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#cad0cb"/>
+      <stop offset="0.32" stop-color="#899599"/>
+      <stop offset="0.56" stop-color="#555f68"/>
+      <stop offset="0.89" stop-color="#7e8b91"/>
+      <stop offset="1" stop-color="#353e47"/>
+    </linearGradient>
+    <linearGradient id="bevel" x1="0.05" y1="0.12" x2="0.9" y2="0.96" gradientUnits="objectBoundingBox">
+      <stop stop-color="#f7f5ed"/>
+      <stop offset="0.36" stop-color="#c3cbca"/>
+      <stop offset="0.58" stop-color="#6c7a81"/>
+      <stop offset="0.82" stop-color="#4a5460"/>
+      <stop offset="1" stop-color="#242c34"/>
+    </linearGradient>
+    <linearGradient id="chassis" x1="0.1" y1="0" x2="0.95" y2="0.8" gradientUnits="objectBoundingBox">
+      <stop stop-color="#171d23"/>
+      <stop offset="0.19" stop-color="#444e56"/>
+      <stop offset="0.3" stop-color="#2b333b"/>
+      <stop offset="0.56" stop-color="#0b1117"/>
+      <stop offset="0.73" stop-color="#232e36"/>
+      <stop offset="1" stop-color="#0b0e11"/>
+    </linearGradient>
+    <linearGradient id="black-steel" x1="0.1" y1="0" x2="0.84" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#49525b"/>
+      <stop offset="0.21" stop-color="#202a32"/>
+      <stop offset="0.44" stop-color="#11171e"/>
+      <stop offset="0.74" stop-color="#273341"/>
+      <stop offset="1" stop-color="#0b1019"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#defcff"/>
+      <stop offset="0.36" stop-color="#a9e9f2"/>
+      <stop offset="1" stop-color="#418a9b"/>
+    </linearGradient>
+    <filter id="contact-shadow" x="-24%" y="-18%" width="150%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="1" dy="3" stdDeviation="4.8" flood-color="#03060a" flood-opacity="0.71"/>
+    </filter>
+    <filter id="inset-bloom" x="-42%" y="-38%" width="184%" height="176%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="2.8"/>
+    </filter>
+  </defs>
+  <!-- The temple and jaw sections are independent shells on the original portrait. -->
+  <g fill="url(#chassis)" stroke="#070b10" stroke-width="2.4" filter="url(#contact-shadow)">
+    <path d="M393 182 Q417 159 436 162 L452 172 L453 190 L435 205 L421 231 L418 256 L415 275 L424 294 L416 319 L420 340 L437 363 L448 391 L469 423 L464 441 L479 460 L477 478 L461 483 L443 466 L423 445 L405 423 L388 399 L376 375 L371 348 L365 322 L365 282 L359 256 Q359 213 393 182Z"/>
+    <path d="M610 153 Q641 159 665 188 L686 218 L699 245 L698 266 L687 281 L699 300 L697 322 L689 344 L684 374 L673 398 L663 426 L643 448 L626 462 L614 480 L598 483 L587 470 L602 448 L607 427 L626 408 L632 385 L637 362 L644 345 L637 318 L640 299 L637 279 L635 258 L629 233 L623 205 L610 185 L599 173Z"/>
+    <path d="M447 451 L466 454 L480 472 L487 496 L482 518 L496 538 L519 548 L528 572 L508 583 L474 567 L455 541 L453 518 L443 498 L436 475Z"/>
+    <path d="M618 449 L638 445 L650 461 L651 489 L643 511 L647 533 L634 560 L612 578 L591 578 L583 561 L606 545 L614 529 L609 508 L611 488 L603 467Z"/>
+  </g>
+
+  <!-- Dark plated collar preserves the original pendant and shoulder edges. -->
+  <g stroke-linejoin="round" filter="url(#contact-shadow)">
+    <path d="M464 525 L483 543 Q522 567 551 571 Q594 575 626 551 L642 535 L649 556 L639 581 Q603 607 560 607 Q511 609 476 581 L455 556Z" fill="url(#black-steel)" stroke="#2a3740" stroke-width="2"/>
+    <path d="M456 568 L476 582 L496 595 L521 605 L521 627 L498 639 L465 628 L432 609 L429 589Z" fill="url(#chassis)" stroke="#34414a" stroke-width="2"/>
+    <path d="M639 573 L655 570 L678 587 L697 600 L699 617 L673 631 L640 638 L616 623 L620 603Z" fill="url(#chassis)" stroke="#35414a" stroke-width="2"/>
+    <path d="M471 543 L488 554 Q525 578 550 580 Q597 581 626 558 L637 548" fill="none" stroke="#a0acb2" stroke-width="2.5" stroke-opacity="0.58"/>
+    <path d="M486 575 Q524 599 560 598 Q602 599 633 574" fill="none" stroke="#05090e" stroke-width="3.3"/>
+    <path d="M449 586 L463 586 L477 598 L497 606 L497 618 L485 624 L462 616 L440 602Z" fill="url(#ceramic-shadow)" stroke="#505d65" stroke-width="1.25"/>
+    <path d="M650 584 L669 590 L688 605 L686 615 L666 623 L652 620 L630 610 L636 596Z" fill="url(#ceramic-shadow)" stroke="#4f5d66" stroke-width="1.25"/>
+    <path d="M447 589 L464 590 L478 602 L495 609 M638 596 L652 589 L667 595 L685 607" fill="none" stroke="#d8ddd7" stroke-width="1.6" stroke-opacity="0.62"/>
+    <path d="M519 594 Q551 603 569 601 Q593 600 612 590" fill="none" stroke="#516471" stroke-width="1.45"/>
+  </g>
+
+  <!-- Lower flanges and machined mounts catch cooler reflections. -->
+  <g fill="url(#ceramic-shadow)" stroke="#19232b" stroke-width="2.3" stroke-linejoin="round">
+    <path d="M378 264 L392 266 L408 278 L407 293 L397 306 L399 326 L412 334 L422 355 L412 368 L392 360 L376 346 L371 329 L373 305Z"/>
+    <path d="M392 382 L407 389 L426 409 L440 414 L451 434 L466 445 L479 469 L471 481 L454 476 L438 460 L420 446 L403 424 L392 402Z"/>
+    <path d="M653 260 L672 255 L687 260 L690 279 L699 294 L695 318 L681 341 L660 346 L643 331 L637 314 L639 297 L646 290Z"/>
+    <path d="M661 370 L676 378 L671 402 L658 421 L643 442 L624 456 L607 477 L597 478 L590 469 L599 447 L614 436 L631 410 L638 387Z"/>
+    <path d="M449 468 L464 468 L477 483 L481 504 L477 519 L489 538 L500 545 L496 559 L483 559 L466 546 L457 522 L460 507 L452 489Z"/>
+    <path d="M619 466 L634 453 L646 461 L643 480 L635 493 L635 513 L641 531 L634 544 L618 552 L610 546 L615 532 L610 519 L610 496Z"/>
+  </g>
+
+  <!-- Ivory ceramic. Narrow charcoal seams are left between the panel shapes. -->
+  <g fill="url(#ceramic-left)" stroke="url(#bevel)" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M392 188 L420 169 L435 170 L445 179 L442 189 L422 205 L409 229 L404 250 L396 263 L379 264 L369 252 L370 230 Q374 207 392 188Z"/>
+    <path d="M378 275 L391 277 L405 289 L404 307 L398 317 L400 336 L405 346 L397 354 L382 348 L373 333 L371 307Z"/>
+    <path d="M387 360 L400 357 L415 369 L425 391 L444 405 L453 424 L446 433 L433 433 L416 421 L398 404 L387 382 L382 371Z"/>
+    <path d="M432 440 L443 443 L453 442 L469 459 L476 470 L470 477 L458 471 L444 460Z"/>
+  </g>
+  <g fill="url(#ceramic-right)" stroke="url(#bevel)" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M609 157 Q632 163 650 180 L668 198 L683 224 L690 246 L685 257 L667 261 L652 253 L647 229 L636 206 L620 188 L606 178 L604 166Z"/>
+    <path d="M661 273 L675 269 L686 275 L693 291 L694 309 L684 326 L668 334 L652 327 L645 316 L645 295 L652 281Z"/>
+    <path d="M670 338 L684 333 L688 343 L681 365 L676 385 L662 408 L648 423 L631 440 L618 443 L611 432 L619 415 L633 401 L641 379 L650 354Z"/>
+    <path d="M620 447 L630 445 L638 444 L628 459 L613 475 L603 475 L599 468 L607 455Z"/>
+  </g>
+
+  <!-- Small recessed seams continue from the ceramic into the cheek planes. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M419 375 L434 368 L445 366 L454 357 L468 353 M646 368 Q635 367 629 361 L618 353 L603 351 L597 346" stroke="#242d32" stroke-opacity="0.76" stroke-width="4.3"/>
+    <path d="M420 376 L435 369 L446 367 L455 358 L467 354 M646 370 Q635 369 628 363 L618 355 L602 353 L596 348" stroke="#d4d1bf" stroke-opacity="0.73" stroke-width="1.5"/>
+    <path d="M425 373 L432 369 M640 368 L632 365" stroke="#b3e8ed" stroke-opacity="0.72" stroke-width="2.5"/>
+  </g>
+  <path d="M522 180 L533 178 L542 183 L546 190 L540 197 L529 198 L521 193 Z" fill="url(#black-steel)" stroke="#a9b3b0" stroke-opacity="0.78" stroke-width="1.65"/>
+  <path d="M525 183 L533 182 L541 187 M528 192 L536 191" fill="none" stroke="#d1ebe7" stroke-width="1.55" stroke-opacity="0.75" stroke-linecap="round"/>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Chamfers follow the prevailing light, with a dark underside at each panel break. -->
+    <g stroke="#fffdf0" stroke-width="2.15" stroke-opacity="0.7">
+      <path d="M374 239 Q381 207 398 193 L421 175 L434 177"/>
+      <path d="M378 304 L382 283 L392 285 L401 293"/>
+      <path d="M389 367 L399 364 L411 374 L421 396"/>
+      <path d="M609 163 Q632 169 648 185 L667 207 L681 233"/>
+      <path d="M672 274 L682 278 L689 292 L690 307"/>
+      <path d="M650 359 L670 344 L681 340"/>
+      <path d="M618 429 L628 416 L639 405 L647 386"/>
+    </g>
+    <g stroke="#354853" stroke-width="1.6" stroke-opacity="0.7">
+      <path d="M396 210 L408 197 L425 185 L437 184"/>
+      <path d="M390 232 L385 250 L388 261 M391 292 L388 307 L390 319 L397 325"/>
+      <path d="M398 374 L409 386 L414 400 L431 416 L441 420"/>
+      <path d="M627 174 L647 193 L660 214 L671 243 L680 250"/>
+      <path d="M666 285 L678 285 L685 299 L683 311 L673 320 L659 322"/>
+      <path d="M666 355 L675 354 L672 373 L654 401 L640 413 L626 432"/>
+    </g>
+    <g stroke="#18272e" stroke-width="5.4">
+      <path d="M377 316 L383 337 L391 342"/>
+      <path d="M408 394 L418 406 L430 414"/>
+      <path d="M649 314 L656 323 L669 326"/>
+      <path d="M674 360 L670 376 L660 389"/>
+      <path d="M467 505 L465 519 L475 541"/>
+      <path d="M631 492 L625 507 L627 524 L634 531"/>
+    </g>
+    <g stroke="#70ccd9" stroke-width="5" stroke-opacity="0.42" filter="url(#inset-bloom)">
+      <path d="M379 318 L385 335 L391 341 M410 396 L419 406 L429 413 M650 315 L657 323 L669 326 M673 362 L668 376 L660 387 M467 508 L466 519 L474 538 M630 495 L626 507 L628 522"/>
+    </g>
+    <g stroke="url(#accent)" stroke-width="2.45" stroke-opacity="0.94">
+      <path d="M379 318 L385 335 L391 341 M410 396 L419 406 L429 413 M650 315 L657 323 L669 326 M673 362 L668 376 L660 387 M467 508 L466 519 L474 538 M630 495 L626 507 L628 522"/>
+    </g>
+  </g>
+
+  <g fill="#26343c" stroke="#dbe1d9" stroke-opacity="0.65" stroke-width="1.15">
+    <circle cx="385" cy="247" r="3.35"/>
+    <circle cx="399" cy="378" r="3.05"/>
+    <circle cx="442" cy="428" r="2.75"/>
+    <circle cx="672" cy="247" r="3.3"/>
+    <circle cx="670" cy="293" r="4.3"/>
+    <circle cx="645" cy="410" r="2.9"/>
+    <circle cx="484" cy="549" r="2.75"/>
+    <circle cx="624" cy="542" r="2.75"/>
+  </g>
+</svg>
