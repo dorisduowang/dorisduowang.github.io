@@ -249,6 +249,13 @@ a {
   pointer-events: none;
 }
 
+/* Only desktop migration crosses the plate's black margins. Mobile keeps its network behind the portrait. */
+@media (min-width: 768px) {
+  [data-hero-phase="2"] .game-canvas {
+    z-index: 2;
+  }
+}
+
 .game-panel {
   align-self: center;
   position: relative;
@@ -324,6 +331,7 @@ a {
 
 .agent-readouts {
   display: grid;
+  opacity: var(--readout-visibility, 0.72);
   grid-template-columns: repeat(2, minmax(0, 1fr));
   border-top: 1px solid #ffffff1f;
 }
@@ -351,10 +359,6 @@ a {
   font-weight: 400;
   color: #b8b8b8;
 }
-[data-hero-phase="1"] .agent-readouts {
-  opacity: 0.72;
-}
-
 .schematic-label {
   color: var(--label);
   font-size: 0.59rem;

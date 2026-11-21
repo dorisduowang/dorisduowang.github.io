@@ -39,6 +39,7 @@
   const pool = stage.querySelector("[data-human-pool]");
   const graph = stage.querySelector("[data-agent-graph]");
   const matrix = stage.querySelector("[data-matrix]");
+  const portrait = stage.querySelector(".portrait-plate");
   const readouts = Array.from(stage.querySelectorAll("[data-agent-readout]"), (element) => ({
     element,
     round: element.querySelector("[data-agent-round]"),
@@ -116,16 +117,41 @@
   ];
   const finalRound = { contributions: [10, 10, 10, 10], sanctions: [0, 0, 0, 0] };
 
-  const particles = Array.from({ length: 64 }, (_, index) => ({
-    start: ((index * 47) % 131) / 131,
-    height: ((index * 17) % 59) / 59,
-    lift: ((index * 29) % 101) / 101,
-    delay: ((index * 43) % 97) / 97,
-    radius: 0.85 + ((index * 7) % 11) / 10,
-    agent: index % 4,
-    source: index % 3 ? "matrix" : "pool",
-    color: index % 5 < 2 ? amber : guide,
-  }));
+  const clamp = (value) => Math.max(0, Math.min(value, 1));
+  const mix = (from, to, progress) => from + (to - from) * progress;
+
+  // Matrix particles start on its visible SVG strokes; pool particles start on its ring and players.
+  const matrixLines = [0.25, 0.6, 0.94];
+  const matrixColumns = [0.31, 0.63, 0.956];
+  const particlesPerNode = 18;
+  const particles = Array.from({ length: particlesPerNode * agentPositions.length }, (_, index) => {
+    const agent = index % agentPositions.length;
+    const order = Math.floor(index / agentPositions.length);
+    const stagger = ((order * 7 + agent * 5) % particlesPerNode) / (particlesPerNode - 1);
+    const along = ((index * 47) % 131) / 131;
+    const fromPool = order % 3 === 2;
+    const angle = along * Math.PI * 2;
+    let origin;
+
+    if (fromPool) {
+      origin = order % 2 ? playerPositions[agent] : [0.5 + Math.cos(angle) * 0.097, 0.5 + Math.sin(angle) * 0.2];
+    } else {
+      const line = Math.floor(order / 3) % 3;
+      origin = order % 2 ? [mix(0.31, 0.956, along), matrixLines[line]] : [matrixColumns[line], mix(0.25, 0.94, along)];
+    }
+
+    return {
+      origin,
+      fromPool,
+      agent,
+      lane: ((index * 29) % 101) / 101,
+      release: 2.02 + stagger * 1.03 + (fromPool ? 0.12 : 0),
+      arrival: 3.865 + stagger * 0.74 + agent * 0.075,
+      radius: 0.9 + along * 1.16,
+      alpha: 0.38 + along * 0.23,
+      color: index % 5 < 2 ? amber : guide,
+    };
+  });
 
   let bounds;
   let visible = false;
@@ -136,11 +162,8 @@
   let animationFrame = 0;
   let lastPlaybackTime = -1;
   let lastPhase;
-  let lastMatrixOpacity;
+  let lastStageOpacity;
   let lastRound;
-
-  const clamp = (value) => Math.max(0, Math.min(value, 1));
-  const mix = (from, to, progress) => from + (to - from) * progress;
 
   function ease(value) {
     const unit = clamp(value);
@@ -233,21 +256,88 @@
     });
   }
 
-  function paintMigration(time, points) {
-    particles.forEach((particle) => {
-      const source = bounds[particle.source] || bounds.pool;
-      if (!source) return;
+  function sampleTrack(points) {
+    const steps = 10;
+    const samples = [points[0]];
 
-      const progress = (time - 2 - particle.delay * 0.92) / (1.55 + particle.lift * 0.51);
-      if (progress <= 0 || progress >= 1) return;
+    // Sample a smooth cubic through the waypoints, then space the lookups evenly by distance.
+    for (let segment = 0; segment < points.length - 1; segment += 1) {
+      const [a, b, c, d] = [points[segment - 1] || points[0], points[segment], points[segment + 1], points[segment + 2] || points.at(-1)];
+      const coordinate = (axis, u) =>
+        b[axis] +
+        0.5 * u * (c[axis] - a[axis] + u * (2 * a[axis] - 5 * b[axis] + 4 * c[axis] - d[axis] + u * (3 * b[axis] - a[axis] - 3 * c[axis] + d[axis])));
+      for (let step = 1; step <= steps; step += 1) {
+        const u = step / steps;
+        samples.push({ x: coordinate("x", u), y: Math.max(4, coordinate("y", u)) });
+      }
+    }
 
-      const start = point(source, particle.start, particle.height);
-      const end = points[particle.agent];
-      const bend = { x: mix(start.x, end.x, 0.55), y: mix(start.y, end.y, 0.5) + (particle.lift - 0.5) * bounds.height * 0.53 };
-      const alpha = Math.sin(Math.PI * progress) * 0.62;
-      const position = curve(start, bend, end, ease(progress));
-      circle(position, particle.radius, particle.color, alpha);
+    const distances = [0];
+    for (let index = 1; index < samples.length; index += 1) {
+      const previous = samples[index - 1];
+      const sample = samples[index];
+      distances.push(distances[index - 1] + Math.hypot(sample.x - previous.x, sample.y - previous.y));
+    }
+
+    let next = 1;
+    const total = distances.at(-1);
+    return Array.from({ length: 81 }, (_, index) => {
+      const distance = (total * index) / 80;
+      while (distances[next] < distance && next < samples.length - 1) next += 1;
+      const weight = (distance - distances[next - 1]) / (distances[next] - distances[next - 1]);
+      const from = samples[next - 1];
+      const to = samples[next];
+      return { x: mix(from.x, to.x, weight), y: mix(from.y, to.y, weight) };
     });
+  }
+
+  function makeMigrationTracks(layout) {
+    if (!layout.portrait || !layout.graph || !layout.matrix || !layout.pool) return [];
+    const destinations = agentPoints(layout.graph, 0);
+    const plate = layout.portrait;
+
+    // These lanes rise alongside the plate and cross the dark space above the mesh.
+    return particles.map((particle) => {
+      const lane = particle.lane;
+      const [x, y] = particle.origin;
+      const start = point(particle.fromPool ? layout.pool : layout.matrix, x, y);
+      return sampleTrack([
+        start,
+        point(plate, 0.065 + lane * 0.04, 0.37 + lane * 0.18),
+        point(plate, 0.169, 0.137 + lane * 0.07),
+        point(plate, 0.348, 0.041 + lane * 0.025),
+        point(plate, 0.51, 0.012 + lane * 0.017),
+        point(plate, 0.675, 0.019 + lane * 0.012),
+        point(plate, 0.811, 0.085 + lane * 0.043),
+        point(plate, 0.925, 0.23 + lane * 0.13),
+        destinations[particle.agent],
+      ]);
+    });
+  }
+
+  function paintMigration(time) {
+    const formation = agentPositions.map(() => 0);
+    particles.forEach((particle, index) => {
+      const { agent, release, arrival } = particle;
+      formation[agent] += ease((time - arrival + 0.04) / 0.19) / particlesPerNode;
+      const track = bounds.tracks[index];
+      if (!track || time <= release || time >= arrival + 0.16) return;
+
+      const progress = clamp((time - release) / (arrival - release));
+      const distance = mix(progress, ease(progress), 0.67) * (track.length - 1);
+      const indexAt = Math.min(Math.floor(distance), track.length - 2);
+      const from = track[indexAt];
+      const to = track[indexAt + 1];
+      const fraction = distance - indexAt;
+      const position = { x: mix(from.x, to.x, fraction), y: mix(from.y, to.y, fraction) };
+      const alpha = ease((time - release) / 0.24) * (1 - ease((time - arrival + 0.03) / 0.19)) * particle.alpha;
+
+      if (index % 3 === 0 && indexAt > 1 && progress < 0.94) {
+        wire(track[indexAt - 2], position, particle.color, alpha * 0.28, 0.65);
+      }
+      circle(position, particle.radius * mix(1, 0.65, ease((progress - 0.78) / 0.22)), particle.color, alpha);
+    });
+    return formation.map(clamp);
   }
 
   function paintAgentGrid(rect, opacity) {
@@ -269,30 +359,36 @@
     context.stroke();
   }
 
-  function paintAgents(points, time, state, opacity, convergence) {
+  function paintAgents(points, time, state, opacity, convergence, formation) {
     const { contributions, sanctions } = state;
     paths.forEach(([left, right], index) => {
       const mutual = contributions[left] >= 7 && contributions[right] >= 7;
       const emphasis = 0.72 + 0.28 * Math.sin(time * 12 + index * 1.4);
-      wire(points[left], points[right], mutual ? amber : guide, opacity * emphasis * (mutual ? 0.48 : 0.34), 0.9);
+      const growth = formation ? mix(0.15, 1, Math.min(formation[left], formation[right])) : 1;
+      wire(points[left], points[right], mutual ? amber : guide, opacity * emphasis * growth * (mutual ? 0.48 : 0.34), 0.9);
     });
 
-    const radius = Math.min(12, bounds.graph.width * 0.057);
+    const fullRadius = Math.min(12, bounds.graph.width * 0.057);
     points.forEach((position, index) => {
+      const built = formation ? formation[index] : 1;
+      const radius = fullRadius * mix(0.36, 1, built);
+      const strength = opacity * mix(0.34, 1, built);
       const color = contributions[index] >= 7 ? amber : gray;
       const pulse = 0.64 + Math.sin(time * 15.4 + index * 1.75) * 0.36;
       if (sanctions[index]) {
-        circle(position, radius + 3 + pulse * 4, guide, opacity * (0.32 + pulse * 0.34), false);
+        circle(position, radius + 3 + pulse * 4, guide, strength * (0.32 + pulse * 0.34), false);
       }
-      circle(position, radius, "#10100f", opacity * 0.95);
+      circle(position, radius, "#10100f", strength * 0.95);
       const remainingGray = contributions[index] >= 7 ? 1 : 1 - convergence;
-      circle(position, radius, color, opacity * remainingGray * 0.48);
-      circle(position, radius, color, opacity * remainingGray * 0.89, false);
+      circle(position, radius, color, strength * remainingGray * 0.48);
+      circle(position, radius, color, strength * remainingGray * 0.89, false);
       if (remainingGray < 1) {
-        circle(position, radius, amber, opacity * convergence * 0.48);
-        circle(position, radius, amber, opacity * convergence * 0.89, false);
+        circle(position, radius, amber, strength * convergence * 0.48);
+        circle(position, radius, amber, strength * convergence * 0.89, false);
       }
-      lettering(String(index + 1).padStart(2, "0"), position, radius * 0.83, "#f5efe2", Math.min(1, opacity * 1.35));
+      const labelOpacity = ease((built - 0.23) / 0.52);
+      if (labelOpacity > 0)
+        lettering(String(index + 1).padStart(2, "0"), position, radius * 0.83, "#f5efe2", Math.min(1, strength * 1.35) * labelOpacity);
     });
   }
 
@@ -332,8 +428,9 @@
     lastPlaybackTime = time;
     // Timings follow the looping portrait: human play, transfer, agent rounds, then settlement.
     const phase = time < 2 ? 1 : time < 5 ? 2 : time < 9 ? 3 : 4;
-    const fade = 1 - ease((time - 2) / 1.52);
-    const matrixOpacity = fade.toFixed(3);
+    const matrixOpacity = (1 - ease((time - 2.04) / 1.65)).toFixed(3);
+    const poolOpacity = 1 - ease((time - 2.21) / 1.64);
+    const readoutOpacity = mix(0.72, 1, ease((time - 3.94) / 1.05)).toFixed(3);
     const convergence = ease((time - 9) / 2);
     const demoRound = Math.min(demoRounds.length - 1, Math.max(0, Math.floor((time - 5) * 2)));
     const isFinal = convergence === 1;
@@ -343,9 +440,11 @@
       stage.dataset.heroPhase = String(phase);
       lastPhase = phase;
     }
-    if (matrixOpacity !== lastMatrixOpacity) {
+    const stageOpacity = matrixOpacity + readoutOpacity;
+    if (stageOpacity !== lastStageOpacity) {
       stage.style.setProperty("--matrix-visibility", matrixOpacity);
-      lastMatrixOpacity = matrixOpacity;
+      stage.style.setProperty("--readout-visibility", readoutOpacity);
+      lastStageOpacity = stageOpacity;
     }
     setReadouts(isFinal ? demoRounds.length + 1 : phase === 4 ? demoRounds.length : demoRound + 1, state);
     if (!context || !bounds) return;
@@ -356,14 +455,14 @@
       paintAmbient(time);
       return;
     }
-    if (bounds.pool && fade > 0) paintPool(bounds.pool, time, fade, schematic);
+    if (bounds.pool && poolOpacity > 0) paintPool(bounds.pool, time, poolOpacity, schematic);
     if (!bounds.graph) return;
 
     const points = agentPoints(bounds.graph, convergence);
     const graphOpacity = schematic ? 0.78 : mix(0.34, 0.93, ease((time - 2.5) / 2.45));
     paintAgentGrid(bounds.graph, graphOpacity);
-    if (phase === 2) paintMigration(time, points);
-    paintAgents(points, Math.min(time, 11), state, graphOpacity, convergence);
+    const formation = !schematic && phase <= 2 ? paintMigration(time) : null;
+    paintAgents(points, Math.min(time, 11), state, graphOpacity, convergence, formation);
   }
 
   function updateLayout() {
@@ -385,7 +484,16 @@
     const height = Math.ceil(frame.height * scale);
     if (canvas.width !== width) canvas.width = width;
     if (canvas.height !== height) canvas.height = height;
-    bounds = { width: frame.width, height: frame.height, scale, pool: measure(pool), graph: measure(graph), matrix: measure(matrix) };
+    bounds = {
+      width: frame.width,
+      height: frame.height,
+      scale,
+      pool: measure(pool),
+      graph: measure(graph),
+      matrix: measure(matrix),
+      portrait: measure(portrait),
+    };
+    bounds.tracks = makeMigrationTracks(bounds);
     paint(landing.classList.contains("has-video") ? video.currentTime : 0, !landing.classList.contains("has-video"));
   }
 
@@ -490,7 +598,7 @@
 
   if ("ResizeObserver" in window) {
     const layoutObserver = new ResizeObserver(updateLayout);
-    [stage, pool, graph, matrix].filter(Boolean).forEach((element) => layoutObserver.observe(element));
+    [stage, pool, graph, matrix, portrait].filter(Boolean).forEach((element) => layoutObserver.observe(element));
   }
   if ("IntersectionObserver" in window) {
     const viewportObserver = new IntersectionObserver(
