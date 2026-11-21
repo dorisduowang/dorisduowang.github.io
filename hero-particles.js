@@ -12,6 +12,8 @@
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const mobile = window.matchMedia("(max-width: 767px)");
   const laneCount = 6;
+  const occlusionEdge = 0.94;
+  const concealDuration = 0.3;
   const revealDuration = 0.32;
   const arrivalHold = 0.3;
   const arrivalFade = 0.48;
@@ -153,8 +155,10 @@
     appendCurve(points, outgoing, { x: mix(outgoing.x, seam.x, 0.46), y: plate.y - plate.height * 0.02 }, handle(-plate.width * 0.32), seam);
     const orbitSteps = 104;
     const angleStep = (Math.PI * 2) / orbitSteps;
-    // Search for reappearance only after the still-occluded rear midpoint.
-    const rearCenter = points.length - 1 + Math.ceil(((Math.PI * 3) / 2 - seamAngle) / angleStep);
+    // The left turn and rear midpoint bracket the two crossings of the head silhouette.
+    const orbitStart = points.length - 1;
+    const rearEntry = orbitStart + Math.ceil((Math.PI - seamAngle) / angleStep);
+    const rearCenter = orbitStart + Math.ceil(((Math.PI * 3) / 2 - seamAngle) / angleStep);
     for (let step = 1; step <= orbitSteps; step += 1) {
       points.push(ringPoint(seamAngle + (Math.PI * 2 * step) / orbitSteps));
     }
@@ -173,9 +177,11 @@
     } else {
       appendCurve(points, seam, handle(plate.width * 0.23), { x: mix(seam.x, incoming.x, 0.91), y: incoming.y - plate.height * 0.07 }, incoming);
     }
-    const loop = uniformTrack(points, depthScale, [rearCenter, checkpoint]);
-    const [rearProgress, exitProgress] = loop.checkpoints;
-    const revealProgress = crossing(rearProgress, exitProgress, (progress) => headDistance(sample(loop.samples, progress)) < 0.94);
+    const loop = uniformTrack(points, depthScale, [rearEntry, rearCenter, checkpoint]);
+    const [entryProgress, rearProgress, exitProgress] = loop.checkpoints;
+    const concealProgress = crossing(entryProgress, rearProgress, (progress) => headDistance(sample(loop.samples, progress)) > occlusionEdge);
+    const revealProgress = crossing(rearProgress, exitProgress, (progress) => headDistance(sample(loop.samples, progress)) < occlusionEdge);
+    const concealAt = crossing(0, 1, (time) => loopProgress(time) < concealProgress);
     const revealFrom = crossing(0, 1, (time) => loopProgress(time) < revealProgress);
     const departure = crossing(0, 1, (time) => loopProgress(time) < exitProgress);
     const speed = loop.length * (0.76 + 1.44 * departure * (1 - departure));
@@ -185,6 +191,7 @@
 
     return {
       loop: loop.samples,
+      concealAt,
       revealFrom,
       departure,
       duration,
@@ -250,13 +257,13 @@
     return Math.hypot((x - head.x) / head.radiusX, (y - head.y) / head.radiusY);
   }
 
-  function depthOpacity(position, revealAge) {
+  function depthOpacity(position, untilHidden, revealAge) {
     const { depth } = position;
     const behind = ease(-depth / 0.4);
-    const rim = ease((headDistance(position) - 0.94) / 0.13);
-    // A media-time fade gives the reappearance the same length on narrow and wide screens.
-    const reveal = revealAge < 0 ? 1 : ease(revealAge / revealDuration);
-    return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2) * reveal;
+    const rim = ease((headDistance(position) - occlusionEdge) / 0.13);
+    // Fade toward the near edge of the shadow, then reveal past the far edge on the media clock.
+    const visibility = revealAge < 0 ? ease(untilHidden / concealDuration) : ease(revealAge / revealDuration);
+    return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2) * visibility;
   }
 
   function draw(time) {
@@ -270,23 +277,25 @@
       const elapsed = time - particle.begin;
       if (elapsed <= 0) return;
       const travel = elapsed / particle.duration;
+      const untilHidden = track.concealAt * particle.duration - elapsed;
       const revealAge = elapsed - track.revealFrom * particle.duration;
       const current = travelPoint(track, travel, weights);
       const parking = ease((travel - track.departure - track.duration * 0.65) / (track.duration * 0.35));
       const light = particle.opacity * ease(elapsed / 0.28) * fade * mix(1, 0.27, parking);
-      const alpha = light * depthOpacity(current, revealAge);
+      const alpha = light * depthOpacity(current, untilHidden, revealAge);
       if (alpha < 0.006) return;
       const x = current.x + particle.restX * parking;
       const y = current.y + particle.restY * parking;
       if (particle.trail && travel > 0.008 && travel < track.end - 0.01) {
         const trailTime = travel - 0.007;
+        const trailDelay = (travel - trailTime) * particle.duration;
         const behind = travelPoint(track, trailTime, weights);
         context.beginPath();
         context.moveTo(behind.x + particle.restX * parking, behind.y + particle.restY * parking);
         context.lineTo(x, y);
         context.strokeStyle = particle.color;
         context.lineWidth = 0.65;
-        context.globalAlpha = Math.min(alpha, light * depthOpacity(behind, revealAge - 0.007 * particle.duration)) * 0.24;
+        context.globalAlpha = Math.min(alpha, light * depthOpacity(behind, untilHidden + trailDelay, revealAge - trailDelay)) * 0.24;
         context.stroke();
       }
       context.beginPath();
