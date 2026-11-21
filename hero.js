@@ -41,6 +41,18 @@
 
   const motionLabel = motionToggle.querySelector("span");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const smallScreen = window.matchMedia("(max-width: 767px)");
+  const crystalCanvas = roundReader?.querySelector("[data-crystal-renderer]");
+  const portrait = crystalCanvas?.closest(".portrait-plate");
+  let crystalModule;
+  let crystalRenderer;
+  let crystalOverlay;
+  let overlayPlayPending = false;
+  let crystalLoading = false;
+  let crystalFailed = false;
+  let crystalFrame = 0;
+  let crystalSizeDirty = false;
+  let paintedTime = -1;
   let visible = false;
   let mediaFailed = false;
   let autoplayBlocked = false;
@@ -55,9 +67,194 @@
     return wantsMotion() && visible && !document.hidden && !mediaFailed;
   }
 
+  function shouldUseCrystal() {
+    return crystalCanvas && !smallScreen.matches && !reducedMotion.matches && !mediaFailed && !crystalFailed;
+  }
+
+  function createCrystalOverlay() {
+    const clip = document.createElement("video");
+    clip.className = "portrait-crystal portrait-crystal-clip";
+    clip.muted = true;
+    clip.playsInline = true;
+    clip.preload = "auto";
+    clip.setAttribute("aria-hidden", "true");
+    const sources = [
+      ["/assets/video/crystal-overlay.webm", 'video/webm; codecs="vp9"'],
+      ["/assets/video/crystal-overlay-hevc.mov", 'video/mp4; codecs="hvc1"'],
+    ];
+    if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) sources.reverse();
+    for (const [src, type] of sources) {
+      const source = document.createElement("source");
+      source.src = src;
+      source.type = type;
+      clip.append(source);
+    }
+    clip.addEventListener("seeked", () => {
+      if (video.paused && roundReader.dataset.crystal === "3d" && paintedTime >= 0) paintCrystal(paintedTime);
+    });
+    portrait.append(clip);
+    return clip;
+  }
+
+  function synchronizeOverlay(time, loop) {
+    if (!crystalOverlay) return false;
+    const clip = crystalOverlay;
+    if (time < loop.orbitEnd || time >= loop.duration || !Number.isFinite(clip.duration) || clip.duration <= 0) {
+      clip.pause();
+      clip.classList.remove("is-visible");
+      return false;
+    }
+
+    // The alpha clip covers growth through return. Keep it phase-locked to the portrait media clock.
+    const rate = clip.duration / (loop.duration - loop.orbitEnd);
+    const frame = (time - loop.orbitEnd) * rate;
+    const difference = Math.abs(clip.currentTime - frame);
+    try {
+      if (difference > 0.14 || (video.paused && difference > 0.02)) clip.currentTime = frame;
+      if (!video.paused && clip.paused && !overlayPlayPending) {
+        clip.playbackRate = rate;
+        overlayPlayPending = true;
+        clip
+          .play()
+          .catch((error) => {
+            if (error.name === "AbortError") return;
+            clip.remove();
+            crystalOverlay = null;
+          })
+          .finally(() => {
+            overlayPlayPending = false;
+          });
+      }
+    } catch {
+      clip.remove();
+      crystalOverlay = null;
+      return false;
+    }
+    const aligned = clip.readyState >= clip.HAVE_CURRENT_DATA && !clip.seeking && difference < 0.17;
+    clip.classList.toggle("is-visible", aligned);
+    return aligned;
+  }
+
+  function paintCrystal(time) {
+    const { heroCrystalConfig: config, crystalCentroid } = crystalModule;
+    const loop = config.timeline;
+    const ease = (unit) => {
+      const progress = Math.max(0, Math.min(1, unit));
+      return progress * progress * (3 - 2 * progress);
+    };
+    // Cover the source's baked scan while using the same aligned, neutral expression in WebGL.
+    const settle = ease((time - loop.idleEnd * 0.55) / (loop.idleEnd * 0.17));
+    const release = ease((time - loop.duration + 0.48) / 0.48);
+    roundReader.style.setProperty("--crystal-neutral", (settle * (1 - release)).toFixed(3));
+    roundReader.dataset.crystalTime = time.toFixed(3);
+    const orbitPoints = [];
+    const detail = { time, loop, crystalCentroid, anchors: config.anchors, orbitPoints };
+    roundReader.dispatchEvent(new CustomEvent("hero-crystal-frame", { detail }));
+    const overlay = synchronizeOverlay(time, loop);
+    crystalRenderer.setTime(time, orbitPoints, { crystals: !overlay });
+    paintedTime = time;
+  }
+
+  function crystalTick() {
+    crystalFrame = 0;
+    if (!crystalRenderer || roundReader.dataset.crystal !== "3d" || !shouldPlay() || video.paused) return;
+    const time = (video.currentTime / video.duration) * crystalModule.heroCrystalConfig.timeline.duration;
+    if (Number.isFinite(time) && time !== paintedTime) {
+      try {
+        paintCrystal(time);
+      } catch {
+        crystalFailed = true;
+        synchronizeCrystal();
+        return;
+      }
+    }
+    crystalFrame = window.requestAnimationFrame(crystalTick);
+  }
+
+  function pauseCrystal() {
+    window.cancelAnimationFrame(crystalFrame);
+    crystalFrame = 0;
+    crystalOverlay?.pause();
+  }
+
+  function resizeCrystal() {
+    crystalRenderer.resize();
+    crystalSizeDirty = false;
+    if (paintedTime >= 0) paintCrystal(paintedTime);
+  }
+
+  function synchronizeCrystal() {
+    const enabled = shouldUseCrystal() && crystalRenderer && Number.isFinite(video.duration);
+    if (!enabled) {
+      if (roundReader?.dataset.crystal === "3d") {
+        pauseCrystal();
+        delete roundReader.dataset.crystal;
+        delete roundReader.dataset.crystalTime;
+        roundReader.style.removeProperty("--crystal-neutral");
+        video.defaultPlaybackRate = video.playbackRate = 1;
+        roundReader.dispatchEvent(new Event("hero-crystal-mode"));
+      }
+      return;
+    }
+    if (roundReader.dataset.crystal !== "3d") {
+      const rate = video.duration / crystalModule.heroCrystalConfig.timeline.duration;
+      try {
+        video.defaultPlaybackRate = video.playbackRate = rate;
+      } catch {
+        crystalFailed = true;
+        return;
+      }
+      roundReader.dataset.crystal = "3d";
+      roundReader.dispatchEvent(new Event("hero-crystal-mode"));
+      paintedTime = -1;
+    }
+    if (shouldPlay() && !video.paused && !crystalFrame) {
+      if (crystalSizeDirty) resizeCrystal();
+      crystalFrame = window.requestAnimationFrame(crystalTick);
+    }
+  }
+
+  async function loadCrystal() {
+    if (!shouldUseCrystal() || crystalLoading || crystalRenderer) return;
+    crystalLoading = true;
+    try {
+      crystalModule = await import(crystalCanvas.dataset.module);
+      if (!shouldUseCrystal() || !shouldPlay()) return;
+      crystalRenderer = crystalModule.createHeroCrystal(crystalCanvas, portrait);
+      if (!crystalRenderer) {
+        crystalFailed = true;
+        return;
+      }
+      if (crystalModule.heroCrystalConfig.useOverlayVideo) crystalOverlay = createCrystalOverlay();
+      window.heroCrystal = {
+        setTime(time) {
+          if (roundReader.dataset.crystal !== "3d" || !Number.isFinite(time)) return;
+          const duration = crystalModule.heroCrystalConfig.timeline.duration;
+          const frame = Math.max(0, Math.min(duration, time));
+          video.currentTime = (frame / duration) * video.duration;
+          paintCrystal(frame);
+        },
+        setSelectedAgent(button) {
+          if (button?.matches("[data-hero-player]") && roundReader.contains(button)) button.click();
+        },
+        resize() {
+          if (roundReader.dataset.crystal === "3d") resizeCrystal();
+        },
+      };
+      synchronizeCrystal();
+    } catch {
+      // Leave the original, canvas-based handoff runnable if the 3D module cannot initialize.
+      crystalFailed = true;
+      synchronizeCrystal();
+    } finally {
+      crystalLoading = false;
+    }
+  }
+
   function stopPlayback() {
     playAttempt += 1;
     video.pause();
+    pauseCrystal();
     landing.dataset.motion = "paused";
   }
 
@@ -69,6 +266,7 @@
     }
 
     // Avoid loading the portrait video until it can play on screen.
+    loadCrystal();
     if (!video.getAttribute("src")) video.src = video.dataset.source;
     if (!video.paused) return;
 
@@ -83,11 +281,15 @@
   }
 
   video.muted = true;
+  video.addEventListener("loadedmetadata", synchronizeCrystal);
   video.addEventListener("playing", () => {
-    if (shouldPlay()) landing.dataset.motion = "running";
-    else stopPlayback();
+    if (shouldPlay()) {
+      landing.dataset.motion = "running";
+      synchronizeCrystal();
+    } else stopPlayback();
   });
   video.addEventListener("pause", () => {
+    pauseCrystal();
     landing.dataset.motion = "paused";
   });
   video.addEventListener("error", () => {
@@ -95,6 +297,7 @@
 
     mediaFailed = true;
     stopPlayback();
+    synchronizeCrystal();
     video.removeAttribute("src");
     video.load();
     motionToggle.hidden = true;
@@ -112,8 +315,24 @@
       video.removeAttribute("src");
       video.load();
     }
+    synchronizeCrystal();
     synchronizePlayback();
   });
+  smallScreen.addEventListener("change", () => {
+    synchronizeCrystal();
+    synchronizePlayback();
+  });
+  crystalCanvas?.addEventListener("webglcontextlost", () => {
+    crystalFailed = true;
+    synchronizeCrystal();
+  });
+  if (portrait && typeof ResizeObserver !== "undefined") {
+    const crystalSize = new ResizeObserver(() => {
+      crystalSizeDirty = true;
+      if (visible && !document.hidden && crystalRenderer && roundReader.dataset.crystal === "3d") resizeCrystal();
+    });
+    crystalSize.observe(portrait);
+  }
   document.addEventListener("visibilitychange", synchronizePlayback);
   window.addEventListener("pagehide", stopPlayback);
   window.addEventListener("pageshow", synchronizePlayback);

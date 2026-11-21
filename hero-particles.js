@@ -35,8 +35,15 @@
       trail: index % 3 === 0,
     };
   });
+  const crystalMotes = Array.from({ length: 54 }, (_, index) => ({
+    order: ((index * 37) % 59) / 59,
+    spread: ((index * 23) % 53) / 53,
+    size: 0.65 + (((index * 13) % 51) / 51) * 0.9,
+    color: index % 5 === 0 ? "#e8a23a" : "#e7f5ff",
+  }));
 
   let tracks = [];
+  let crystalLayout;
   let head;
   let lastDeparture = 0;
   let lastArrival = 0;
@@ -280,6 +287,112 @@
     return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2) * visibility * cheekShade;
   }
 
+  function crystalRing(plate, mote, turn) {
+    const angle = 0.22 + 2 * Math.PI * turn;
+    const depth = Math.sin(angle);
+    const across = Math.cos(angle);
+    const perspective = 1 / (1 - depth * 0.11);
+    const x = 0.483 + (0.226 + 0.029 * mote.spread) * across * perspective;
+    const y = 0.335 + ((0.079 + 0.031 * mote.spread) * depth - 0.059 * across) * perspective;
+    return { ...point(plate, x, y), depth };
+  }
+
+  function crystalOrbitPoint(time, loop, plate, origin, anchor, mote) {
+    const start = loop.idleEnd + 0.42 * mote.order;
+    const join = mix(loop.idleEnd, loop.orbitEnd, 0.19 + 0.063 * mote.order);
+    const exit = loop.orbitEnd - 0.69 + 0.49 * mote.order;
+    const seam = crystalRing(plate, mote, 0);
+    if (time < start) return null;
+
+    let position;
+    if (time < join) {
+      const arrival = clamp((time - start) / (join - start));
+      const from = {
+        x: origin.x + origin.width - 7 + 21 * mote.spread,
+        y: point(plate, 0, 0.31 + 0.08 * mote.spread).y,
+        depth: -0.36,
+      };
+      // Approach across the crown, then make exactly one complete turn around the skull.
+      position = cubic(from, point(plate, 0.1, 0.01), point(plate, 0.83, 0.025), seam, ease(arrival));
+    } else if (time < exit) {
+      const progress = clamp((time - join) / (exit - join));
+      position = crystalRing(plate, mote, mix(progress, ease(progress), 0.58));
+    } else {
+      const rest = clamp((time - exit) / (loop.orbitEnd + 0.32 - exit));
+      position = cubic(seam, point(plate, 0.77, 0.32), point(plate, anchor.x + 0.06, anchor.y + 0.015), point(plate, anchor.x, anchor.y), ease(rest));
+    }
+
+    const u = (position.x - plate.x) / plate.width;
+    const v = (position.y - plate.y) / plate.height;
+    const inFrontOfCheek = position.depth > 0.45 && u > 0.358 && u < 0.62;
+    const alpha = ease((time - start) / 0.4) * (1 - ease((time - loop.orbitEnd + 0.12) / 0.44));
+    return { ...position, u, v, alpha: alpha * (inFrontOfCheek ? 0.55 : 0.82) };
+  }
+
+  function dot(x, y, mote, alpha) {
+    if (alpha <= 0.012) return;
+    context.beginPath();
+    context.arc(x, y, mote.size, 0, Math.PI * 2);
+    context.fillStyle = mote.color;
+    context.globalAlpha = alpha;
+    context.fill();
+    painted = true;
+  }
+
+  function crystalTransferPoint(progress, from, plate, buttons, weights, mote) {
+    const location = { x: 0, y: 0 };
+    const firstRow = buttons[0].y;
+    buttons.forEach((button, index) => {
+      const weight = weights[index];
+      if (!weight) return;
+      const below = button.y > firstRow + 1;
+      const end = point(button, 0.42 + 0.16 * mote.spread, below ? 1 : 0);
+      end.y += (below ? 1 : -1) * (3.5 + 1.5 * mote.spread);
+      const first = { x: from.x + plate.width * 0.18, y: from.y + (mote.spread - 0.65) * plate.height * 0.17 };
+      const second = { x: end.x - 45, y: end.y + (below ? 9 : -9) };
+      const position = cubic(from, first, second, end, 1 - (1 - progress) ** 2.35);
+      location.x += position.x * weight;
+      location.y += position.y * weight;
+    });
+    return location;
+  }
+
+  function drawCrystalFrame({ detail: { time, loop, crystalCentroid, anchors, orbitPoints } }) {
+    clear();
+    if (!crystalLayout) return;
+    const { plate, message, buttons } = crystalLayout;
+    const roots = anchors?.length ? anchors : [crystalCentroid];
+    const idle = time < loop.idleEnd ? 0.23 * Math.sin((Math.PI * time) / loop.idleEnd) ** 2 : 0;
+    const hold = time >= loop.growthEnd && time < loop.holdEnd ? 0.28 * Math.sin(((time - loop.growthEnd) * Math.PI) / 2) ** 2 : 0;
+    const flash = ease((time - loop.transferEnd + 0.68) / 0.52) * (1 - ease((time - loop.transferEnd) / 0.46));
+    stage.style.setProperty("--crystal-source", idle.toFixed(2));
+    stage.style.setProperty("--crystal-arrival", Math.max(hold, flash * 0.86).toFixed(2));
+    stage.style.setProperty("--crystal-label", (flash * 0.75).toFixed(2));
+
+    if (time >= loop.idleEnd && time < loop.orbitEnd + 0.32) {
+      crystalMotes.forEach((mote, index) => {
+        const position = crystalOrbitPoint(time, loop, plate, message, roots[index % roots.length], mote);
+        if (!position || position.alpha < 0.012) return;
+        const { x, y, depth, u, v, alpha } = position;
+        if (u < 0.12 || u > 0.88) dot(x, y, mote, alpha);
+        else orbitPoints.push({ x: u, y: v, depth, opacity: alpha, size: mote.size, color: mote.color });
+      });
+    }
+    if (time >= loop.holdEnd && time < loop.transferEnd + 0.44) {
+      const weights = weightsAt(performance.now());
+      crystalMotes.forEach((mote) => {
+        const start = loop.holdEnd + 0.92 * mote.order;
+        const arrival = loop.transferEnd - 0.08 - 0.65 * (1 - mote.order);
+        if (time <= start || time > arrival + 0.44) return;
+        const progress = clamp((time - start) / (arrival - start));
+        const from = point(plate, crystalCentroid.x + (mote.spread - 0.5) * 0.14, crystalCentroid.y + (mote.order - 0.5) * 0.15);
+        const { x, y } = crystalTransferPoint(progress, from, plate, buttons, weights, mote);
+        const opacity = 0.87 * ease((time - start) / 0.28) * (1 - ease((time - arrival - 0.08) / 0.36));
+        dot(x, y, mote, opacity);
+      });
+    }
+  }
+
   function resetPortrait() {
     if (!lastPortraitFrame) return;
     model.removeAttribute("style");
@@ -360,7 +473,15 @@
   }
 
   function canAnimate() {
-    return visible && !reducedMotion.matches && !document.hidden && !video.paused && !video.ended && video.readyState >= video.HAVE_CURRENT_DATA;
+    return (
+      visible &&
+      stage.dataset.crystal !== "3d" &&
+      !reducedMotion.matches &&
+      !document.hidden &&
+      !video.paused &&
+      !video.ended &&
+      video.readyState >= video.HAVE_CURRENT_DATA
+    );
   }
 
   function tick() {
@@ -411,7 +532,8 @@
     const previousHeight = height;
     width = frame.width;
     height = frame.height;
-    const density = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(4_000_000 / (width * height)));
+    const limit = stage.dataset.crystal === "3d" ? 1.75 : 2;
+    const density = Math.min(window.devicePixelRatio || 1, limit, Math.sqrt(4_000_000 / (width * height)));
     const pixelWidth = Math.ceil(width * density);
     const pixelHeight = Math.ceil(height * density);
     if (canvas.width !== pixelWidth || canvas.height !== pixelHeight || width !== previousWidth || height !== previousHeight) {
@@ -421,6 +543,7 @@
       painted = false;
     }
     const message = bounds(speech);
+    crystalLayout = { plate, message: message ?? plate, buttons };
     head = { ...point(plate, 0.486, 0.322), radiusX: plate.width * 0.174, radiusY: plate.height * 0.23 };
     tracks = Array.from({ length: laneCount }, (_, lane) => makeTrack(plate, message, selector, buttons, lane));
     lastDeparture = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].departure));
@@ -431,6 +554,11 @@
   }
 
   video.addEventListener("playing", synchronize);
+  stage.addEventListener("hero-crystal-frame", drawCrystalFrame);
+  stage.addEventListener("hero-crystal-mode", () => {
+    resetPortrait();
+    measure();
+  });
   ["pause", "waiting", "ended", "emptied", "error"].forEach((event) => video.addEventListener(event, suspend));
   ["emptied", "error"].forEach((event) => video.addEventListener(event, resetPortrait));
   document.addEventListener("visibilitychange", synchronize);
