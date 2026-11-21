@@ -40,97 +40,168 @@
     </header>
 
     <main id="main">
-      <section
-        class="research content-width"
-        id="research"
-        aria-labelledby="research-title"
-        data-pgg-source="{{ '/pgg-feasibility/data.json' | relative_url }}"
-      >
-        <header class="section-heading">
-          <div>
-            <p class="eyebrow section-kicker">Research portfolio</p>
-            <h1 id="research-title">Selected work</h1>
-          </div>
-          <p>Experiments, empirical studies, and tools about cooperation, information, and how decisions are made.</p>
-        </header>
-
-        <article class="feature">
-          <div class="feature-copy">
-            <p class="eyebrow feature-kicker">Featured study <span></span> Cooperation</p>
-            <h2>Public Goods Game Feasibility</h2>
-            <p>
-              What can agents’ public messages tell us about the next round? I follow a single 15-round game with four language-model agents and audit
-              a surprisal score against what the agents actually do.
-            </p>
-            <div class="feature-links">
-              <a class="solid-link" href="{{ '/pgg-feasibility/' | relative_url }}">Open the interactive study</a>
-              <a class="text-link" href="https://github.com/dorisduowang/pgg-feasibility">Code &amp; data</a>
-              <a class="text-link" href="{{ '/projects/punishment_on_demand/' | relative_url }}">Earlier simulation</a>
+      <div class="research-area">
+        <section
+          class="research content-width"
+          id="research"
+          aria-labelledby="research-title"
+          data-pgg-source="{{ '/pgg-feasibility/data.json' | relative_url }}"
+        >
+          <header class="section-heading">
+            <div>
+              <p class="eyebrow section-kicker">Research portfolio</p>
+              <h1 id="research-title">How do incentives and information shape decisions?</h1>
             </div>
-          </div>
-          <figure class="pgg-figure">
-            <div class="pgg-figure-header">
-              <div>
-                <p class="eyebrow">One observed game · 15 rounds</p>
-                <h3>Mean contribution</h3>
+            <nav class="research-jumps" aria-label="On this page">
+              <a href="#public-goods">Cooperation in a game</a>
+              <a href="#fomc">Fed communication and markets</a>
+              <a href="#more-projects">More projects</a>
+            </nav>
+          </header>
+
+          <article class="feature" id="public-goods" aria-labelledby="pgg-title">
+            <div class="feature-copy">
+              <p class="eyebrow feature-kicker">Cooperation · Agent experiments</p>
+              <h2 id="pgg-title">Public Goods Game Feasibility</h2>
+              <p>
+                Can surprising messages tell us what agents will contribute next? Four language-model agents play one repeated game. I score their
+                public messages and compare those scores with what happens in the next round.
+              </p>
+              <dl class="study-facts">
+                <div>
+                  <dt>Agents</dt>
+                  <dd>4</dd>
+                </div>
+                <div>
+                  <dt>Rounds</dt>
+                  <dd>15</dd>
+                </div>
+                <div>
+                  <dt>Public messages</dt>
+                  <dd>60</dd>
+                </div>
+              </dl>
+              <div class="feature-links">
+                <a class="solid-link" href="{{ '/pgg-feasibility/' | relative_url }}">Open the interactive study</a>
+                <a class="text-link" href="https://github.com/dorisduowang/pgg-feasibility">Code &amp; data</a>
+                <a class="text-link" href="{{ '/projects/punishment_on_demand/' | relative_url }}">Earlier simulation</a>
               </div>
             </div>
-            <div class="pgg-canvas">
-              <canvas id="pgg-chart" aria-hidden="true"></canvas>
-              <img
-                class="pgg-fallback"
-                src="{{ '/pgg-feasibility/figures/trajectory.png' | relative_url }}"
-                alt="Contribution trajectory with points for all 15 rounds"
-                loading="lazy"
-              >
-            </div>
-            <div class="round-panel" hidden>
-              <div class="round-input">
-                <button class="round-play" type="button" aria-label="Play rounds"><span aria-hidden="true">▶</span></button>
-                <input id="round-input" type="range" min="1" max="15" value="4" step="1" aria-label="Select game round">
-                <span class="round-position" aria-hidden="true">4 / 15</span>
+            <figure class="pgg-figure">
+              <div class="pgg-figure-header">
+                <p class="eyebrow">One observed game</p>
+                <h3>Mean contribution per agent</h3>
               </div>
-              <output class="round-detail" for="round-input"></output>
-            </div>
-            <figcaption>
-              <span class="active-key" aria-hidden="true"></span> Shaded rounds mark when the history-based punishment rule was active.
-            </figcaption>
-          </figure>
-        </article>
-
-        <div class="work-heading">
-          <h2>More projects</h2>
-          <div class="filters" role="group" aria-label="Filter projects by topic" hidden>
-            <button type="button" data-filter="all" aria-pressed="true">All</button>
-            <button type="button" data-filter="cooperation" aria-pressed="false">Cooperation</button>
-            <button type="button" data-filter="ai" aria-pressed="false">AI &amp; Science</button>
-            <button type="button" data-filter="markets" aria-pressed="false">Markets</button>
-            <button type="button" data-filter="inequality" aria-pressed="false">Inequality</button>
-          </div>
-        </div>
-        <p class="visually-hidden" id="filter-status" aria-live="polite"></p>
-        <div class="work-grid">
-          {% for project in site.data.portfolio %}
-            <article class="work-card" data-topic="{{ project.topic }}">
-              <figure class="work-figure">
-                <canvas data-research-figure="{{ project.figure }}" aria-hidden="true"></canvas>
-                <figcaption>{{ project.caption | escape }}</figcaption>
-              </figure>
-              <div class="work-copy">
-                <p class="eyebrow">{{ project.field | escape }}</p>
-                <h3>{{ project.title | escape }}</h3>
-                <p>{{ project.description | escape }}</p>
-                <a
-                  class="text-link"
-                  href="{% if project.url contains '://' %}{{ project.url }}{% else %}{{ project.url | relative_url }}{% endif %}"
+              <div class="pgg-canvas">
+                <canvas id="pgg-chart" aria-hidden="true"></canvas>
+                <img
+                  class="pgg-fallback"
+                  src="{{ '/pgg-feasibility/figures/trajectory.png' | relative_url }}"
+                  alt="Mean contributions across all 15 rounds. The highest mean was 10 tokens."
+                  loading="lazy"
                 >
-                  {{- project.link | escape -}}
-                </a>
               </div>
-            </article>
-          {% endfor %}
-        </div>
-      </section>
+              <div class="round-panel" hidden>
+                <div class="round-input">
+                  <button class="round-play" type="button" aria-label="Play rounds"><span aria-hidden="true">▶</span></button>
+                  <input id="round-input" type="range" min="1" max="15" value="4" step="1" aria-label="Select game round">
+                  <span class="round-position" aria-hidden="true">4 / 15</span>
+                </div>
+                <output class="round-detail" for="round-input"></output>
+                <div class="pgg-agents">
+                  <p class="pgg-agents-heading"><strong>Individual contributions</strong> <span>of 20 tokens</span></p>
+                  <ul data-pgg-agents aria-label="Individual contributions in tokens"></ul>
+                  <p data-pgg-next></p>
+                </div>
+              </div>
+              <figcaption>
+                <span class="active-key" aria-hidden="true"></span> Shaded rounds mark when the history-based punishment rule was active.
+              </figcaption>
+            </figure>
+          </article>
+
+          {% assign fomc = site.data.portfolio | where: 'figure', 'fomc' | first %}
+          <article class="feature market-feature" id="fomc" aria-labelledby="fomc-title">
+            <div class="feature-copy">
+              <p class="eyebrow feature-kicker">{{ fomc.field | escape }} · Text as data</p>
+              <h2 id="fomc-title">{{ fomc.title | escape }}</h2>
+              <p>{{ fomc.description | escape }}</p>
+              <ol class="event-sequence" aria-label="Temporal validation study design">
+                <li><strong>2 days before</strong><span>Collect GDELT news metadata.</span></li>
+                <li><strong>Meeting day</strong><span>Anchor the event date. Use the minutes once released for the text comparison.</span></li>
+                <li><strong>Next 5 trading days</strong><span>Measure realized S&amp;P 500 volatility.</span></li>
+              </ol>
+              <div class="feature-links">
+                <a class="solid-link" href="{{ fomc.url | escape }}">{{ fomc.link | escape }}</a>
+              </div>
+              <p class="validation-note">Temporal holdout validation is in progress.</p>
+            </div>
+            <figure class="market-figure">
+              <p class="eyebrow">Earlier analysis · 33 meetings</p>
+              <h3>When was the association strongest?</h3>
+              <p class="market-axis-label">Pearson correlation (r)</p>
+              <div class="market-plot">
+                <div class="market-ticks" aria-hidden="true"><span>0.6</span><span>0.3</span><span>0</span></div>
+                <div class="market-gridlines" aria-hidden="true"></div>
+                <ol class="market-bars" role="list" aria-label="Correlation for each day relative to the meeting">
+                  {% for lag in fomc.lags %}
+                    <li
+                      class="market-bar{% if lag.primary %} market-bar-primary{% endif %}"
+                      style="--lag-height: {{ lag.r | divided_by: 0.6 | times: 100 }}%"
+                    >
+                      <div class="market-mark" aria-hidden="true"></div>
+                      <span class="market-day"><span class="visually-hidden">Day </span>{{ lag.day | escape }}</span>
+                      <strong class="market-value"><span class="visually-hidden">Correlation </span>{{ lag.r | round: 2 }}</strong>
+                    </li>
+                  {% endfor %}
+                </ol>
+              </div>
+              <p class="market-day-label">Days relative to the meeting</p>
+              <figcaption>
+                At day −2, similarity between news and the eventual meeting minutes had the strongest correlation with post-meeting volatility. The 33
+                meetings span March 2015 to March 2019. <a href="{{ fomc.baseline_source | escape }}">View the source data</a>.
+              </figcaption>
+            </figure>
+          </article>
+
+          <div class="work-heading" id="more-projects">
+            <h2>More projects</h2>
+            <div class="filters" role="group" aria-label="Filter projects by topic" hidden>
+              <button type="button" data-filter="all" aria-pressed="true">All</button>
+              <button type="button" data-filter="cooperation" aria-pressed="false">Cooperation</button>
+              <button type="button" data-filter="ai" aria-pressed="false">AI &amp; Science</button>
+              <button type="button" data-filter="markets" aria-pressed="false">Markets</button>
+              <button type="button" data-filter="inequality" aria-pressed="false">Inequality</button>
+            </div>
+          </div>
+          <p class="visually-hidden" id="filter-status" aria-live="polite"></p>
+          <div class="work-grid">
+            {% assign other_projects = site.data.portfolio | where_exp: 'item', "item.figure != 'fomc'" %}
+            {% for project in other_projects %}
+              <article class="work-card" data-topic="{{ project.topic }}">
+                <figure class="work-figure">
+                  <canvas data-research-figure="{{ project.figure }}" aria-hidden="true"></canvas>
+                  <figcaption>{{ project.caption | escape }}</figcaption>
+                </figure>
+                <div class="work-copy">
+                  <p class="eyebrow">{{ project.field | escape }}</p>
+                  <h3>{{ project.title | escape }}</h3>
+                  <div class="work-fact">
+                    <strong>{{ project.fact | escape }}</strong> {{ project.fact_label | escape }}
+                  </div>
+                  <p>{{ project.description | escape }}</p>
+                  <a
+                    class="text-link"
+                    href="{% if project.url contains '://' %}{{ project.url }}{% else %}{{ project.url | relative_url }}{% endif %}"
+                  >
+                    {{- project.link | escape -}}
+                  </a>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
 
       <section class="about" id="about" aria-labelledby="about-title">
         <div class="about-inner content-width">

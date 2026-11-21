@@ -2,31 +2,45 @@
   field: Financial economics
   topic: markets
   figure: fomc
-  caption: Media coverage and volatility around the FOMC announcement
-  description: When do news narratives and market volatility move together around Fed announcements? With Yuzhao (Jerry) Jin.
-  url: https://github.com/dorisduowang/fomc-media-alignment
-  link: View the current study
+  description: Does news before a Fed meeting use language similar to the minutes released later, and how does that overlap relate to market volatility? With Yuzhao (Jerry) Jin.
+  url: https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/temporal-validation
+  link: View the latest project
+  baseline_source: https://github.com/dorisduowang/fomc-media-alignment/blob/e15061c6b4b37308295d836f40da722e0752bd6b/results/tables/leadlag_profile.csv
+  lags:
+    - { day: "−3", r: 0.5317738982122637 }
+    - { day: "−2", r: 0.5649391361568665, primary: true }
+    - { day: "−1", r: 0.3898334150280286 }
+    - { day: "0", r: 0.39231167375372344 }
+    - { day: "+1", r: 0.44074209894652233 }
+    - { day: "+2", r: 0.2228976855872419 }
+    - { day: "+3", r: 0.32394957181615747 }
 - title: Auditing Text-Based Reward Signals
   field: AI and science
   topic: ai
   figure: chorus
-  caption: A network of papers, researchers and concepts
-  description: In an audit of 443 publications, I examined how alternative reward signals change which papers an AI research system surfaces.
+  caption: Study design · Papers, researchers, and concepts feed a ranking.
+  fact: "443"
+  fact_label: publications audited
+  description: I examined how alternative reward signals change which papers an AI research system surfaces.
   url: /projects/chorus_audit/
   link: Read the project
 - title: Cooperation in Large-Scale Repeated Games
   field: Experimental economics
   topic: cooperation
   figure: cooperation
-  caption: Fixed groups compared with regrouping across rounds
-  description: My King's College London dissertation examines punishment and regrouping across more than 1.5 million recorded interactions.
+  caption: Study design · Track fixed and regrouped players across rounds.
+  fact: 1.5M+
+  fact_label: interaction observations
+  description: My King's College London dissertation asks when peer punishment can sustain cooperation as groups change over time.
   url: /projects/kcl_dissertation/
   link: Read the dissertation summary
 - title: Facilitator-Free Digital Twins
   field: Group decision-making
   topic: cooperation
   figure: twins
-  caption: Participant-matched digital twins deliberate in small groups
+  caption: Study design · Matched digital twins deliberate and make a group choice.
+  fact: GRAIL
+  fact_label: public study protocol
   description: A public GRAIL protocol contribution on simulating small-group deliberation with participant-matched digital twins.
   url: https://github.com/dorisduowang/group_ai_lab/blob/feature/no-facilitator-agent-study/docs/TWIN2K_GRAIL_PROTOCOL.md
   link: Read the protocol
@@ -34,15 +48,19 @@
   field: Financial econometrics
   topic: markets
   figure: gold
-  caption: Two forecasting models evaluated on gold returns
-  description: A comparison of classical and neural models for out-of-sample gold return forecasting, using daily data from 2000 to 2020.
+  caption: Study design · Compare ARIMA and LSTM forecasts on held-out returns.
+  fact: 2000–2020
+  fact_label: daily gold price data
+  description: I compare whether classical and neural models can forecast gold returns on data they have not seen.
   url: https://doi.org/10.54691/bcpbm.v38i.4123
   link: Read the paper
 - title: Gender Pay and Structural Inequality
   field: Applied microeconomics
   topic: inequality
   figure: inequality
-  caption: Census microdata, regression and model diagnostics
+  caption: Study design · Estimate and diagnose wage models with census microdata.
+  fact: OLS
+  fact_label: wage regression
   description: An analysis of UK gender pay disparities using census microdata, regression and model diagnostics.
   url: /cv/
   link: See research experience
@@ -50,7 +68,9 @@
   field: Mechanistic interpretability
   topic: ai
   figure: llm
-  caption: Representations of a compound and its head word
+  caption: Study design · Compare “washing machine” with “machine” alone.
+  fact: Sparse features
+  fact_label: representation analysis
   description: How do language models represent a compound concept such as “washing machine”? I compare it with its head word using similarity and sparse-feature analyses.
   url: https://github.com/dorisduowang/llm-washing-machine-claude/blob/main/REPORT.md
   link: Read the analysis

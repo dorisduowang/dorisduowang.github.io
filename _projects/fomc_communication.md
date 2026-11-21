@@ -5,14 +5,14 @@ description: Analyzing relationships among Fed communication, news coverage, and
 img:
 importance: 2
 category: research
-github: https://github.com/dorisduowang/fomc-media-alignment
+github: https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/temporal-validation
 ---
 
 ## Overview
 
 This project (co-led with Yuzhao Jin) examines the relationship between **FOMC communication**, **New York Times media narratives**, and **S&P 500 volatility** over the 2021–2025 period.
 
-The [current FOMC Media Alignment study](https://github.com/dorisduowang/fomc-media-alignment) documents a planned 2015–2025 temporal holdout. The earlier course version is summarized below.
+The [latest FOMC Media Alignment project](https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/temporal-validation) documents the temporal validation workflow for the 2015–2025 extension. The earlier course version is summarized below.
 
 ## Data
 

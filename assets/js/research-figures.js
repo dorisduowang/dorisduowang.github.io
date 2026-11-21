@@ -69,47 +69,6 @@
     );
   }
 
-  function drawFomc(context) {
-    box(context, 156, 30, 88, 138, "#ead5cc9e", "#c88f84");
-    label(context, "Event window", 200, 45, { align: "center" });
-
-    path(
-      context,
-      [
-        [37, 96],
-        [363, 96],
-      ],
-      muted,
-      1.4
-    );
-    [44, 83, 122, 161, 200, 239, 278, 317, 356].forEach((x) => {
-      path(
-        context,
-        [
-          [x, 91],
-          [x, 101],
-        ],
-        muted
-      );
-    });
-    path(
-      context,
-      [
-        [200, 58],
-        [200, 135],
-      ],
-      red,
-      1.5
-    );
-    dot(context, 200, 96, 6, red);
-
-    label(context, "News before", 96, 73, { align: "center", font: serif, size: 17 });
-    label(context, "News after", 304, 73, { align: "center", font: serif, size: 17 });
-    label(context, "Lead", 95, 120, { align: "center", color: muted });
-    label(context, "Lag", 305, 120, { align: "center", color: muted });
-    label(context, "FOMC", 200, 150, { align: "center" });
-  }
-
   function drawChorus(context) {
     const nodes = [
       { name: "Papers", color: ink, fill: ivory, y: 58 },
@@ -358,7 +317,6 @@
   }
 
   const drawings = {
-    fomc: drawFomc,
     chorus: drawChorus,
     cooperation: drawCooperation,
     gold: drawGold,

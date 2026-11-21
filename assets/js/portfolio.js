@@ -23,6 +23,7 @@ if (filters) {
   });
 }
 
+const pggChartInset = { left: 26, right: 10, top: 16, bottom: 34 };
 const pggSource = document.querySelector("[data-pgg-source]");
 
 if (pggSource) {
@@ -49,10 +50,34 @@ async function loadPgg(source) {
   const playIcon = play.querySelector("span");
   const position = panel.querySelector(".round-position");
   const output = panel.querySelector(".round-detail");
+  const agents = panel.querySelector("[data-pgg-agents]");
+  const next = panel.querySelector("[data-pgg-next]");
+  const playerCount = rounds[0].contributions?.length ?? 0;
+  const endowment = 20;
+  const agentRows = [];
   let activeIndex = Number(input.value) - 1;
   let timer;
 
+  if (agents) {
+    for (let i = 0; i < playerCount; i += 1) {
+      const item = document.createElement("li");
+      const player = document.createElement("span");
+      const bar = document.createElement("span");
+      const value = document.createElement("span");
+      item.className = "pgg-agent";
+      player.className = "pgg-agent-name";
+      player.textContent = rounds[0].messages?.[i]?.player ?? `P${i + 1}`;
+      bar.className = "pgg-agent-bar";
+      bar.setAttribute("aria-hidden", "true");
+      value.className = "pgg-agent-value";
+      item.append(player, bar, value);
+      agents.append(item);
+      agentRows.push({ item, value });
+    }
+  }
+
   input.max = rounds.length;
+  activeIndex = Math.min(activeIndex, rounds.length - 1);
   figure.classList.add("is-interactive");
   panel.hidden = false;
 
@@ -64,6 +89,17 @@ async function loadPgg(source) {
     input.setAttribute("aria-valuetext", `Round ${row.round} of ${rounds.length}`);
     position.textContent = `${row.round} / ${rounds.length}`;
     output.value = `Round ${row.round} · ${row.mean_contribution} tokens per player · ${rule}`;
+    agentRows.forEach(({ item, value }, i) => {
+      const contribution = row.contributions?.[i];
+      value.textContent = Number.isFinite(contribution) ? contribution : "Unavailable";
+      item.style.setProperty("--contribution", `${Number.isFinite(contribution) ? (contribution / endowment) * 100 : 0}%`);
+    });
+    if (next) {
+      const nextRound = rounds[index + 1];
+      next.textContent = nextRound
+        ? `Round ${nextRound.round} averaged ${nextRound.mean_contribution} tokens per player.`
+        : `Round ${row.round} was the final round.`;
+    }
     if (canvas.clientWidth) drawContributionChart(canvas, context, rounds, activeIndex);
   }
 
@@ -78,6 +114,18 @@ async function loadPgg(source) {
   input.addEventListener("input", () => {
     stopPlayback();
     selectRound(Number(input.value) - 1);
+  });
+
+  canvas.addEventListener("click", (event) => {
+    const bounds = canvas.getBoundingClientRect();
+    const x = ((event.clientX - bounds.left) / bounds.width) * canvas.clientWidth;
+    const y = ((event.clientY - bounds.top) / bounds.height) * canvas.clientHeight;
+    const plotWidth = canvas.clientWidth - pggChartInset.left - pggChartInset.right;
+    const xInPlot = x - pggChartInset.left;
+    if (xInPlot < 0 || xInPlot >= plotWidth || y < pggChartInset.top || y >= canvas.clientHeight - pggChartInset.bottom) return;
+
+    stopPlayback();
+    selectRound(Math.floor((xInPlot / plotWidth) * rounds.length));
   });
 
   play.addEventListener("click", () => {
@@ -121,10 +169,10 @@ function drawContributionChart(canvas, context, rounds, activeIndex) {
   canvas.height = Math.round(height * pixelRatio);
   context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-  const left = 26;
-  const right = width - 10;
-  const top = 16;
-  const bottom = height - 34;
+  const left = pggChartInset.left;
+  const right = width - pggChartInset.right;
+  const top = pggChartInset.top;
+  const bottom = height - pggChartInset.bottom;
   const max = Math.max(10, Math.ceil(Math.max(...rounds.map((row) => row.mean_contribution)) / 5) * 5);
   const step = (right - left) / rounds.length;
   const x = (index) => left + (index + 0.5) * step;
