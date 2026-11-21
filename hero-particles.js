@@ -258,12 +258,20 @@
   }
 
   function depthOpacity(position, untilHidden, revealAge) {
-    const { depth } = position;
+    const { x, y, depth } = position;
     const behind = ease(-depth / 0.4);
     const rim = ease((headDistance(position) - occlusionEdge) / 0.13);
     // Fade toward the near edge of the shadow, then reveal past the far edge on the media clock.
     const visibility = revealAge < 0 ? ease(untilHidden / concealDuration) : ease(revealAge / revealDuration);
-    return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2) * visibility;
+    let cheekShade = 1;
+    if (depth > 0) {
+      // Feather the dimming around the lower face so it never forms a visible boundary.
+      const across = (x - head.x) / (head.radiusX * 0.91);
+      const down = (y - head.y - head.radiusY * 0.56) / (head.radiusY * 0.38);
+      const coverage = 1 - ease((Math.hypot(across, down) - 0.58) / 0.44);
+      cheekShade = 1 - 0.38 * coverage * ease(depth / 0.38);
+    }
+    return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2) * visibility * cheekShade;
   }
 
   function draw(time) {
