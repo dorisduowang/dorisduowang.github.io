@@ -1049,7 +1049,8 @@ button {
   --fan-turn: var(--fan-right);
 }
 
-.about-photo-card-flowers {
+.about-photo-card-flowers,
+.about-photo-card-outdoors {
   --card-photo-position: 66% center;
 }
 
