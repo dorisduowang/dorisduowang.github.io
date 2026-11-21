@@ -14,8 +14,9 @@
     <link rel="canonical" href="https://dorisduowang.github.io/" />
     <link rel="icon" type="image/png" href="/assets/img/portfolio/doris-mark.png" />
     <link rel="preload" href="/assets/fonts/portfolio/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="styles.css?v=537a770b" />
-    <script defer src="hero.js?v=2d9b54bd"></script>
+    <link rel="stylesheet" href="styles.css?v=2dff9c89" />
+    <script defer src="hero.js?v=38a82fee"></script>
+    <script defer src="hero-particles.js?v=f1c41fa6"></script>
   </head>
   <body id="top" data-landing data-portfolio-url="/portfolio/" data-motion="paused">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -52,6 +53,7 @@
         </div>
 
         <div class="hero-stage" data-round-reader data-round-source="/pgg-feasibility/data.json">
+          <canvas class="hero-particles" data-hero-particles aria-hidden="true"></canvas>
           <div class="portrait-plate">
             <!-- Swap poster and data-source here to use another portrait. Leave src unset for reduced-motion viewers. -->
             <video
@@ -85,7 +87,7 @@
             <div class="round-quote" aria-live="polite" aria-atomic="true">
               <p data-hero-speaker>P4 said</p>
               <blockquote data-hero-message>
-                Let's contribute 5 each to maintain the public fund and avoid sanctions. Cooperation ensures mutual gains!
+                Let's contribute <mark>5</mark> each to maintain the public fund and avoid sanctions. Cooperation ensures mutual gains!
               </blockquote>
             </div>
           </div>
