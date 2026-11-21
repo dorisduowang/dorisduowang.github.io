@@ -45,6 +45,7 @@
   const crystalCanvas = roundReader?.querySelector("[data-crystal-renderer]");
   const portrait = crystalCanvas?.closest(".portrait-plate");
   let crystalModule;
+  let portraitPoseAt;
   let crystalRenderer;
   let crystalOverlay;
   let overlayPlayPending = false;
@@ -135,23 +136,17 @@
     return aligned;
   }
 
-  function paintCrystal(time) {
-    const { heroCrystalConfig: config, crystalCentroid } = crystalModule;
+  function paintCrystal(time, sourceTime = video.currentTime) {
+    const { heroCrystalConfig: config, crystalCentroid, placeOnPortrait } = crystalModule;
     const loop = config.timeline;
-    const ease = (unit) => {
-      const progress = Math.max(0, Math.min(1, unit));
-      return progress * progress * (3 - 2 * progress);
-    };
-    // Cover the source's baked scan while using the same aligned, neutral expression in WebGL.
-    const settle = ease((time - loop.idleEnd * 0.55) / (loop.idleEnd * 0.17));
-    const release = ease((time - loop.duration + 0.48) / 0.48);
-    roundReader.style.setProperty("--crystal-neutral", (settle * (1 - release)).toFixed(3));
+    const pose = portraitPoseAt(sourceTime);
+    const place = (point) => placeOnPortrait(point, pose);
     roundReader.dataset.crystalTime = time.toFixed(3);
     const orbitPoints = [];
-    const detail = { time, loop, crystalCentroid, anchors: config.anchors, orbitPoints };
+    const detail = { time, sourceTime, loop, crystalCentroid, anchors: config.anchors, orbitPoints, place, pose };
     roundReader.dispatchEvent(new CustomEvent("hero-crystal-frame", { detail }));
     const overlay = synchronizeOverlay(time, loop);
-    crystalRenderer.setTime(time, orbitPoints, { crystals: !overlay });
+    crystalRenderer.setTime(time, orbitPoints, { crystals: !overlay, pose });
     paintedTime = time;
   }
 
@@ -190,7 +185,6 @@
         pauseCrystal();
         delete roundReader.dataset.crystal;
         delete roundReader.dataset.crystalTime;
-        roundReader.style.removeProperty("--crystal-neutral");
         video.defaultPlaybackRate = video.playbackRate = 1;
         roundReader.dispatchEvent(new Event("hero-crystal-mode"));
       }
@@ -218,7 +212,9 @@
     if (!shouldUseCrystal() || crystalLoading || crystalRenderer) return;
     crystalLoading = true;
     try {
-      crystalModule = await import(crystalCanvas.dataset.module);
+      const [rendererModule, poseModule] = await Promise.all([import(crystalCanvas.dataset.module), import(crystalCanvas.dataset.pose)]);
+      crystalModule = rendererModule;
+      portraitPoseAt = poseModule.portraitPoseAt;
       if (!shouldUseCrystal() || !shouldPlay()) return;
       crystalRenderer = crystalModule.createHeroCrystal(crystalCanvas, portrait);
       if (!crystalRenderer) {
@@ -231,8 +227,9 @@
           if (roundReader.dataset.crystal !== "3d" || !Number.isFinite(time)) return;
           const duration = crystalModule.heroCrystalConfig.timeline.duration;
           const frame = Math.max(0, Math.min(duration, time));
-          video.currentTime = (frame / duration) * video.duration;
-          paintCrystal(frame);
+          const sourceTime = (frame / duration) * video.duration;
+          video.currentTime = sourceTime;
+          paintCrystal(frame, sourceTime);
         },
         setSelectedAgent(button) {
           if (button?.matches("[data-hero-player]") && roundReader.contains(button)) button.click();
@@ -282,6 +279,10 @@
 
   video.muted = true;
   video.addEventListener("loadedmetadata", synchronizeCrystal);
+  video.addEventListener("seeked", () => {
+    if (roundReader?.dataset.crystal !== "3d" || !video.paused) return;
+    paintCrystal((video.currentTime / video.duration) * crystalModule.heroCrystalConfig.timeline.duration);
+  });
   video.addEventListener("playing", () => {
     if (shouldPlay()) {
       landing.dataset.motion = "running";

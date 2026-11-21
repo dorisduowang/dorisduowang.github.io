@@ -3,9 +3,7 @@
   const stage = canvas?.closest(".hero-stage");
   const portrait = stage?.querySelector(".portrait-plate");
   const video = portrait?.querySelector(".landing-video");
-  const model = portrait?.querySelector("[data-bionic-portrait]");
-  const neutral = model?.querySelector(".portrait-neutral");
-  const armor = model?.querySelector(".portrait-armor");
+  const scan = portrait?.querySelector(".portrait-scan");
   const speech = stage?.querySelector(".round-speech");
   const choices = stage?.querySelector(".round-selector");
   const players = Array.from(choices?.querySelectorAll("[data-hero-player]") ?? []);
@@ -45,14 +43,11 @@
   let tracks = [];
   let crystalLayout;
   let head;
-  let lastDeparture = 0;
-  let lastArrival = 0;
   let finishTime = 0;
   let width = 0;
   let height = 0;
   let animationFrame = 0;
   let lastTime = -1;
-  let lastPortraitFrame = "";
   let painted = false;
   let visible = typeof IntersectionObserver === "undefined";
   let selected = players.findIndex((player) => player.getAttribute("aria-pressed") === "true");
@@ -287,21 +282,22 @@
     return mix(1, rim, behind) * mix(0.49, 1.1, (depth + 1) / 2) * visibility * cheekShade;
   }
 
-  function crystalRing(plate, mote, turn) {
+  function crystalRing(plate, mote, turn, place) {
     const angle = 0.22 + 2 * Math.PI * turn;
     const depth = Math.sin(angle);
     const across = Math.cos(angle);
     const perspective = 1 / (1 - depth * 0.11);
     const x = 0.483 + (0.226 + 0.029 * mote.spread) * across * perspective;
     const y = 0.335 + ((0.079 + 0.031 * mote.spread) * depth - 0.059 * across) * perspective;
-    return { ...point(plate, x, y), depth };
+    const mapped = place({ x, y });
+    return { ...point(plate, mapped.x, mapped.y), depth };
   }
 
-  function crystalOrbitPoint(time, loop, plate, origin, anchor, mote) {
+  function crystalOrbitPoint(time, loop, plate, origin, anchor, mote, place) {
     const start = loop.idleEnd + 0.42 * mote.order;
     const join = mix(loop.idleEnd, loop.orbitEnd, 0.19 + 0.063 * mote.order);
     const exit = loop.orbitEnd - 0.69 + 0.49 * mote.order;
-    const seam = crystalRing(plate, mote, 0);
+    const seam = crystalRing(plate, mote, 0, place);
     if (time < start) return null;
 
     let position;
@@ -316,15 +312,19 @@
       position = cubic(from, point(plate, 0.1, 0.01), point(plate, 0.83, 0.025), seam, ease(arrival));
     } else if (time < exit) {
       const progress = clamp((time - join) / (exit - join));
-      position = crystalRing(plate, mote, mix(progress, ease(progress), 0.58));
+      position = crystalRing(plate, mote, mix(progress, ease(progress), 0.58), place);
     } else {
       const rest = clamp((time - exit) / (loop.orbitEnd + 0.32 - exit));
-      position = cubic(seam, point(plate, 0.77, 0.32), point(plate, anchor.x + 0.06, anchor.y + 0.015), point(plate, anchor.x, anchor.y), ease(rest));
+      const first = place({ x: 0.77, y: 0.32 });
+      const second = place({ x: anchor.x + 0.06, y: anchor.y + 0.015 });
+      const target = place(anchor);
+      position = cubic(seam, point(plate, first.x, first.y), point(plate, second.x, second.y), point(plate, target.x, target.y), ease(rest));
     }
 
     const u = (position.x - plate.x) / plate.width;
     const v = (position.y - plate.y) / plate.height;
-    const inFrontOfCheek = position.depth > 0.45 && u > 0.358 && u < 0.62;
+    const face = place({ x: 0.489, y: 0.367 });
+    const inFrontOfCheek = position.depth > 0.45 && Math.abs(u - face.x) < 0.13;
     const alpha = ease((time - start) / 0.4) * (1 - ease((time - loop.orbitEnd + 0.12) / 0.44));
     return { ...position, u, v, alpha: alpha * (inFrontOfCheek ? 0.55 : 0.82) };
   }
@@ -357,7 +357,8 @@
     return location;
   }
 
-  function drawCrystalFrame({ detail: { time, loop, crystalCentroid, anchors, orbitPoints } }) {
+  function drawCrystalFrame({ detail: { time, sourceTime, loop, crystalCentroid, anchors, orbitPoints, place, pose } }) {
+    drawScan(sourceTime, place, pose.roll);
     clear();
     if (!crystalLayout) return;
     const { plate, message, buttons } = crystalLayout;
@@ -371,7 +372,7 @@
 
     if (time >= loop.idleEnd && time < loop.orbitEnd + 0.32) {
       crystalMotes.forEach((mote, index) => {
-        const position = crystalOrbitPoint(time, loop, plate, message, roots[index % roots.length], mote);
+        const position = crystalOrbitPoint(time, loop, plate, message, roots[index % roots.length], mote, place);
         if (!position || position.alpha < 0.012) return;
         const { x, y, depth, u, v, alpha } = position;
         if (u < 0.12 || u > 0.88) dot(x, y, mote, alpha);
@@ -385,7 +386,11 @@
         const arrival = loop.transferEnd - 0.08 - 0.65 * (1 - mote.order);
         if (time <= start || time > arrival + 0.44) return;
         const progress = clamp((time - start) / (arrival - start));
-        const from = point(plate, crystalCentroid.x + (mote.spread - 0.5) * 0.14, crystalCentroid.y + (mote.order - 0.5) * 0.15);
+        const origin = place({
+          x: crystalCentroid.x + (mote.spread - 0.5) * 0.14,
+          y: crystalCentroid.y + (mote.order - 0.5) * 0.15,
+        });
+        const from = point(plate, origin.x, origin.y);
         const { x, y } = crystalTransferPoint(progress, from, plate, buttons, weights, mote);
         const opacity = 0.87 * ease((time - start) / 0.28) * (1 - ease((time - arrival - 0.08) / 0.36));
         dot(x, y, mote, opacity);
@@ -393,44 +398,32 @@
     }
   }
 
-  function resetPortrait() {
-    if (!lastPortraitFrame) return;
-    model.removeAttribute("style");
-    lastPortraitFrame = "";
+  function clearScan() {
+    scan?.removeAttribute("style");
   }
 
-  function drawPortrait(time) {
-    if (!neutral?.complete || !neutral.naturalWidth || !armor?.complete || !armor.naturalWidth || !lastDeparture) return;
-
-    // A single aligned frame keeps her expression unchanged throughout the transfer.
-    // Hand the portrait back to the original motion as its ending pose settles.
-    const stillness = ease((time - 0.94) / 0.48) * (1 - ease((time - 11.2) / 0.44));
-    if (!stillness) {
-      resetPortrait();
+  function drawScan(time, place, roll = 0) {
+    const start = 1.08;
+    const end = 6.8;
+    if (!scan) return;
+    if (time <= start || time >= end) {
+      clearScan();
       return;
     }
 
-    // Use the last particle in each phase so the face stays human for the whole lap.
-    const sweep = clamp((time - 1.92) / (lastDeparture - 1.92));
-    const build = clamp((time - lastDeparture) / 0.54);
-    const restore = ease((time - lastArrival) / 0.52);
-    const material = ease(build) * (1 - restore);
-    const reveal = mix(12, 74, build);
-    const scan = sweep < 1 ? mix(14, 53, sweep) : reveal;
-    const light = sweep < 1 ? 0.4 * Math.sin(Math.PI * sweep) : 0.78 * Math.sin(Math.PI * build);
-    const frame = [stillness, material, reveal, scan, light].map((value) => value.toFixed(3)).join(" ");
-    if (frame === lastPortraitFrame) return;
-    lastPortraitFrame = frame;
-    model.style.setProperty("--neutral-opacity", stillness.toFixed(3));
-    model.style.setProperty("--armor-opacity", material.toFixed(3));
-    model.style.setProperty("--armor-mask-start", `${(reveal - 5).toFixed(2)}%`);
-    model.style.setProperty("--armor-mask-end", `${(reveal + 5).toFixed(2)}%`);
-    model.style.setProperty("--scan-position", `${scan.toFixed(2)}%`);
-    model.style.setProperty("--scan-opacity", light.toFixed(3));
+    const acrossFace = { x: 0.485, y: mix(0.145, 0.504, ease((time - start) / (end - start))) };
+    const mapped = place?.(acrossFace) ?? acrossFace;
+    // Keep the clean opening and lower the sweep's brightness around both eyes.
+    const eyelidShade = 1 - 0.67 * Math.exp(-(((acrossFace.y - 0.277) / 0.035) ** 2));
+    const light = 0.63 * eyelidShade * ease((time - start) / 0.7) * ease((end - time) / 1.05);
+    scan.style.setProperty("--scan-center", `${(mapped.x * 100).toFixed(2)}%`);
+    scan.style.setProperty("--scan-position", `${(mapped.y * 100).toFixed(2)}%`);
+    scan.style.setProperty("--scan-roll", `${roll.toFixed(4)}rad`);
+    scan.style.setProperty("--scan-opacity", light.toFixed(3));
   }
 
   function draw(time) {
-    drawPortrait(time);
+    drawScan(time);
     clear();
     if (!tracks.length || time < 1.92 || time >= finishTime) return;
 
@@ -546,8 +539,7 @@
     crystalLayout = { plate, message: message ?? plate, buttons };
     head = { ...point(plate, 0.486, 0.322), radiusX: plate.width * 0.174, radiusY: plate.height * 0.23 };
     tracks = Array.from({ length: laneCount }, (_, lane) => makeTrack(plate, message, selector, buttons, lane));
-    lastDeparture = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].departure));
-    lastArrival = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].end));
+    const lastArrival = Math.max(...particles.map(({ begin, duration, lane }) => begin + duration * tracks[lane].end));
     finishTime = lastArrival + arrivalHold + arrivalFade;
     lastTime = -1;
     synchronize();
@@ -556,14 +548,14 @@
   video.addEventListener("playing", synchronize);
   stage.addEventListener("hero-crystal-frame", drawCrystalFrame);
   stage.addEventListener("hero-crystal-mode", () => {
-    resetPortrait();
+    clearScan();
     measure();
   });
   ["pause", "waiting", "ended", "emptied", "error"].forEach((event) => video.addEventListener(event, suspend));
-  ["emptied", "error"].forEach((event) => video.addEventListener(event, resetPortrait));
+  ["emptied", "error"].forEach((event) => video.addEventListener(event, clearScan));
   document.addEventListener("visibilitychange", synchronize);
   reducedMotion.addEventListener("change", ({ matches }) => {
-    if (matches) resetPortrait();
+    if (matches) clearScan();
     synchronize();
   });
   const selectionObserver = new MutationObserver(() => {

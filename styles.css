@@ -413,16 +413,6 @@ a {
   height: 100%;
   object-fit: contain;
 }
-.portrait-model,
-.portrait-model img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.portrait-model {
-  opacity: var(--neutral-opacity, 0);
-}
 .portrait-crystal {
   position: absolute;
   inset: 0;
@@ -430,10 +420,6 @@ a {
   height: 100%;
   pointer-events: none;
   visibility: hidden;
-}
-.hero-stage[data-crystal="3d"] .portrait-model,
-.hero-stage[data-crystal="3d"] .portrait-crystal {
-  opacity: var(--crystal-neutral, 0);
 }
 .hero-stage[data-crystal="3d"] .portrait-crystal {
   visibility: visible;
@@ -445,37 +431,28 @@ a {
 .hero-stage[data-crystal="3d"] .portrait-crystal-clip.is-visible {
   visibility: visible;
 }
-.hero-stage[data-crystal="3d"] :is(.portrait-armor, .portrait-scan) {
-  display: none;
-}
-.portrait-model img {
-  display: block;
-  object-fit: contain;
-}
-.portrait-armor {
-  opacity: var(--armor-opacity, 0);
-  mask-image: linear-gradient(#000 var(--armor-mask-start, 7%), transparent var(--armor-mask-end, 17%));
-}
 .portrait-scan {
   position: absolute;
   top: var(--scan-position, 12%);
-  right: 30%;
-  left: 29%;
-  height: 14px;
-  transform: translateY(-50%);
+  left: var(--scan-center, 48.5%);
+  z-index: 1;
+  width: 40%;
+  height: 12px;
+  transform: translate(-50%, -50%) rotate(var(--scan-roll, 0rad));
+  pointer-events: none;
   opacity: var(--scan-opacity, 0);
   background: linear-gradient(
     transparent,
-    rgb(196 221 229 / 12%) 39%,
-    rgb(228 241 245 / 62%) 49%,
-    rgb(255 255 255 / 78%) 51%,
-    rgb(196 221 229 / 12%) 62%,
+    rgb(210 231 250 / 14%) 39%,
+    rgb(229 244 255 / 66%) 46%,
+    rgb(248 253 255 / 94%) 50%,
+    rgb(213 232 250 / 22%) 59%,
     transparent
   );
-  mask-image: linear-gradient(90deg, transparent, #000 26%, #000 72%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 35%, #000 65%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
-  .portrait-model,
+  .portrait-scan,
   .portrait-crystal {
     display: none;
   }

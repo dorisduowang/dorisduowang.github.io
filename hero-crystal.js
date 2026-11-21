@@ -6,18 +6,18 @@ export const heroCrystalConfig = {
   useOverlayVideo: false,
   // All values are seconds on the homepage media clock.
   timeline: { duration: 26, idleEnd: 3, orbitEnd: 10, growthEnd: 16, holdEnd: 20, transferEnd: 23 },
-  // x/y are normalized from the neutral portrait's top-left. z, direction and size are in scene units.
+  // x/y are normalized from the reference portrait's top-left. z, direction and size are in scene units.
   anchors: [
-    { x: 0.6, y: 0.166, z: 0.085, direction: [0.52, 0.86, 0.49], size: 0.86, delay: 0.04 },
-    { x: 0.635, y: 0.218, z: 0.095, direction: [0.92, 0.57, 0.5], size: 1.1, delay: 0.22 },
-    { x: 0.607, y: 0.296, z: 0.12, direction: [0.95, 0.12, 0.7], size: 0.88, delay: 0.64 },
-    { x: 0.642, y: 0.354, z: 0.07, direction: [1, -0.23, 0.42], size: 1.02, delay: 0.88 },
-    { x: 0.587, y: 0.425, z: 0.105, direction: [0.72, -0.65, 0.43], size: 0.63, delay: 1.23 },
+    { x: 0.532, y: 0.269, z: 0.137, direction: [0.7, 0.14, 0.32], size: 0.72, delay: 0, iris: true },
+    { x: 0.546, y: 0.257, z: 0.122, direction: [0.56, 0.75, 0.28], size: 0.49, delay: 0.24 },
+    { x: 0.558, y: 0.266, z: 0.118, direction: [0.96, 0.31, 0.29], size: 0.62, delay: 0.47 },
+    { x: 0.545, y: 0.283, z: 0.126, direction: [0.69, -0.4, 0.36], size: 0.59, delay: 0.72 },
+    { x: 0.575, y: 0.286, z: 0.104, direction: [0.95, -0.41, 0.27], size: 0.44, delay: 1.1 },
   ],
   // The invisible, depth-writing ellipsoid blocks rear orbit points. Its radii use scene units, roll is radians.
   occluder: { x: 0.485, y: 0.323, z: -0.17, scale: [0.365, 0.478, 0.205], roll: 0.045 },
   // A seed fixes the exact geometry and spark trajectories on every loop.
-  density: { seed: 22721, branches: 9, droplets: 5, sparks: 58, maxOrbitPoints: 420 },
+  density: { seed: 22721, branches: 8, droplets: 4, sparks: 48, maxOrbitPoints: 420 },
   // Thin splinters, larger shards and liquid bases share refraction and have different thicknesses.
   material: {
     transmission: 1,
@@ -26,19 +26,19 @@ export const heroCrystalConfig = {
     thickness: [0.42, 0.72, 1.04],
     clearcoat: 1,
     clearcoatRoughness: 0.05,
-    iridescence: 0.37,
+    iridescence: 0.28,
     iridescenceThicknessRange: [110, 315],
     attenuationDistance: 0.83,
-    dispersion: 0.057,
+    dispersion: 0.038,
     envMapIntensity: 1.88,
   },
   // Pale neutral glass, cool attenuation through thick sections, and two restrained spark colors.
   colors: { glass: "#f4fbff", attenuation: "#d3edf5", gleam: "#eafaff", coolGleam: "#a8d9f1" },
   // Device pixel ratio and pixel budget cap the cost of the transmission pass on large or dense displays.
-  render: { maxDpr: 1.75, maxPixels: 720_000, portraitSource: "/assets/img/portfolio/doris-bionic-neutral.webp" },
+  render: { maxDpr: 1.75, maxPixels: 720_000 },
 };
 
-export const crystalCentroid = { x: 0.674, y: 0.294 };
+export const crystalCentroid = { x: 0.532, y: 0.269 };
 
 const aspect = 1104 / 1024;
 const up = new THREE.Vector3(0, 1, 0);
@@ -51,6 +51,30 @@ const smooth = (value) => {
 
 function point(x, y, z = 0) {
   return new THREE.Vector3((x - 0.5) * 2 * aspect, (0.5 - y) * 2, z);
+}
+
+function portraitPose(pose) {
+  return {
+    x: Number.isFinite(pose?.x) ? pose.x : crystalCentroid.x,
+    y: Number.isFinite(pose?.y) ? pose.y : crystalCentroid.y,
+    scale: Number.isFinite(pose?.scale) ? Math.max(0.2, pose.scale) : 1,
+    roll: Number.isFinite(pose?.roll) ? pose.roll : 0,
+    yaw: Number.isFinite(pose?.yaw) ? pose.yaw : 0,
+  };
+}
+
+// Apply the same eye-centered rotation used by the crystal group. Positive roll follows the screen clock.
+export function placeOnPortrait(reference, pose) {
+  const { x, y, scale, roll, yaw } = portraitPose(pose);
+  const horizontal = (reference.x - crystalCentroid.x) * 2 * aspect;
+  const vertical = (reference.y - crystalCentroid.y) * 2;
+  const depth = reference.z ?? 0;
+  const tilted = horizontal * Math.cos(yaw) + depth * Math.sin(yaw);
+  return {
+    x: x + (scale * (tilted * Math.cos(roll) - vertical * Math.sin(roll))) / (2 * aspect),
+    y: y + (scale * (tilted * Math.sin(roll) + vertical * Math.cos(roll))) / 2,
+    z: scale * (depth * Math.cos(yaw) - horizontal * Math.sin(yaw)),
+  };
 }
 
 function randomGenerator(seed) {
@@ -151,8 +175,10 @@ function makePieces(random) {
       direction.z += (random() - 0.43) * (primary ? 1.37 : 1.9);
       direction.x = Math.max(0.16, direction.x);
       direction.normalize();
-      const spreadLength = anchor.size * (primary ? mix(0.21, 0.39, random()) : mix(0.067, 0.245, random()));
-      const base = anchor.base.clone().add(new THREE.Vector3(mix(-0.017, 0.07, random()), mix(-0.05, 0.065, random()), mix(-0.016, 0.065, random())));
+      const spreadLength = anchor.size * (primary ? mix(0.126, 0.239, random()) : mix(0.052, 0.166, random()));
+      const base = anchor.base
+        .clone()
+        .add(new THREE.Vector3(mix(-0.023, 0.025, random()), mix(-0.031, 0.032, random()), mix(-0.01, 0.035, random())));
       const length = fitLength(base, direction, spreadLength);
       const birth = anchor.delay + (primary ? mix(0.58, 2.08, random()) + index * 0.29 : mix(0.82, 2.54, random()));
       batches[primary ? (index === 0 ? 2 : 1) : 0].push({
@@ -160,7 +186,8 @@ function makePieces(random) {
         direction,
         turn: new THREE.Quaternion().setFromUnitVectors(up, direction),
         length,
-        radius: anchor.size * (primary ? mix(0.019, 0.044, random()) : mix(0.006, 0.019, random())),
+        radius: anchor.size * (primary ? mix(0.024, 0.055, random()) : mix(0.008, 0.027, random())),
+        profile: primary ? 0.4 : 0.68,
         birth,
         grow: Math.min(growthWindow - birth, mix(2.12, 3.28, random())),
         dissolve: primary ? mix(0.36, 0.76, random()) : mix(0, 0.48, random()),
@@ -174,8 +201,9 @@ function makePieces(random) {
         base: joint,
         direction: branch,
         turn: new THREE.Quaternion().setFromUnitVectors(up, branch),
-        length: fitLength(joint, branch, anchor.size * mix(0.083, 0.229, random())),
+        length: fitLength(joint, branch, anchor.size * mix(0.053, 0.12, random())),
         radius: anchor.size * mix(0.0065, 0.017, random()),
+        profile: 0.62,
         birth: Math.min(4.1, birth + mix(0.83, 1.58, random())),
         grow: mix(1.15, 1.65, random()),
         dissolve: mix(0, 0.31, random()),
@@ -184,16 +212,21 @@ function makePieces(random) {
 
     for (let index = 0; index < heroCrystalConfig.density.droplets; index += 1) {
       const focal = index === 0;
-      const radius = anchor.size * (focal ? mix(0.063, 0.1, random()) : mix(0.015, 0.056, random()));
+      const irisLens = focal && anchor.iris;
+      const radius = irisLens ? 0.067 : anchor.size * (focal ? mix(0.06, 0.104, random()) : mix(0.026, 0.076, random()));
       const offset = new THREE.Vector3(
-        focal ? mix(0.041, 0.07, random()) : mix(-0.014, 0.125, random()),
-        mix(-0.054, 0.063, random()),
-        focal ? mix(0.062, 0.091, random()) : mix(0.024, 0.15, random())
+        irisLens ? 0 : mix(-0.021, 0.035, random()),
+        irisLens ? 0.003 : mix(-0.027, 0.031, random()),
+        focal ? 0.033 : mix(0.021, 0.053, random())
       );
       drops.push({
         base: anchor.base.clone().add(offset),
-        size: new THREE.Vector3(radius, radius * mix(0.72, 1.48, random()), radius * mix(0.71, 1.26, random())),
-        turn: mix(-1, 1, random()),
+        size: new THREE.Vector3(
+          radius,
+          radius * (irisLens ? 0.59 : mix(0.56, 1.18, random())),
+          radius * (irisLens ? 0.28 : mix(0.33, 0.71, random()))
+        ),
+        turn: irisLens ? 0.11 : mix(-1, 1, random()),
         birth: anchor.delay + mix(0, 0.84, random()),
         grow: mix(1.35, 2.78, random()),
         dissolve: mix(0.93, 1.34, random()),
@@ -296,6 +329,8 @@ function pieceScale(time, piece) {
 export function createHeroCrystal(canvas, plate) {
   if (!canvas || !plate || window.matchMedia("(max-width: 767px)").matches) return null;
 
+  const video = plate.querySelector(".landing-video");
+
   let renderer;
   try {
     const context = canvas.getContext("webgl2", { alpha: true, antialias: true, powerPreference: "high-performance" });
@@ -327,13 +362,19 @@ export function createHeroCrystal(canvas, plate) {
   backdrop.visible = false;
   scene.add(backdrop);
 
+  const attachment = new THREE.Group();
+  const eye = point(crystalCentroid.x, crystalCentroid.y);
+  const pivot = new THREE.Vector3();
+  const sparkWorld = new THREE.Vector3();
+  scene.add(attachment);
+
   const proxy = heroCrystalConfig.occluder;
   const occluder = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), new THREE.MeshBasicMaterial({ colorWrite: false }));
   occluder.position.copy(point(proxy.x, proxy.y, proxy.z));
   occluder.scale.set(...proxy.scale);
   occluder.rotation.z = proxy.roll;
   occluder.renderOrder = -8;
-  scene.add(occluder);
+  attachment.add(occluder);
 
   const lights = [new THREE.DirectionalLight(0xe4f5ff, 3.85), new THREE.DirectionalLight(0xc0d9ff, 1.65)];
   lights[0].position.set(-1.7, 2.1, -0.03);
@@ -343,7 +384,7 @@ export function createHeroCrystal(canvas, plate) {
   const random = randomGenerator(heroCrystalConfig.density.seed);
   const { batches, drops, anchors } = makePieces(random);
   const crystalGroup = new THREE.Group();
-  scene.add(crystalGroup);
+  attachment.add(crystalGroup);
   const shards = batches.map((pieces, index) => {
     const geometry = makeShardGeometry(5 + index, 0.2 * (index - 1), random);
     const reveal = new THREE.InstancedBufferAttribute(new Float32Array(pieces.length), 1).setUsage(THREE.DynamicDrawUsage);
@@ -369,8 +410,8 @@ export function createHeroCrystal(canvas, plate) {
     const end = anchor.base;
     const curve = new THREE.CubicBezierCurve3(
       origin,
-      origin.clone().add(new THREE.Vector3(0.11 * (index % 2 ? 1 : -0.38), -0.037, 0.077)),
-      end.clone().add(new THREE.Vector3(0.057, 0.11, 0.11)),
+      origin.clone().add(new THREE.Vector3(0.038 * (index % 2 ? 1 : -0.38), -0.011, 0.028)),
+      end.clone().add(new THREE.Vector3(0.02, 0.039, 0.035)),
       end
     );
     const geometry = new THREE.TubeGeometry(curve, 34, mix(0.0041, 0.0071, random()), 6, false);
@@ -393,14 +434,37 @@ export function createHeroCrystal(canvas, plate) {
   }));
 
   const dummy = new THREE.Object3D();
-  let portraitTexture;
-  let ready = false;
+  const liveTexture = video ? new THREE.VideoTexture(video) : null;
+  if (liveTexture) liveTexture.colorSpace = THREE.SRGBColorSpace;
   let active = true;
   let contextLost = false;
   let lastTime = 0;
   let lastOrbit = [];
   let lastOptions = {};
   let drawable = false;
+  let liveProgramsReady = false;
+
+  function attachToPortrait(pose) {
+    const { x, y, scale, roll, yaw } = portraitPose(pose);
+    attachment.rotation.set(0, yaw, -roll, "ZYX");
+    attachment.scale.setScalar(scale);
+    pivot.copy(eye).multiplyScalar(scale).applyQuaternion(attachment.quaternion);
+    attachment.position.set((x - 0.5) * 2 * aspect, (0.5 - y) * 2, 0).sub(pivot);
+    attachment.updateMatrix();
+  }
+
+  function syncPortraitTexture() {
+    if (!liveTexture || video.readyState < video.HAVE_CURRENT_DATA || !video.videoWidth) return false;
+    if (!backdropMaterial.map) {
+      backdropMaterial.map = liveTexture;
+      backdropMaterial.needsUpdate = true;
+    }
+    if (!liveProgramsReady && renderer.extensions.has("KHR_parallel_shader_compile")) {
+      renderer.compile(scene, camera);
+      liveProgramsReady = true;
+    }
+    return true;
+  }
 
   function updateCrystals(time) {
     for (const { mesh, pieces, reveal } of shards) {
@@ -409,7 +473,7 @@ export function createHeroCrystal(canvas, plate) {
         const width = piece.radius * Math.sqrt(growth);
         dummy.position.copy(piece.base);
         dummy.quaternion.copy(piece.turn);
-        dummy.scale.set(width, Math.max(0.00001, piece.length * growth), width);
+        dummy.scale.set(width, Math.max(0.00001, piece.length * growth), width * piece.profile);
         dummy.updateMatrix();
         mesh.setMatrixAt(index, dummy.matrix);
         reveal.setX(index, growth > 0.998 ? 1 : 0.54 + 0.46 * growth);
@@ -426,7 +490,7 @@ export function createHeroCrystal(canvas, plate) {
       const growth = pieceScale(time, piece);
       piece.mesh.geometry.setDrawRange(0, Math.floor((piece.count * growth) / 36) * 36);
     }
-    // Rotate only the studio reflection and move a rim light. The portrait itself stays still.
+    // Sweep the highlights independently of the movement in the source video.
     scene.environmentRotation.y = Math.sin(time * 0.73) * 0.19;
     lights[1].position.x = 1.42 + Math.sin(time * 0.74) * 0.31;
   }
@@ -454,10 +518,17 @@ export function createHeroCrystal(canvas, plate) {
           const growth = time < transferEnd ? pieceScale(time, source) : Math.max(0.57, pieceScale(time, source));
           const length = source.length * growth;
           const drift = phase * spark.reach * (time > transferEnd ? 1.73 : 1);
+          sparkWorld
+            .set(
+              source.base.x + source.direction.x * length + Math.cos(spark.angle) * drift,
+              source.base.y + source.direction.y * length + Math.sin(spark.angle) * drift - phase * 0.046,
+              source.base.z + source.direction.z * length + 0.023 + drift * 0.29
+            )
+            .applyMatrix4(attachment.matrix);
           sprites.add(
-            source.base.x + source.direction.x * length + Math.cos(spark.angle) * drift,
-            source.base.y + source.direction.y * length + Math.sin(spark.angle) * drift - phase * 0.046,
-            source.base.z + source.direction.z * length + 0.023 + drift * 0.29,
+            sparkWorld.x,
+            sparkWorld.y,
+            sparkWorld.z,
             spark.size,
             glints * Math.sin(phase * Math.PI) ** 1.5 * (time > transferEnd ? 0.53 : 0.34),
             spark.color
@@ -475,7 +546,8 @@ export function createHeroCrystal(canvas, plate) {
     lastOptions = options;
 
     const { orbitEnd, duration } = heroCrystalConfig.timeline;
-    const crystals = options.crystals !== false && ready && time >= orbitEnd && time < duration;
+    const textureReady = syncPortraitTexture();
+    const crystals = options.crystals !== false && textureReady && time >= orbitEnd && time < duration;
     if (!crystals && orbitPoints.length === 0) {
       if (drawable) renderer.clear();
       drawable = false;
@@ -484,6 +556,7 @@ export function createHeroCrystal(canvas, plate) {
     crystalGroup.visible = crystals;
     backdrop.visible = crystals;
     occluder.visible = orbitPoints.length > 0;
+    attachToPortrait(options.pose);
     if (crystals) updateCrystals(time);
     updateSprites(time, orbitPoints, crystals);
     renderer.render(scene, camera);
@@ -522,28 +595,13 @@ export function createHeroCrystal(canvas, plate) {
       if (object.material) assets.add(object.material);
     });
     assets.forEach((asset) => asset.dispose());
-    portraitTexture?.dispose();
+    liveTexture?.dispose();
     studio.dispose();
     renderer.dispose();
   }
 
   canvas.addEventListener("webglcontextlost", loseContext);
   canvas.addEventListener("webglcontextrestored", restoreContext);
-  const source = plate.querySelector(".portrait-neutral")?.getAttribute("src") || heroCrystalConfig.render.portraitSource;
-  new THREE.TextureLoader().load(source, (texture) => {
-    if (!active) {
-      texture.dispose();
-      return;
-    }
-    portraitTexture = texture;
-    portraitTexture.colorSpace = THREE.SRGBColorSpace;
-    backdropMaterial.map = portraitTexture;
-    backdropMaterial.needsUpdate = true;
-    ready = true;
-    // Submit programs before growth without drawing on the live canvas. Drivers without parallel compile skip this work.
-    if (!contextLost && renderer.extensions.has("KHR_parallel_shader_compile")) renderer.compile(scene, camera);
-    setTime(lastTime, lastOrbit, lastOptions);
-  });
   resize();
   return { setTime, resize, destroy };
 }
