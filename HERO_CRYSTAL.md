@@ -1,6 +1,6 @@
 # Crystal hero
 
-The desktop sequence uses procedural glass rendered with the vendored Three.js 0.170.0. The glass refracts the playing portrait video. `hero.js` maps video time onto the 26-second sequence, and `hero-particles.js` uses that time for the ring, cold-white scan, and transfer to the selected Agent.
+The desktop sequence uses procedural glass, chrome, and mercury rendered with the vendored Three.js 0.170.0. The core captures the playing portrait in the refraction pass, while the browser displays the portrait itself continuously. `hero.js` maps video time onto the 26-second sequence, and `hero-particles.js` uses that time for the ring, cold-white scan, and transfer to the selected Agent.
 
 ## Timing
 
@@ -22,13 +22,15 @@ Edit `heroCrystalConfig.timeline` in [`hero-crystal.js`](hero-crystal.js). These
 - `occluder` is the depth-writing ellipsoid that blocks particles behind the head. Its placement follows the same portrait calibration. Use `scale` for the three reference radii and `z` and `roll` for reference depth and tilt. Roll is in radians. Check both passes after adjusting it.
 - `drawScan` in `hero-particles.js` controls the sweep’s brightness and position in source-video seconds. The line fades in after the clean opening and softens as it crosses the eyes.
 
-## Glass and render cost
+## Materials and light
 
-Use `material.thickness` to change the depth of the glass and `material.ior` to adjust its refraction. Raise `roughness` for softer highlights. `iridescence` and `dispersion` control color at the edges. Adjust `colors` for the glass tint and sparks. `density` sets the procedural seed and piece counts, and `render.maxDpr` and `render.maxPixels` cap the drawing resolution.
+Use `material.thickness` to change glass depth and `material.ior` to adjust its refraction. `chrome` controls the reflective needles and filigree, and `mercury` controls the smooth droplets. The branch shader uses a short transition in transmission and metalness at each glass-to-metal joint. Adjust the softboxes in `makeReflectionStudio` for longer or shorter reflections. `density` sets the procedural seed and piece counts, and `render.maxDpr` and `render.maxPixels` cap the drawing resolution.
 
 ## Preview and fallback
 
 On desktop, let the animation load, then use **Pause motion**. In the browser console, run `heroCrystal.setTime(14)` and check 2, 7, 14, 18, 22, and 25 seconds in the same way. Use the Agent buttons to test where the stream lands. Narrow screens and browsers without WebGL2 play the portrait with the 2D particles and scan. Reduced-motion mode opens on the portrait still.
+
+Desktop playback prefers `data-smooth-source`, a motion-interpolated 72 fps encode of the 24 fps portrait. Both encodes use the same image dimensions, duration, and timestamps for the original frames, so they share the original eye calibration and particle clock. The player can fall back to `data-source` if the smoother encode cannot play.
 
 ## Optional alpha video
 
