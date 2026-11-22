@@ -12,21 +12,21 @@ ninja.data = [
     },
   },{id: "nav-projects",
           title: "Projects",
-          description: "Research and coursework by Doris Wang.",
+          description: "Research on information, strategic behavior, and institutional design.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/projects/";
           },
         },{id: "nav-publications",
           title: "Publications",
-          description: "Published papers and working papers.",
+          description: "Published work and current research papers.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/publications/";
           },
         },{id: "nav-cv",
           title: "CV",
-          description: "Academic Curriculum Vitae",
+          description: "Academic curriculum vitae, updated November 2026",
           section: "Navigation",
           handler: () => {
             window.location.href = "/cv/";
@@ -44,22 +44,32 @@ ninja.data = [
           section: "News",},{id: "news-joined-as-teaching-assistant-for-econ-17100-introduction-to-international-trade-prof-timothy-hersey-at-uchicago-leading-weekly-discussion-sections",
           title: 'Joined as Teaching Assistant for ECON 17100: Introduction to International Trade (Prof. Timothy...',
           description: "",
-          section: "News",},{id: "news-completed-v5-simulations-for-punishment-on-demand-adaptive-surprisal-triggered-enforcement-achieves-higher-cooperation-0-763-vs-0-695-at-less-than-half-the-enforcement-cost-of-always-on-punishment",
-          title: 'Completed v5 simulations for Punishment on Demand — adaptive surprisal-triggered enforcement achieves higher...',
+          section: "News",},{id: "news-completed-the-first-punishment-on-demand-simulation-its-language-signal-rarely-intervened-which-motivated-a-sharper-comparison-between-a-contribution-history-rule-and-the-same-rule-plus-a-disclosed-language-warning",
+          title: 'Completed the first Punishment on Demand simulation. Its language signal rarely intervened, which...',
           description: "",
-          section: "News",},{id: "projects-auditing-text-based-reward-signals",
+          section: "News",},{id: "projects-agentic-supply-chains",
+          title: 'Agentic Supply Chains',
+          description: "Testing how unequal AI capabilities change bargaining and coordination across a multi-tier economy",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/agentic_supply_chains/";
+            },},{id: "projects-auditing-text-based-reward-signals",
           title: 'Auditing Text-Based Reward Signals',
           description: "Testing whether text-based rewards track scientific value in AI-driven scientific discovery",
           section: "Projects",handler: () => {
               window.location.href = "/projects/chorus_audit/";
-            },},{id: "projects-fomc-communication-amp-s-amp-p-500-volatility",
-          title: 'FOMC Communication &amp;amp; S&amp;amp;P 500 Volatility',
-          description: "Analyzing relationships among Fed communication, news coverage, and market volatility",
+            },},{id: "projects-news-metadata-and-market-volatility-around-fomc-meetings",
+          title: 'News Metadata and Market Volatility Around FOMC Meetings',
+          description: "Separating exploratory timing patterns from holdout validation around Fed meetings",
           section: "Projects",handler: () => {
               window.location.href = "/projects/fomc_communication/";
-            },},{id: "projects-cooperation-in-large-scale-repeated-games",
-          title: 'Cooperation in Large-Scale Repeated Games',
-          description: "B.Sc. Dissertation — Behavioral analysis of cooperation, punishment, and regrouping mechanisms",
+            },},{id: "projects-information-aggregation-in-ai-agent-teams",
+          title: 'Information Aggregation in AI Agent Teams',
+          description: "Holding private evidence fixed while changing who deliberates together",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/information_aggregation/";
+            },},{id: "projects-group-stability-and-cooperation",
+          title: 'Group Stability and Cooperation',
+          description: "Comparing group stability, peer punishment, and institutional enforcement in repeated public goods games",
           section: "Projects",handler: () => {
               window.location.href = "/projects/kcl_dissertation/";
             },},{id: "projects-lstm-vs-arima-for-gold-forecasting",
@@ -67,11 +77,16 @@ ninja.data = [
           description: "Comparative analysis of sequence modeling architectures for financial time series",
           section: "Projects",handler: () => {
               window.location.href = "/projects/lstm_arima/";
-            },},{id: "projects-punishment-on-demand",
-          title: 'Punishment on Demand',
-          description: "Using Transformer Surprisal to Time Peer Sanctions in Repeated Public Goods Games",
+            },},{id: "projects-language-monitoring-in-repeated-public-goods-games",
+          title: 'Language Monitoring in Repeated Public Goods Games',
+          description: "Testing when communication can improve a history-based enforcement rule",
           section: "Projects",handler: () => {
               window.location.href = "/projects/punishment_on_demand/";
+            },},{id: "projects-which-reviews-identify-quality",
+          title: 'Which Reviews Identify Quality?',
+          description: "Separating the reviews people prefer from the reviews that help them identify quality",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/review_information/";
             },},{
         id: 'social-cv',
         title: 'CV',
