@@ -1,13 +1,14 @@
 // get the ninja-keys element
 const ninja = document.querySelector('ninja-keys');
 
-// add the home and posts menu items
-ninja.data = [{
-    id: "nav-",
-    title: "",
+// Add navigation and content to the search menu.
+ninja.data = [
+  {
+    id: "nav-about-me",
+    title: "About me",
     section: "Navigation",
     handler: () => {
-      window.location.href = "/";
+      window.location.href = "/portfolio/#about";
     },
   },{id: "nav-projects",
           title: "Projects",
