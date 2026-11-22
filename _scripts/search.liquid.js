@@ -4,17 +4,14 @@ permalink: /assets/js/search-data.js
 // get the ninja-keys element
 const ninja = document.querySelector('ninja-keys');
 
-// add the home and posts menu items
+// Add navigation and content to the search menu.
 ninja.data = [
-  {%- for page in site.pages -%}
-    {%- if page.permalink == '/' -%}{%- assign about_title = page.title | strip -%}{%- endif -%}
-  {%- endfor -%}
   {
-    id: "nav-{{ about_title | slugify }}",
-    title: "{{ about_title | truncatewords: 13 }}",
+    id: "nav-about-me",
+    title: "About me",
     section: "Navigation",
     handler: () => {
-      window.location.href = "{{ '/' | relative_url }}";
+      window.location.href = "{{ '/portfolio/' | relative_url }}#about";
     },
   },
   {%- assign sorted_pages = site.pages | sort: "nav_order" -%}
