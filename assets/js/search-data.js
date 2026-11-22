@@ -12,7 +12,7 @@ ninja.data = [
     },
   },{id: "nav-projects",
           title: "Projects",
-          description: "Research on information, strategic behavior, and institutional design.",
+          description: "Research on strategic interaction under incomplete information and institutional design.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/projects/";
