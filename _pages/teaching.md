@@ -11,8 +11,8 @@ nav_order: 4
 
 ### ECON 17100: Introduction to International Trade
 
-**Teaching Assistant** · Winter 2026 · Prof. Timothy Hersey
+**Teaching Assistant**, Winter 2026, Prof. Timothy Hersey
 
-- Led weekly 50-minute discussion sections translating Ricardian and Heckscher-Ohlin trade models into quantitative problem-solving exercises
-- Provided weekly office hours and Ed Discussion support
-- Drafted solution sets and grading rubrics
+I led weekly 50-minute sections that translated Ricardian and factor-endowment trade models into quantitative problems. Office hours and Ed
+Discussion revealed where students' algebra obscured the economic mechanism. I used those recurring errors to draft solution sets and grading
+rubrics with consistent notation.

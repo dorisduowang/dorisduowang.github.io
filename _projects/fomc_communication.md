@@ -1,26 +1,25 @@
 ---
 layout: page
-title: FOMC Communication & S&P 500 Volatility
-description: Analyzing relationships among Fed communication, news coverage, and market volatility
+title: News Metadata and Market Volatility Around FOMC Meetings
+description: Separating exploratory timing patterns from holdout validation around Fed meetings
 img:
-importance: 2
+importance: 6
 category: research
 github: https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/temporal-validation
 ---
 
-## Overview
+## Research question
 
-Does news about Fed meetings track the Fed’s message and the market’s response? Yuzhao Jin and I studied **40 meetings** from 2021 to 2025.
+Does news metadata around a Fed meeting contain information about later market volatility?
 
-The latest project documents temporal validation for the extension from 2015 to 2025. [Latest FOMC Media Alignment project](https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/temporal-validation)
+This is joint work with Yuzhao (Jerry) Jin.
 
-## Data
+The project processes more than 2 million GDELT metadata records around an 88-meeting FOMC calendar. The writing sample uses 33 meetings. Volatility is reconstructed from 5 strictly later log returns so the outcome cannot leak into the news window.
 
-The course study pairs **2,740 New York Times articles** with **11 FRED series** and S&P 500 volatility around each meeting.
+## Identification
 
-## Methods
+The analysis separates the exploratory lag from later validation. The current branch evaluates 7 archived dates with 20,000 permutations and preserves prior return dates as distinct controls.
 
-- TF-IDF and hawkish/dovish sentiment scoring
-- OLS regression and lead-lag correlation analysis
+In the writing sample, a 1 standard deviation increase in alignment was associated with 3.92 annualized volatility percentage points before controls. After prior volatility and VIX entered the model, the estimate was negative 1.12 points with a 95% interval from negative 6.75 to 4.51.
 
-[Earlier course analysis](https://github.com/dorisduowang/fomc-media-alignment#course-baseline-documentation)
+[Open the latest analysis branch](https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/temporal-validation)

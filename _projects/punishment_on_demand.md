@@ -1,56 +1,26 @@
 ---
 layout: page
-title: Punishment on Demand
-description: Using Transformer Surprisal to Time Peer Sanctions in Repeated Public Goods Games
-img: assets/img/project_punishment/v5_main_results.png
+title: Language Monitoring in Repeated Public Goods Games
+description: Testing when communication can improve a history-based enforcement rule
+img:
 importance: 1
 category: research
 ---
 
-## Overview
+## Research question
 
-When should a group use peer punishment? In a repeated public goods simulation, I used **surprisal scores** from a frozen DistilGPT-2 model to detect changes in chat and time sanctions.
+Players can promise to cooperate before they contribute. That message is cheap. The institutional question is whether language still contains useful information once players know how the monitor works.
 
-## Key Results (v5)
+My current design compares 2 enforcement rules over 15 rounds. Both use the same contribution history. The second rule also issues a disclosed warning when the language signal crosses a calibrated threshold. The outcome is cumulative group net payoff, so any improvement must cover the cost of punishment.
 
-|                   | Adaptive punishment | Always on punishment |
-| ----------------- | ------------------: | -------------------: |
-| Cooperation       |               0.763 |                0.695 |
-| Punishment points |                 132 |                  306 |
+## Why the design changed
 
-Adaptive punishment had the highest efficiency at **106.1**. Constant punishment was less efficient than leaving punishment off.
+An earlier 9-arm simulation generated 1,350 group-round observations across 90 groups. Maximum token surprisal did not predict next-round contribution declines across 3 thresholds. A surprisal-only rule intervened in 3.3% of rounds and remained close to the no-punishment benchmark.
 
-### Main Results
+That result changed the question. The new experiment does not ask a language score to replace contribution history. It asks whether language adds information at the margin, after the history rule has already made its decision.
 
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/project_punishment/v5_main_results.png" title="v5 Main Results" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">Cooperation dynamics, system efficiency, punishment exposure, surprisal dynamics, punishment cost, and cooperation vs. punishment trade-off across 7 conditions.</div>
+## Current comparison
 
-### Evaluation Heatmap
+The game has 4 AI agents. Each receives 20 tokens per round. Contributions are multiplied by 1.6 and divided equally. The warning rule, contribution rule, and punishment cost are visible to every player.
 
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/project_punishment/v5_evaluation_heatmap.png" title="Evaluation Heatmap" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">Normalized metrics across conditions. Adaptive dominates on cooperation, endgame stability, and efficiency.</div>
-
-### Per-Group Trajectories
-
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/project_punishment/v5_group_trajectories.png" title="Group Trajectories" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">Per-group contribution trajectories and surprisal dynamics.</div>
-
-## Methods
-
-- Repeated public goods game with LLM agents (GPT-4.1-mini) and diverse personas
-- DistilGPT-2 surprisal scores over group chat history to detect ruptures
-- Comparison across 7 enforcement regimes
-
-_Working paper in progress._
+[Open the interactive feasibility study](/pgg-feasibility/)

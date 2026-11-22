@@ -1,8 +1,10 @@
 cv:
-  name: Duo (Doris) Wang
+  name: Duo Wang (Doris Wang)
   email: dorisduowang@uchicago.edu
   phone: "+1 (773) 457-7102"
   location: Chicago, IL
+  summary: >-
+    I study how information and institutional rules shape strategic behavior. One project asks when communication can improve enforcement. Another holds private evidence fixed and changes the team. My operations work holds firm roles fixed and changes agent capability.
 
   sections:
     Education:
@@ -12,94 +14,124 @@ cv:
         startDate: 2025-09-01
         endDate: 2027-06-01
         highlights:
-          - "Selected Coursework: Introduction to Empirical Analysis I&II; Social Interactions and Inequality; Large-Scale Computing for the Social Sciences; Analysis in Rⁿ I; Probability and Statistics; AI Agents for Social Science and Society"
+          - "Expected June 2027"
+          - "Selected coursework: Introduction to Empirical Analysis II (A), Large-Scale Computing for the Social Sciences (Advanced, A), Social Interactions and Inequality (Ph.D.-level, A), Analysis in Rⁿ I, and Topics in Information Economics (Ph.D.-level)"
       - institution: King's College London
         location: London, UK
-        studyType: "B.Sc., Political Economy (Grade: 2:1)"
+        studyType: "B.Sc. in Political Economy, Grade 2:1"
         startDate: 2022-09-01
         endDate: 2025-07-01
         highlights:
-          - "Selected Coursework: Game Theory; Experimental Economics; Quantitative Methods; Mathematics for Economists; Econometrics"
+          - "Selected coursework: Quantitative Methods (Top 1%), Game Theory (Top 1%), International Trade (Top 3%), Experimental Economics (Top 5%), Mathematics for Economists, Econometrics, and Advanced Macroeconomics"
+
     Experience:
-      - name: Auditing Text-Based Reward Signals in Scientific Discovery
-        position: Research Project, AI Agents for Social Science and Society
-        location: University of Chicago
-        startDate: 2026-01-01
-        endDate: 2026-03-01
+      - name: University of Chicago Booth School of Business
+        position: Research Collaborator, Agentic Supply Chain Laboratory
+        location: Chicago, IL
+        startDate: 2026-10-01
+        endDate: Present
+        summary: Do unequal AI capabilities shift bargaining power in multi-tier supply chains?
         highlights:
-          - Built a directed hypergraph over papers, researcher profiles, and concepts to test whether Chorus text-based rewards tracked scientific value
-          - Ran three-persona simulations with Consolidator, Disruptor, and Connector agents to compare alternative surprise regimes
-          - Audited 443 publications, identified three systematic reward inversions, and proposed a multimodal ranking metric
-      - name: FOMC Communication Dynamics, Media Narratives, and S&P 500 Volatility
-        position: Research Project, Computational Social Science
-        location: University of Chicago
-        startDate: 2026-01-01
-        endDate: 2026-03-01
+          - "Developed an identification control that holds role instructions fixed across a 4-tier economy, isolating capability effects from differences in prompt wording."
+          - "Translated each firm's permitted observations and operating constraints into an executable policy that adapts to its network position without exposing hidden state."
+          - "Contributed 5 commits and regression tests. The profile passed 152 tests in 6 continuous integration checks across 3 Python environments."
+      - name: Columbia Business School, Decision, Risk, and Operations
+        position: Research Assistant
+        location: New York, NY
+        startDate: 2026-06-01
+        endDate: 2026-09-01
+        summary: Does team membership change how AI agents aggregate the same private information?
         highlights:
-          - Built a 2021-2025 dataset covering 40 FOMC meetings, 2,740 NYT articles, 11 FRED series, and S&P 500 event-window measures
-          - Constructed a 40-observation meeting-level panel merging hawkish-dovish text scores, macro controls, and post-meeting volatility
-          - Estimated OLS models and lead-lag correlations to test whether media tone tracked or anticipated shifts in Fed communication
-      - name: Large-Scale Behavioral Analysis of Cooperation Mechanisms
+          - "Designed 20 matched deliberations with 5 AI agents. Each of 5 private signal environments was replayed across 4 rosters while the task and signal allocation remained fixed."
+          - "Preserved every private report and public message before converting each run into 24 measures of deliberation and choice. Reproduced 9 comparable measures for 70 human groups."
+          - "Final city choices differed across rosters in 4 of 5 matched signal environments. The pattern shows why team composition belongs inside the mechanism."
+      - name: University of Chicago Booth School of Business
+        position: Research Assistant
+        location: Chicago, IL
+        startDate: 2026-06-01
+        endDate: Present
+        summary: Are negative reviews more precise and more useful for identifying quality than positive reviews?
+        highlights:
+          - "Reconstructed 3 preregistered experiments with 977 participants from the preregistration materials and raw data."
+          - "Reproduced 20 reported results through independent R and Python pipelines and added a text analysis of 468 reviews."
+          - "Negative reviews produced 3.10 correct quality judgments out of 5 compared with 2.85 for positive reviews, even though 66% of 294 participants chose positive reviews."
+      - name: King's College London
         position: Undergraduate Researcher, B.Sc. Dissertation
-        location: King's College London
+        location: London, UK
         startDate: 2024-09-01
         endDate: 2025-05-01
+        summary: Does group stability sustain cooperation more reliably than peer punishment or institutional enforcement?
         highlights:
-          - Built a panel with more than 1.5 million interaction observations on about 135,000 agents
-          - Compared static grouping with dynamic regrouping across enforcement regimes
-          - Estimated interaction models with cluster-robust inference on the full panel
-      - name: UK Structural Inequality Analysis
-        position: Research Analyst, Econometrics Empirical Project
-        location: King's College London
-        startDate: 2023-01-01
-        endDate: 2023-04-01
-        highlights:
-          - Built an analytical sample from large-scale UK census microdata for gender disparity analysis
-          - Estimated multivariate OLS wage regressions with diagnostics
-          - Separated unconditional gender gaps from conditional pay differentials
-      - name: Comparative Analysis of Sequence Modeling Architectures (LSTM vs. ARIMA)
-        position: Research Program
-        location: Massachusetts Institute of Technology
-        startDate: 2022-06-01
-        endDate: 2022-09-01
-        highlights:
-          - Implemented ARIMA and LSTM models to forecast gold log returns from 2000 to 2020
-          - Built an end-to-end Python pipeline with standardized preprocessing and hyperparameter search
-          - Wrote a 5,000-word technical report comparing model approaches
+          - "Harmonized an online study with a controlled public goods experiment into 12,059 comparable observations."
+          - "Estimated pooled OLS and interaction models, then tested the result through 4 alternative specifications with HC3 and bootstrap inference."
+          - "Group stability was associated with 29.25 percentage points more cooperation. Institutional enforcement was moderately positive, while peer punishment had no standalone association."
+
+    Working Papers:
+      - bullet: "**Can Transformer Surprisal Identify When Peer Punishment Is Needed in Repeated Public Goods Games?** Designed a 9-arm experiment with 90 groups and 1,350 group-round observations. The first language signal did not predict contribution declines across 3 thresholds. The revised design tests whether a disclosed language warning adds information after a contribution-history rule has made its decision."
+      - bullet: "**News Metadata and Market Volatility Around FOMC Meetings.** Built distributed TF-IDF processing for more than 2 million GDELT metadata records around an 88-meeting calendar. The writing sample uses 33 meetings, 5 strictly later returns, HC3 OLS, and 20,000 permutations across 7 archived dates."
+
     Teaching:
-      - name: "ECON 17100: Introduction to International Trade"
-        position: Teaching Assistant (Prof. Timothy Hersey)
-        location: University of Chicago
+      - name: University of Chicago
+        position: "Teaching Assistant, ECON 17100: Introduction to International Trade"
+        location: Chicago, IL
         startDate: 2026-01-01
         endDate: 2026-03-01
         highlights:
-          - Led weekly 50-minute discussion sections on Ricardian and Heckscher-Ohlin trade models
-          - Provided weekly office hours and Ed Discussion support
-          - Drafted solution sets and grading rubrics
+          - "Led weekly 50-minute sections on Ricardian and factor-endowment trade models."
+          - "Provided weekly office hours and Ed Discussion support."
+          - "Drafted solution sets and grading rubrics with the instructor to standardize notation and evaluation."
+
+    Conference Presentations:
+      - bullet: "**Adaptive Punishment through Language Signals in Repeated Interaction.** Elevator pitch, Interdisciplinary Social Sciences Academic Conference, June 2026."
+      - bullet: "**When Should Scientific AI Agents Be Interrupted? Language Surprisal as a Real-Time Signal for Selective Oversight.** Poster, SciFM26 Conference, May 2026."
+
     Awards:
       - title: Gargoyle Research Scholarship
         date: 2025
-        awarder: University of Chicago
+        awarder: University of Chicago, 2025 to 2027
       - title: Social Science Promise Scholarship
         date: 2025
-        awarder: University of Chicago
+        awarder: University of Chicago, 2025 to 2027
       - title: M.A. Director's Scholarship
         date: 2025
-        awarder: University of Chicago
+        awarder: University of Chicago, 2025 to 2027
+      - title: University of Chicago Student Award
+        date: 2026
+        awarder: Summer research funding
+
+    Academic Interests:
+      - name: Experimental economics
+        keywords: ["Which enforcement rules improve group earnings once punishment is costly?"]
+      - name: Information economics
+        keywords: ["When does talk reveal private evidence, and when does it help actors anticipate the monitor?"]
+      - name: Economics of AI
+        keywords: ["Why do agents facing the same payoff rule choose different strategies?"]
+      - name: Market and mechanism design
+        keywords: ["Can a rule use communication without becoming easy to game?"]
+      - name: Operations
+        keywords: ["When firms use agents of unequal capability, who captures surplus and where does coordination fail?"]
+
     Skills:
-      - name: Core Analysis
-        keywords: ["Python (pandas, NumPy, scikit-learn, PyTorch/TensorFlow)", "R (tidyverse)", "SQL", "Stata"]
-      - name: Modeling & Simulation
-        keywords: ["Java", "C++", "MATLAB"]
-      - name: "Methods: Empirical & Causal Inference"
-        keywords: ["OLS regression", "Causal inference (DiD, RD)", "Experimental design"]
-      - name: "Methods: Statistical Modeling & ML"
-        keywords: ["Time-series forecasting (ARIMA, LSTM)", "Machine learning", "NLP / text-as-data"]
+      - name: Programming and data
+        keywords: ["Python", "R", "Stata", "SQL", "natural language processing", "text analysis", "LLM and autonomous-agent simulation"]
+      - name: Empirical methods
+        keywords:
+          [
+            "randomized experiments",
+            "mechanism simulation",
+            "causal inference",
+            "panel data",
+            "time series",
+            "clustered inference",
+            "bootstrap inference",
+            "permutation inference",
+          ]
+
     Languages:
       - language: Mandarin
         fluency: Native
       - language: English
-        fluency: Advanced
+        fluency: Fluent
       - language: French
         fluency: Intermediate
       - language: Japanese

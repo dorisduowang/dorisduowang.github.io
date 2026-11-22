@@ -2,14 +2,18 @@
 layout: page
 title: Projects
 permalink: /projects/
-description: Research and coursework by Doris Wang.
+description: Research on information, strategic behavior, and institutional design.
 nav: true
 nav_order: 1
 display_categories: [research, coursework]
 horizontal: false
 ---
 
-For a closer look at how I study conversations and decisions, start with the [research portfolio](/portfolio/#research).
+My projects follow one sequence. I identify the information available to strategic actors, hold the decision problem fixed, and change one
+institutional margin. That margin may be the enforcement rule, the team roster, or the capability of an agent representing a firm. I then trace the
+change into behavior and payoffs.
+
+Start with the [research portfolio](/portfolio/#research) for the connected story and interactive evidence.
 
 <div class="projects">
 {% if site.enable_project_categories and page.display_categories %}

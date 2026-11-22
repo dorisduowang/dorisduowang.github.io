@@ -1,25 +1,24 @@
 ---
 layout: page
-title: Cooperation in Large-Scale Repeated Games
-description: B.Sc. Dissertation — Behavioral analysis of cooperation, punishment, and regrouping mechanisms
-img: # TODO: assets/img/project_cooperation.jpg
-importance: 4
+title: Group Stability and Cooperation
+description: Comparing group stability, peer punishment, and institutional enforcement in repeated public goods games
+img:
+importance: 5
 category: research
 ---
 
-## Overview
+## Research question
 
-Does peer punishment sustain cooperation when groups keep changing? My dissertation at **King’s College London** compares fixed and regrouped players across enforcement rules, drawing on a source panel of more than **1.5 million interaction records** across about **135,000 agents**.
+Does cooperation survive because players can punish one another, because an institution enforces the rule, or because the same people expect to meet again?
 
-## Key Findings
+I harmonized an online study with a controlled public goods experiment into 12,059 comparable observations. The comparison separates group stability from 2 enforcement mechanisms, then tests whether their effects change when the social environment changes.
 
-- Decentralized punishment sustained cooperation in stable groups. Regrouping alone was insufficient to sustain cooperation.
-- Cooperation was highest when enforcement and stable group membership were both present.
-- Free riding was significantly lower under enforcement, based on inference with cluster-robust standard errors.
+## Result
+
+Group stability was associated with 29.25 percentage points more cooperation and remained the strongest predictor across 4 specifications. Institutional enforcement was moderately positive with an estimate of 1.55 and a p value below 0.01. Peer punishment had no standalone association.
+
+This project established the starting point for my current work. Enforcement cannot be evaluated apart from the information and repeated relationships that make the rule credible.
 
 ## Methods
 
-- Large-scale panel data analysis in **Stata** and **R**
-- Comparison of static grouping vs. dynamic regrouping across enforcement regimes
-- Cluster-robust standard errors for inference on the full panel
-- Interaction models estimating enforcement effects on cooperation dynamics
+I estimated pooled OLS and interaction models in Stata. HC3 and bootstrap inference produced nearly identical estimates. Outcome transformations preserved the substantive ranking.

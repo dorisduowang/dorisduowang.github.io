@@ -9,15 +9,12 @@ category: research
 
 ## Overview
 
-Can rewarding surprising text help an AI system find influential papers? For **AI Agents for Social Science and Society**, I simulated how Chorus would rank **443 publications** under different rewards.
+Can a reward for surprising language help an AI system identify valuable scientific work? I audited how Chorus ranked 443 publications under alternative reward rules.
 
-## Approach
+## Design
 
-- Built a **directed hypergraph** over papers, researcher profiles, and concepts
-- Designed **three-persona simulations** (Consolidator, Disruptor, and Connector agents) to compare how alternative surprise regimes change recommendation quality
-- Evaluated ranking stability and recovery of high-impact papers across reward specifications
+I built a directed hypergraph connecting papers to researcher profiles and scientific concepts. Three simulated researcher personas then searched the same graph under different surprise regimes. The comparison tracks ranking stability and the recovery of high-impact papers.
 
-## Key Findings
+## Result
 
-- Found **3 systematic reward inversions** where rewards based on text misaligned with scientific impact
-- Proposed a **multimodal ranking metric** that successfully surfaced high-impact papers missed by baseline text-only reward signals
+The audit identified 3 systematic reward inversions in which a text-based reward disagreed with scientific impact. I used those cases to propose a multimodal ranking metric that combines linguistic surprise with structure in the publication graph.

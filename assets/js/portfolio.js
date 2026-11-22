@@ -2,7 +2,7 @@ const filters = document.querySelector(".filters");
 
 if (filters) {
   const buttons = [...filters.querySelectorAll("[data-filter]")];
-  const cards = [...document.querySelectorAll(".work-card")];
+  const cards = [...document.querySelectorAll("[data-core-project]")];
   const status = document.querySelector("#filter-status");
 
   filters.hidden = false;

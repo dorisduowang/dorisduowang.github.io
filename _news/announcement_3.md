@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Completed v5 simulations for **Punishment on Demand** — adaptive surprisal-triggered enforcement achieves higher cooperation (0.763 vs. 0.695) at less than half the enforcement cost of always-on punishment.
+Completed the first **Punishment on Demand** simulation. Its language signal rarely intervened, which motivated a sharper comparison between a contribution-history rule and the same rule plus a disclosed language warning.

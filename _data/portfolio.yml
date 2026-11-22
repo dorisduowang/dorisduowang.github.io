@@ -2,7 +2,7 @@
   field: Financial economics
   topic: markets
   figure: fomc
-  description: In an earlier sample of 33 Fed meetings, the association between news similarity to the minutes and later market volatility peaked at 2 days before the meeting. This is joint work with Yuzhao (Jerry) Jin.
+  description: This project with Yuzhao (Jerry) Jin asks whether news metadata around a Fed meeting contains information about later market volatility. The chart shows an earlier 33-meeting analysis. The latest branch extends the event calendar and separates exploratory timing from holdout validation.
   url: https://github.com/dorisduowang/fomc-media-alignment/tree/analysis/temporal-validation
   link: View the latest project
   baseline_source: https://github.com/dorisduowang/fomc-media-alignment/blob/e15061c6b4b37308295d836f40da722e0752bd6b/results/tables/leadlag_profile.csv
@@ -36,9 +36,40 @@
       label: 3 days after the meeting
       r: 0.32394957181615747
       explanation: The association with volatility was stronger than at day +2 and weaker than at day +1.
+- title: Agentic Supply Chains
+  field: Operations and bargaining
+  topic: operations
+  group: core
+  figure: supply-chain
+  caption: Study design · Hold firm roles fixed and vary agent capability.
+  fact: 4 tiers
+  fact_label: connected market roles
+  description: I test whether unequal AI capabilities shift bargaining power across a multi-tier supply chain when every firm keeps the same role and information boundary.
+  url: /projects/agentic_supply_chains/
+  link: Read the study design
+  details:
+    question: When firms use agents of unequal capability, who captures the surplus and where does coordination fail?
+    data: The experiment records decisions across a 4-tier economy while preserving each firm's permitted observations and operating constraints.
+    methods: I hold role instructions fixed, vary agent capability, and compare prices, quantities, agreement, and surplus across network positions.
+- title: Which Reviews Identify Quality?
+  field: Information and behavioral economics
+  topic: information
+  group: core
+  figure: reviews
+  caption: Study design · Separate what readers prefer from what helps them identify quality.
+  fact: 977
+  fact_label: participants across 3 experiments
+  description: I study whether the reviews people prefer are also the reviews that contain the most useful evidence about product quality.
+  url: /projects/review_information/
+  link: Read the research summary
+  details:
+    question: Are negative reviews more precise and more useful for identifying quality than positive reviews?
+    data: Three preregistered experiments include 977 participants and 468 review texts.
+    methods: I reconstructed the reported analyses, compared independent R and Python pipelines, and measured linguistic evidence in each review.
 - title: Auditing Text-Based Reward Signals
   field: AI and science
   topic: ai
+  group: earlier
   figure: chorus
   caption: Study design · Papers, researchers, and concepts feed a ranking.
   fact: "443"
@@ -53,10 +84,11 @@
 - title: Cooperation in Large-Scale Repeated Games
   field: Experimental economics
   topic: cooperation
+  group: core
   figure: cooperation
   caption: Study design · Track fixed and regrouped players across rounds.
-  fact: 1.5M+
-  fact_label: behavioral records in the Ikariam source
+  fact: "12,059"
+  fact_label: harmonized observations
   description: My King's College London dissertation asks when peer punishment can sustain cooperation as groups change over time.
   url: /projects/kcl_dissertation/
   link: Read the dissertation summary
@@ -71,16 +103,17 @@
   caption: Study design · Matched digital twins deliberate and make a group choice.
   fact: GRAIL
   fact_label: public study protocol
-  description: A public GRAIL protocol contribution on simulating small-group deliberation with participant-matched digital twins.
+  description: I use matched deliberations to isolate whether team membership changes how AI agents aggregate the same private information.
   url: https://github.com/dorisduowang/group_ai_lab/blob/feature/no-facilitator-agent-study/docs/TWIN2K_GRAIL_PROTOCOL.md
   link: Read the protocol
   details:
     question: How does team composition shape what digital twins share and decide in groups without a facilitator?
-    data: The protocol uses Twin-2K-500 survey histories to build participant-matched personas and public GRAIL data as a descriptive reference.
-    methods: The protocol proposes comparing five-person teams under matched private-report assignments and tracking what members share, participation balance, final choices, and unanimity.
+    data: The completed comparison contains 20 deliberations. Each of 5 private signal environments is replayed across 4 rosters while the task and signal allocation remain fixed.
+    methods: I preserve every private report and public message, then compare which facts enter discussion, how participation is distributed, and which city the group chooses.
 - title: Gold Forecasting with ARIMA and LSTM
   field: Financial econometrics
   topic: markets
+  group: earlier
   figure: gold
   caption: Study design · Compare ARIMA and LSTM forecasts on held-out returns.
   fact: 2000–2020
@@ -95,6 +128,7 @@
 - title: Gender Pay and Structural Inequality
   field: Applied microeconomics
   topic: inequality
+  group: earlier
   figure: inequality
   caption: Study design · Estimate and diagnose wage models with census microdata.
   fact: OLS
@@ -109,6 +143,7 @@
 - title: LLM Washing Machine
   field: Mechanistic interpretability
   topic: ai
+  group: earlier
   figure: llm
   caption: Study design · Compare “washing machine” with “machine” alone.
   fact: Sparse features
