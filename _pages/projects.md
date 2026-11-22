@@ -2,16 +2,16 @@
 layout: page
 title: Projects
 permalink: /projects/
-description: Research on information, strategic behavior, and institutional design.
+description: Research on strategic interaction under incomplete information and institutional design.
 nav: true
 nav_order: 1
 display_categories: [research, coursework]
 horizontal: false
 ---
 
-My projects follow one sequence. I identify the information available to strategic actors, hold the decision problem fixed, and change one
-institutional margin. That margin may be the enforcement rule, the team roster, or the capability of an agent representing a firm. I then trace the
-change into behavior and payoffs.
+I study strategic interaction under incomplete information. Each project holds the decision problem fixed and changes one institutional margin. The
+current public goods experiment changes what the enforcement rule can use. The matched-team study changes who deliberates over the same evidence. The
+supply chain project changes the capability of the agent representing a firm. Each design traces that change into behavior and payoffs.
 
 Start with the [research portfolio](/portfolio/#research) for the connected story and interactive evidence.
 

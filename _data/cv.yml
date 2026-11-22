@@ -4,7 +4,7 @@ cv:
   phone: "+1 (773) 457-7102"
   location: Chicago, IL
   summary: >-
-    I study how information and institutional rules shape strategic behavior. One project asks when communication can improve enforcement. Another holds private evidence fixed and changes the team. My operations work holds firm roles fixed and changes agent capability.
+    I study strategic interaction under incomplete information. My current public goods experiment asks whether communication can improve costly enforcement. A matched-team study holds private evidence fixed and changes the group. My operations work holds firm roles fixed and changes agent capability. The broader agenda is institutional design for settings in which AI agents act for people or firms.
 
   sections:
     Education:
@@ -102,13 +102,13 @@ cv:
     Academic Interests:
       - name: Experimental economics
         keywords: ["Which enforcement rules improve group earnings once punishment is costly?"]
-      - name: Information economics
-        keywords: ["When does talk reveal private evidence, and when does it help actors anticipate the monitor?"]
+      - name: Game theory and information economics
+        keywords: ["How does private information change strategic behavior when each actor responds to the others?"]
       - name: Economics of AI
         keywords: ["Why do agents facing the same payoff rule choose different strategies?"]
       - name: Market and mechanism design
         keywords: ["Can a rule use communication without becoming easy to game?"]
-      - name: Operations
+      - name: Operations and supply chains
         keywords: ["When firms use agents of unequal capability, who captures surplus and where does coordination fail?"]
 
     Skills:
