@@ -178,9 +178,13 @@
   });
   ["pause", "emptied", "error"].forEach((event) => video.addEventListener(event, stop));
   window.addEventListener("themechange", synchronize);
-  window.addEventListener("resize", () => {
-    if (isDay()) render(video.readyState >= video.HAVE_CURRENT_DATA ? video : poster);
-  }, { passive: true });
+  window.addEventListener(
+    "resize",
+    () => {
+      if (isDay()) render(video.readyState >= video.HAVE_CURRENT_DATA ? video : poster);
+    },
+    { passive: true }
+  );
   document.addEventListener("visibilitychange", synchronize);
   canvas.addEventListener("webglcontextlost", (event) => {
     event.preventDefault();
@@ -190,10 +194,13 @@
   });
 
   if (typeof IntersectionObserver !== "undefined") {
-    const observer = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting && entry.intersectionRatio > 0;
-      synchronize();
-    }, { threshold: [0, 0.02] });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting && entry.intersectionRatio > 0;
+        synchronize();
+      },
+      { threshold: [0, 0.02] }
+    );
     observer.observe(plate);
   }
 

@@ -97,7 +97,9 @@ body {
   background: var(--page);
   color: var(--ink);
   font: 1rem/1.55 var(--sans);
-  transition: background-color 280ms ease, color 280ms ease;
+  transition:
+    background-color 280ms ease,
+    color 280ms ease;
 }
 
 h1,
@@ -277,7 +279,11 @@ a {
 }
 :root[data-theme="day"] .theme-toggle i {
   background: currentColor;
-  box-shadow: 0 -0.31rem 0 -0.27rem, 0 0.31rem 0 -0.27rem, 0.31rem 0 0 -0.27rem, -0.31rem 0 0 -0.27rem;
+  box-shadow:
+    0 -0.31rem 0 -0.27rem,
+    0 0.31rem 0 -0.27rem,
+    0.31rem 0 0 -0.27rem,
+    -0.31rem 0 0 -0.27rem;
 }
 .mobile-menu nav a {
   padding: 0.42rem 0.6rem;
@@ -540,14 +546,7 @@ a {
   transform: translate(-50%, -50%) rotate(var(--scan-roll, 0rad));
   pointer-events: none;
   opacity: var(--scan-opacity, 0);
-  background: linear-gradient(
-    transparent,
-    var(--scan-soft) 39%,
-    var(--scan-mid) 46%,
-    var(--scan-core) 50%,
-    var(--scan-tail) 59%,
-    transparent
-  );
+  background: linear-gradient(transparent, var(--scan-soft) 39%, var(--scan-mid) 46%, var(--scan-core) 50%, var(--scan-tail) 59%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 35%, #000 65%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
