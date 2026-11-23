@@ -82,7 +82,7 @@
       float warmSkin = smoothstep(0.065, 0.16, source.r - source.b);
       hair *= 1.0 - warmSkin;
       // Below the neck, cool blue-black pixels belong to the top. Brown strand
-      // pixels still receive platinum, including the locks over the shoulders.
+      // pixels stay with the hair, including the locks over the shoulders.
       // A registered photo edit supplies the dye's strand texture. Below the
       // chin it also tells loose locks apart from neutral-dark fabric, and
       // keeps the black gaps between locks as hair instead of holes.
@@ -157,48 +157,22 @@
       }
       coverage *= mix(1.0, smoothstep(0.22, 0.9, ring / 6.0), hair);
 
-      // White-gold hair. The dye texture supplies strand detail and its own
-      // light and shade. Toward the rim, where the photo and the clip both
-      // darken into the black field, the tone is held up so the edge fades to
-      // the page without a grey outline.
-      float rim = 1.0 - smoothstep(0.45, 1.0, ring / 6.0);
-      float volume = pow(clamp(softLight * 2.8, 0.0, 1.0), 0.43);
-      volume = mix(volume, max(volume, 0.75), rim);
-      float strand = clamp((lightness - softLight) * 1.3, -0.06, 0.05);
-      vec3 platinum = mix(vec3(0.78, 0.71, 0.58), vec3(0.985, 0.955, 0.87), volume);
+      // Natural dark hair. Nothing is dyed: the clip's own hair is kept and
+      // only lifted from near-black into a soft dark brown so strands read on
+      // a white page. The registered photo adds strand highlights in the same
+      // brown, which avoids amplifying the clip's shadow noise.
+      float strand = clamp((lightness - softLight) * 1.3, -0.04, 0.04);
       float tone = smoothstep(0.08, 0.88, dyedLight);
-      tone = mix(tone, max(tone, 0.75), rim);
-      vec3 tint = mix(vec3(1.0, 0.925, 0.79), vec3(1.0, 0.975, 0.895), tone);
-      vec3 naturalPlatinum = mix(0.66, 1.0, tone) * tint + (dyedHair - vec3(dyedLight)) * 0.26 * (1.0 - rim);
-      platinum = mix(platinum, naturalPlatinum, hairTextureReady * dyed);
-      // The clip's own light on the hair ties the colour to the moving portrait.
-      platinum *= mix(0.96, 1.03, volume);
-      platinum = min(platinum + strand * (1.0 - rim), vec3(0.99));
-      vec3 result = mix(source, platinum, hair);
-
-      // Brows keep their own hairs and shading. They are only brought halfway
-      // toward the skin beside them, with a slight ash-gold cast, so they sit
-      // with the pale hair without looking bleached. Lashes are left as shot.
-      vec3 upperSkin = texture2D(portrait, uv + vec2(0.0, 0.016)).rgb;
-      vec3 lowerSkin = texture2D(portrait, uv - vec2(0.0, 0.016)).rgb;
-      vec3 skinBeside = (upperSkin + lowerSkin) * 0.5;
-      float skinLight = dot(skinBeside, vec3(0.2126, 0.7152, 0.0722));
-      float browInk = smoothstep(0.04, 0.16, skinLight - lightness);
-      vec3 softBrow = mix(source, skinBeside, 0.52);
-      softBrow = mix(vec3(dot(softBrow, vec3(0.2126, 0.7152, 0.0722))), softBrow, 0.8) * vec3(1.0, 0.985, 0.93);
-      result = mix(result, softBrow, feature.g * browInk * (1.0 - hair));
+      vec3 hairColour = source * 1.5 + vec3(0.02, 0.015, 0.012);
+      vec3 brown = mix(vec3(0.065, 0.05, 0.045), vec3(0.34, 0.255, 0.2), tone * tone);
+      hairColour = mix(hairColour, brown, 0.55 * hairTextureReady * dyed) + strand;
+      vec3 result = mix(source, hairColour, hair);
 
       // Skin is one step fairer: a gentle lift that is stronger in blue, which
       // also takes some orange out, with texture and shading left in place.
       vec3 fair = vec3(1.0) - pow(vec3(1.0) - clamp(result, 0.0, 1.0), vec3(1.34, 1.44, 1.58));
       fair = mix(vec3(dot(fair, vec3(0.2126, 0.7152, 0.0722))), fair, 0.92);
       result = mix(result, fair, warmSkin * (1.0 - hair));
-      // Dark hair cast a brown shadow on the skin along the hairline. Pale
-      // hair would not, so that shadow is eased.
-      float castShadow = headArea * aroundFace * (1.0 - smoothstep(0.31, 0.36, resting.y)) * (1.0 - smoothstep(0.32, 0.56, lightness));
-      vec3 eased = min(result * 1.2, vec3(1.0));
-      eased = mix(eased, vec3(dot(eased, vec3(0.2126, 0.7152, 0.0722))), 0.3);
-      result = mix(result, eased, castShadow * (1.0 - hair));
 
       // The moving source remains untouched. Only its dark garment is remapped
       // to a white fabric, with the source luminance retained as modelling.
@@ -264,7 +238,7 @@
 
   // Small vector masks separate skin, brows and lash rims. They are sampled in
   // the resting portrait's coordinates and follow its pose on every video frame.
-  // R protects skin; G softens eyebrow hairs; B traces the lash rims (unused).
+  // R protects skin; G and B trace the brows and lash rims (both unused now).
   const featureCanvas = document.createElement("canvas");
   featureCanvas.width = 1104;
   featureCanvas.height = 1024;
