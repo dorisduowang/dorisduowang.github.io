@@ -28,7 +28,7 @@
       opacity: 0.42 + 0.42 * order,
       restX: (spread - 0.5) * 12,
       restY: (order - 0.5) * 1.1,
-      color: index % 4 === 0 ? "#e8a23a" : "#f4f2ed",
+      accent: index % 4 === 0,
       trail: index % 3 === 0,
     };
   });
@@ -36,7 +36,7 @@
     order: ((index * 37) % 59) / 59,
     spread: ((index * 23) % 53) / 53,
     size: 0.65 + (((index * 13) % 51) / 51) * 0.9,
-    color: index % 5 === 0 ? "#e8a23a" : "#e7f5ff",
+    accent: index % 5 === 0,
   }));
 
   let tracks = [];
@@ -49,9 +49,23 @@
   let lastTime = -1;
   let painted = false;
   let visible = typeof IntersectionObserver === "undefined";
+  let colors;
 
   const clamp = (value) => Math.max(0, Math.min(1, value));
   const mix = (start, end, progress) => start + (end - start) * progress;
+
+  function readColors() {
+    const style = getComputedStyle(document.documentElement);
+    colors = {
+      primary: style.getPropertyValue("--particle-primary").trim() || "#f4f2ed",
+      accent: style.getPropertyValue("--particle-accent").trim() || "#e8a23a",
+      crystal: style.getPropertyValue("--particle-crystal").trim() || "#e7f5ff",
+    };
+  }
+
+  function particleColor(particle, crystal = false) {
+    return particle.accent ? colors.accent : crystal ? colors.crystal : colors.primary;
+  }
 
   function ease(value) {
     const unit = clamp(value);
@@ -320,7 +334,7 @@
     if (alpha <= 0.012) return;
     context.beginPath();
     context.arc(x, y, mote.size, 0, Math.PI * 2);
-    context.fillStyle = mote.color;
+    context.fillStyle = particleColor(mote, true);
     context.globalAlpha = alpha;
     context.fill();
     painted = true;
@@ -358,7 +372,7 @@
         if (!position || position.alpha < 0.012) return;
         const { x, y, depth, u, v, alpha } = position;
         if (u < 0.12 || u > 0.88) dot(x, y, mote, alpha);
-        else orbitPoints.push({ x: u, y: v, depth, opacity: alpha, size: mote.size, color: mote.color });
+        else orbitPoints.push({ x: u, y: v, depth, opacity: alpha, size: mote.size, color: particleColor(mote, true) });
       });
     }
     if (time >= loop.holdEnd && time < loop.transferEnd + 0.44) {
@@ -432,7 +446,7 @@
         context.beginPath();
         context.moveTo(behind.x + particle.restX * parking, behind.y + particle.restY * parking);
         context.lineTo(x, y);
-        context.strokeStyle = particle.color;
+        context.strokeStyle = particleColor(particle);
         context.lineWidth = 0.65;
         context.globalAlpha = Math.min(alpha, light * depthOpacity(behind, untilHidden + trailDelay, revealAge - trailDelay)) * 0.24;
         context.stroke();
@@ -440,7 +454,7 @@
       context.beginPath();
       const size = particle.size * (mobile.matches ? 0.85 : 1) * mix(0.63, 1.31, (current.depth + 1) / 2) * mix(1, 0.82, parking);
       context.arc(x, y, size, 0, Math.PI * 2);
-      context.fillStyle = particle.color;
+      context.fillStyle = particleColor(particle);
       context.globalAlpha = alpha;
       context.fill();
       painted = true;
@@ -546,6 +560,11 @@
     synchronize();
   });
   window.addEventListener("resize", measure, { passive: true });
+  window.addEventListener("themechange", () => {
+    readColors();
+    lastTime = -1;
+    measure();
+  });
   if (typeof ResizeObserver !== "undefined") {
     const observer = new ResizeObserver(measure);
     [stage, portrait, humanChart, agentChart].forEach((element) => observer.observe(element));
@@ -561,5 +580,6 @@
     observer.observe(video);
   }
 
+  readColors();
   measure();
 })();

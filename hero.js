@@ -2,6 +2,46 @@
   const landing = document.querySelector("[data-landing]");
   if (!landing) return;
 
+  const root = document.documentElement;
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  const themeToggle = landing.querySelector("[data-theme-toggle]");
+  const themeLabel = themeToggle?.querySelector("[data-theme-label]");
+  const systemTheme = window.matchMedia("(prefers-color-scheme: light)");
+  const storageKey = "doris-color-mode";
+
+  function applyTheme(theme, persist = false) {
+    const next = theme === "day" ? "day" : "night";
+    root.dataset.theme = next;
+    themeColor?.setAttribute("content", next === "day" ? "#ffffff" : "#000000");
+    if (themeLabel) themeLabel.textContent = next === "day" ? "Day" : "Night";
+    if (themeToggle) {
+      themeToggle.setAttribute("aria-label", `Switch to ${next === "day" ? "night" : "day"} mode`);
+      themeToggle.setAttribute("aria-pressed", String(next === "day"));
+    }
+    if (persist) {
+      try {
+        localStorage.setItem(storageKey, next);
+      } catch {
+        // The visual mode still works when storage is unavailable.
+      }
+    }
+    window.dispatchEvent(new CustomEvent("themechange", { detail: { theme: next } }));
+  }
+
+  applyTheme(root.dataset.theme || (systemTheme.matches ? "day" : "night"));
+  themeToggle?.addEventListener("click", () => applyTheme(root.dataset.theme === "day" ? "night" : "day", true));
+  systemTheme.addEventListener("change", ({ matches }) => {
+    try {
+      if (localStorage.getItem(storageKey)) return;
+    } catch {
+      // Follow the system theme if storage cannot be read.
+    }
+    applyTheme(matches ? "day" : "night");
+  });
+  window.addEventListener("storage", (event) => {
+    if (event.key === storageKey && event.newValue) applyTheme(event.newValue);
+  });
+
   const portfolioSections = new Set(["#about", "#graduation", "#contact"]);
 
   function followPortfolioBookmark() {

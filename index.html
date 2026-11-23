@@ -20,9 +20,20 @@
     <link rel="canonical" href="https://dorisduowang.github.io/" />
     <link rel="icon" type="image/png" href="/assets/img/portfolio/doris-mark.png" />
     <link rel="preload" href="/assets/fonts/portfolio/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="styles.css?v=c6b9e0e6" />
-    <script defer src="hero.js?v=1bfc3cbd"></script>
-    <script defer src="hero-particles.js?v=cf085d51"></script>
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem("doris-color-mode");
+          document.documentElement.dataset.theme = saved || (matchMedia("(prefers-color-scheme: light)").matches ? "day" : "night");
+        } catch {
+          document.documentElement.dataset.theme = "night";
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=day-1" />
+    <script defer src="hero.js?v=day-1"></script>
+    <script defer src="portrait-day.js?v=day-1"></script>
+    <script defer src="hero-particles.js?v=day-1"></script>
   </head>
   <body id="top" data-landing data-portfolio-url="/portfolio/" data-motion="paused">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -34,21 +45,26 @@
           <small><span lang="zh-Hans">王朵</span><span aria-hidden="true"> · </span>Wáng Duǒ</small>
         </span>
       </a>
-      <nav class="desktop-nav" aria-label="Main navigation">
-        <a href="#research">Research</a>
-        <a href="/portfolio/#about">About me</a>
-        <a href="/cv/">CV</a>
-        <a href="/portfolio/#contact">Contact</a>
-      </nav>
-      <details class="mobile-menu">
-        <summary>Menu<i aria-hidden="true"></i></summary>
-        <nav aria-label="Mobile navigation">
+      <div class="header-controls">
+        <nav class="desktop-nav" aria-label="Main navigation">
           <a href="#research">Research</a>
           <a href="/portfolio/#about">About me</a>
           <a href="/cv/">CV</a>
           <a href="/portfolio/#contact">Contact</a>
         </nav>
-      </details>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color mode">
+          <i aria-hidden="true"></i><span data-theme-label>Night</span>
+        </button>
+        <details class="mobile-menu">
+          <summary>Menu<i aria-hidden="true"></i></summary>
+          <nav aria-label="Mobile navigation">
+            <a href="#research">Research</a>
+            <a href="/portfolio/#about">About me</a>
+            <a href="/cv/">CV</a>
+            <a href="/portfolio/#contact">Contact</a>
+          </nav>
+        </details>
+      </div>
     </header>
 
     <main id="main">
@@ -76,6 +92,7 @@
               loop
               preload="none"
             ></video>
+            <canvas class="portrait-day" data-day-portrait aria-hidden="true"></canvas>
             <canvas
               class="portrait-crystal"
               data-crystal-renderer
