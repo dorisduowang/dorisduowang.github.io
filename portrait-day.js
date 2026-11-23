@@ -109,7 +109,7 @@
       // Along the forehead and temples the roots blend with skin and read as
       // a brown band. Lift that band too, above the ears only.
       float roots = headArea * aroundFace * (1.0 - smoothstep(0.26, 0.31, resting.y)) * (1.0 - smoothstep(0.16, 0.34, lightness));
-      hair = max(hair, roots * dyedHere * 0.85);
+      hair = max(hair, roots * dyedHere * 0.6);
 
       // A small blur separates broad volume from fine strands and gives the
       // matte a soft edge.
@@ -153,13 +153,19 @@
       // the edge fades to the page instead of leaving a dark outline.
       float volume = pow(clamp(softLight * 2.8, 0.0, 1.0), 0.43);
       float strand = clamp((lightness - softLight) * 1.3, -0.06, 0.05);
-      vec3 platinum = mix(vec3(0.76, 0.715, 0.625), vec3(0.975, 0.955, 0.895), volume);
-      // The dye texture's luminance ordering is kept; its gold is reduced to
-      // a pale tint.
-      float tone = smoothstep(0.1, 0.92, dyedLight);
-      vec3 tint = mix(vec3(1.0, 0.95, 0.85), vec3(1.0, 0.985, 0.935), tone);
-      vec3 naturalPlatinum = mix(0.6, 0.99, tone) * tint + (dyedHair - vec3(dyedLight)) * 0.22;
+      vec3 platinum = mix(vec3(0.7, 0.665, 0.6), vec3(0.975, 0.96, 0.915), volume);
+      // The dye texture supplies strand detail and its own light and shade.
+      // Its range is kept wide, from ash in the under-layers to near white on
+      // the crown, because flat pale hair reads as a cut-out on a white page.
+      float tone = smoothstep(0.08, 0.9, dyedLight);
+      vec3 tint = mix(vec3(1.0, 0.95, 0.865), vec3(1.0, 0.988, 0.95), tone);
+      vec3 naturalPlatinum = mix(0.56, 1.0, tone) * tint + (dyedHair - vec3(dyedLight)) * 0.16;
       platinum = mix(platinum, naturalPlatinum, hairTextureReady * dyed);
+      // The clip's own light on the hair, and a soft shadow where hair meets
+      // the face and neck, tie the colour to the moving portrait.
+      platinum *= mix(0.93, 1.03, volume);
+      float nearFace = 1.0 - smoothstep(0.95, 1.5, length((resting - vec2(0.48, 0.34)) / vec2(0.135, 0.2)));
+      platinum *= 1.0 - 0.1 * nearFace;
       platinum = min(platinum + strand, vec3(0.99));
       vec3 result = mix(source, platinum, hair);
 
@@ -195,7 +201,7 @@
       vec3 whiteFabric = vec3(fabricLight * 0.995, fabricLight * 0.992, fabricLight * 0.98);
       // Below the chin, any remaining neutral near-black (collar shadow, the
       // gap behind the neck, a stray lock outside the dye) joins the fabric.
-      float belowChin = smoothstep(0.46, 0.52, resting.y) * (1.0 - smoothstep(0.1, 0.22, lightness));
+      float belowChin = smoothstep(0.42, 0.47, resting.y) * (1.0 - smoothstep(0.1, 0.22, lightness));
       float garment = max(insideGarment * darkFabric, belowChin) * (1.0 - warmSkin) * (1.0 - hair);
       garment *= smoothstep(0.0015, 0.008, softSignal);
       result = mix(result, whiteFabric, garment);
