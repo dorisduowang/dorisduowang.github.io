@@ -85,12 +85,17 @@
       float softLight = dot(softSource, vec3(0.2126, 0.7152, 0.0722));
       float volume = pow(clamp(softLight * 2.8, 0.0, 1.0), 0.43);
       float strand = clamp((lightness - softLight) * 0.32, -0.022, 0.022);
-      vec3 platinum = mix(vec3(0.55, 0.535, 0.485), vec3(0.945, 0.925, 0.86), volume) + strand;
+      vec3 platinum = mix(vec3(0.55, 0.553, 0.56), vec3(0.93, 0.935, 0.94), volume) + strand;
       // A registered photo edit contributes only the hair's colour and strand
       // texture. The face and body continue to come from the original video.
       vec3 dyedHair = texture2D(hairTexture, vec2(resting.x, 1.0 - resting.y)).rgb;
       float dyedLight = dot(dyedHair, vec3(0.2126, 0.7152, 0.0722));
-      vec3 naturalPlatinum = mix(dyedHair, vec3(dyedLight + 0.018), 0.22) * 0.94 + 0.06;
+      // Neutralize the reference's brown/gold cast and lift diffuse midtones.
+      // Keep the texture's luminance ordering and cap highlights below white;
+      // this changes the dye colour without adding hard metallic reflections.
+      float diffuseLift = 0.085 * smoothstep(0.06, 0.36, dyedLight) * (1.0 - smoothstep(0.82, 1.0, dyedLight));
+      float platinumLight = min(0.945, dyedLight + diffuseLift);
+      vec3 naturalPlatinum = vec3(platinumLight) + (dyedHair - vec3(dyedLight)) * 0.14 + vec3(-0.003, 0.0, 0.003);
       naturalPlatinum += clamp((lightness - softLight) * 0.16, -0.012, 0.012);
       platinum = mix(platinum, naturalPlatinum, hairTextureReady * smoothstep(0.035, 0.12, dyedLight));
       vec3 result = mix(source, platinum, hair);
