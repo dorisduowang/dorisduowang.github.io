@@ -398,6 +398,10 @@
   }
 
   function drawScan(time, place, roll = 0) {
+    if (document.documentElement.dataset.theme === "day") {
+      clearScan();
+      return;
+    }
     const start = 1.08;
     const end = 6.8;
     if (!scan) return;
@@ -463,6 +467,7 @@
 
   function canAnimate() {
     return (
+      document.documentElement.dataset.theme !== "day" &&
       visible &&
       stage.dataset.crystal !== "3d" &&
       !reducedMotion.matches &&

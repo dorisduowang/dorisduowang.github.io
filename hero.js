@@ -79,6 +79,17 @@
   const crystalCanvas = stage?.querySelector("[data-crystal-renderer]");
   const portrait = crystalCanvas?.closest(".portrait-plate");
   const smoothSource = video.dataset.smoothSource;
+  const daySource = video.dataset.daySource;
+  const dayPoster = video.dataset.dayPoster;
+  const nightPoster = video.poster;
+  const dayMode = () => root.dataset.theme === "day" && Boolean(daySource);
+  const sourceForMode = () =>
+    dayMode()
+      ? daySource
+      : smoothSource && !smoothSourceFailed && !smallScreen.matches && !reducedMotion.matches
+        ? smoothSource
+        : video.dataset.source;
+  video.poster = dayMode() && dayPoster ? dayPoster : nightPoster;
   let crystalModule;
   let portraitPoseAt;
   let crystalRenderer;
@@ -105,7 +116,7 @@
   }
 
   function shouldUseCrystal() {
-    return crystalCanvas && (!smallScreen.matches || root.dataset.theme === "day") && !reducedMotion.matches && !mediaFailed && !crystalFailed;
+    return crystalCanvas && !dayMode() && !smallScreen.matches && !reducedMotion.matches && !mediaFailed && !crystalFailed;
   }
 
   function createCrystalOverlay() {
@@ -224,6 +235,7 @@
         video.defaultPlaybackRate = video.playbackRate = 1;
         stage.dispatchEvent(new Event("hero-crystal-mode"));
       }
+      if (dayMode()) video.defaultPlaybackRate = video.playbackRate = 1;
       return;
     }
     if (stage.dataset.crystal !== "3d") {
@@ -320,8 +332,7 @@
     // Avoid loading the portrait video until it can play on screen.
     loadCrystal();
     if (!video.getAttribute("src")) {
-      const useSmoothSource = smoothSource && !smoothSourceFailed && (!smallScreen.matches || root.dataset.theme === "day") && !reducedMotion.matches;
-      video.src = useSmoothSource ? smoothSource : video.dataset.source;
+      video.src = sourceForMode();
     }
     if (!video.paused) return;
 
@@ -383,17 +394,18 @@
     synchronizePlayback();
   });
   window.addEventListener("themechange", () => {
-    // Day mode includes the eye crystal on phones. Keep the original mobile
-    // night clip and playback rate when switching back to the night portrait.
-    if (smallScreen.matches && video.getAttribute("src") && smoothSource && !smoothSourceFailed && !reducedMotion.matches) {
-      const source = root.dataset.theme === "day" ? smoothSource : video.dataset.source;
+    // Each day frame is precomposited from the clean approved face sequence.
+    // Preserve the loop phase when changing between it and the untouched night.
+    video.poster = dayMode() && dayPoster ? dayPoster : nightPoster;
+    if (video.getAttribute("src") && !reducedMotion.matches) {
+      const source = sourceForMode();
       if (video.getAttribute("src") !== source) {
-        const position = video.currentTime;
+        const progress = Number.isFinite(video.duration) && video.duration > 0 ? video.currentTime / video.duration : 0;
         stopPlayback();
         video.addEventListener(
           "loadedmetadata",
           () => {
-            video.currentTime = Math.min(position, video.duration);
+            video.currentTime = Math.min(progress * video.duration, video.duration);
           },
           { once: true }
         );
