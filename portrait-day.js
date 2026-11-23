@@ -133,6 +133,20 @@
       // those strokes; drop it so it disappears into the page.
       float aboveShoulders = 1.0 - smoothstep(0.56, 0.62, resting.y);
       coverage *= mix(1.0, max(headShape, max(feature.r, warmSkin)), hairTextureReady * aboveShoulders);
+      // Feather the hair's outer edge. A ring of taps measures how much hair
+      // surrounds the pixel; strands at the rim fade out over a few pixels,
+      // the way the dark hair melts into the black field at night.
+      float ring = 0.0;
+      for (int i = 0; i < 6; i++) {
+        float angle = 1.0472 * float(i) + 0.5;
+        vec2 hop = texel * 9.0 * vec2(cos(angle), sin(angle));
+        vec2 ringPoint = vec2(resting.x + hop.x, 1.0 - resting.y + hop.y);
+        vec3 ringDye = texture2D(hairTexture, ringPoint).rgb;
+        float ringShape = max(texture2D(features, ringPoint).a, smoothstep(0.035, 0.12, dot(ringDye, vec3(0.2126, 0.7152, 0.0722))));
+        vec3 ringSource = texture2D(portrait, uv + hop).rgb;
+        ring += mix(1.0, ringShape, hairTextureReady) * smoothstep(0.004, 0.03, max(ringSource.r, max(ringSource.g, ringSource.b)));
+      }
+      coverage *= mix(1.0, smoothstep(0.22, 0.9, ring / 6.0), hair);
 
       // White-gold hair. Every hair pixel is lifted into a light ivory range,
       // including the dark rim where strands blend into the black field, so
@@ -149,18 +163,17 @@
       platinum = min(platinum + strand, vec3(0.99));
       vec3 result = mix(source, platinum, hair);
 
-      // Brows and lash rims take the same white-gold, mixed with the skin
-      // beside them so they read as fine pale hairs rather than paint.
+      // Brows keep their own hairs and shading. They are only brought halfway
+      // toward the skin beside them, with a slight ash-gold cast, so they sit
+      // with the pale hair without looking bleached. Lashes are left as shot.
       vec3 upperSkin = texture2D(portrait, uv + vec2(0.0, 0.016)).rgb;
       vec3 lowerSkin = texture2D(portrait, uv - vec2(0.0, 0.016)).rgb;
       vec3 skinBeside = (upperSkin + lowerSkin) * 0.5;
       float skinLight = dot(skinBeside, vec3(0.2126, 0.7152, 0.0722));
-      float browInk = smoothstep(0.06, 0.19, skinLight - lightness);
-      float lashInk = smoothstep(0.07, 0.22, dot(upperSkin, vec3(0.2126, 0.7152, 0.0722)) - lightness);
-      vec3 browGold = mix(skinBeside, vec3(0.9, 0.84, 0.72), 0.45) + (lightness - skinLight) * 0.3;
-      result = mix(result, browGold, feature.g * browInk * 0.76);
-      vec3 lashGold = mix(upperSkin, vec3(0.88, 0.83, 0.73), 0.6) + (lightness - skinLight) * 0.12;
-      result = mix(result, lashGold, feature.b * lashInk * 0.5);
+      float browInk = smoothstep(0.04, 0.16, skinLight - lightness);
+      vec3 softBrow = mix(source, skinBeside, 0.52);
+      softBrow = mix(vec3(dot(softBrow, vec3(0.2126, 0.7152, 0.0722))), softBrow, 0.8) * vec3(1.0, 0.985, 0.93);
+      result = mix(result, softBrow, feature.g * browInk * (1.0 - hair));
 
       // Skin is one step fairer: a gentle lift that is stronger in blue, which
       // also takes some orange out, with texture and shading left in place.
@@ -229,7 +242,7 @@
 
   // Small vector masks separate skin, brows and lash rims. They are sampled in
   // the resting portrait's coordinates and follow its pose on every video frame.
-  // R protects skin; G recolours eyebrow hairs; B recolours only thin lash rims.
+  // R protects skin; G softens eyebrow hairs; B traces the lash rims (unused).
   const featureCanvas = document.createElement("canvas");
   featureCanvas.width = 1104;
   featureCanvas.height = 1024;
