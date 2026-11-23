@@ -487,10 +487,11 @@ function pieceScale(time, piece) {
   return growth * (1 - smooth((time - decayTime) / Math.max(0.35, duration - decayTime)));
 }
 
-export function createHeroCrystal(canvas, plate) {
-  if (!canvas || !plate || window.matchMedia("(max-width: 767px)").matches) return null;
+export function createHeroCrystal(canvas, plate, options = {}) {
+  if (!canvas || !plate || (window.matchMedia("(max-width: 767px)").matches && !options.allowMobile)) return null;
 
   const video = plate.querySelector(".landing-video");
+  const dayCanvas = plate.querySelector("[data-day-portrait]");
 
   let renderer;
   try {
@@ -623,6 +624,9 @@ export function createHeroCrystal(canvas, plate) {
   const dummy = new THREE.Object3D();
   const liveTexture = video ? new THREE.VideoTexture(video) : null;
   if (liveTexture) liveTexture.colorSpace = THREE.SRGBColorSpace;
+  // The day canvas is drawn by the same frame event just before this pass, so
+  // the eye lens refracts the visible platinum portrait rather than black hair.
+  let dayTexture;
   let active = true;
   let contextLost = false;
   let lastTime = 0;
@@ -642,9 +646,26 @@ export function createHeroCrystal(canvas, plate) {
 
   function syncPortraitTexture(time) {
     if (!liveTexture || video.readyState < video.HAVE_CURRENT_DATA || !video.videoWidth) return false;
-    if (!backdropMaterial.map) {
-      backdropMaterial.map = liveTexture;
+    const day = document.documentElement.dataset.theme === "day";
+    let texture = liveTexture;
+    if (day && dayCanvas && plate.dataset.dayReady) {
+      if (!dayTexture) {
+        dayTexture = new THREE.CanvasTexture(dayCanvas);
+        dayTexture.colorSpace = THREE.SRGBColorSpace;
+      }
+      dayTexture.needsUpdate = true;
+      texture = dayTexture;
+    }
+    if (backdropMaterial.map !== texture) {
+      backdropMaterial.map = texture;
       backdropMaterial.needsUpdate = true;
+    }
+    // Dark orbit points need ordinary alpha compositing against the day canvas.
+    // The original additive night glints retain their existing appearance.
+    const blending = day ? THREE.NormalBlending : THREE.AdditiveBlending;
+    if (sprites.mesh.material.blending !== blending) {
+      sprites.mesh.material.blending = blending;
+      sprites.mesh.material.needsUpdate = true;
     }
     if (!liveProgramsReady && time < heroCrystalConfig.timeline.idleEnd) {
       liveProgramsReady = true;
@@ -799,7 +820,8 @@ export function createHeroCrystal(canvas, plate) {
     const { width, height } = plate.getBoundingClientRect();
     if (!width || !height) return;
     const { maxDpr, maxPixels } = heroCrystalConfig.render;
-    const density = Math.min(devicePixelRatio || 1, maxDpr, Math.sqrt(maxPixels / (width * height)));
+    const mobileDay = document.documentElement.dataset.theme === "day" && window.matchMedia("(max-width: 767px)").matches;
+    const density = Math.min(devicePixelRatio || 1, mobileDay ? 1.25 : maxDpr, Math.sqrt((mobileDay ? 190_000 : maxPixels) / (width * height)));
     renderer.setPixelRatio(density);
     renderer.setSize(width, height, false);
     sprites.setDensity(density);
@@ -827,6 +849,7 @@ export function createHeroCrystal(canvas, plate) {
     });
     assets.forEach((asset) => asset.dispose());
     liveTexture?.dispose();
+    dayTexture?.dispose();
     studio.dispose();
     renderer.dispose();
   }

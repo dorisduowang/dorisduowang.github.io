@@ -105,7 +105,7 @@
   }
 
   function shouldUseCrystal() {
-    return crystalCanvas && !smallScreen.matches && !reducedMotion.matches && !mediaFailed && !crystalFailed;
+    return crystalCanvas && (!smallScreen.matches || root.dataset.theme === "day") && !reducedMotion.matches && !mediaFailed && !crystalFailed;
   }
 
   function createCrystalOverlay() {
@@ -252,7 +252,7 @@
       crystalModule = rendererModule;
       portraitPoseAt = poseModule.portraitPoseAt;
       if (!shouldUseCrystal() || !shouldPlay()) return;
-      crystalRenderer = crystalModule.createHeroCrystal(crystalCanvas, portrait);
+      crystalRenderer = crystalModule.createHeroCrystal(crystalCanvas, portrait, { allowMobile: root.dataset.theme === "day" });
       if (!crystalRenderer) {
         crystalFailed = true;
         return;
@@ -320,7 +320,7 @@
     // Avoid loading the portrait video until it can play on screen.
     loadCrystal();
     if (!video.getAttribute("src")) {
-      const useSmoothSource = smoothSource && !smoothSourceFailed && !smallScreen.matches && !reducedMotion.matches;
+      const useSmoothSource = smoothSource && !smoothSourceFailed && (!smallScreen.matches || root.dataset.theme === "day") && !reducedMotion.matches;
       video.src = useSmoothSource ? smoothSource : video.dataset.source;
     }
     if (!video.paused) return;
@@ -380,6 +380,28 @@
   });
   smallScreen.addEventListener("change", () => {
     synchronizeCrystal();
+    synchronizePlayback();
+  });
+  window.addEventListener("themechange", () => {
+    // Day mode includes the eye crystal on phones. Keep the original mobile
+    // night clip and playback rate when switching back to the night portrait.
+    if (smallScreen.matches && video.getAttribute("src") && smoothSource && !smoothSourceFailed && !reducedMotion.matches) {
+      const source = root.dataset.theme === "day" ? smoothSource : video.dataset.source;
+      if (video.getAttribute("src") !== source) {
+        const position = video.currentTime;
+        stopPlayback();
+        video.addEventListener(
+          "loadedmetadata",
+          () => {
+            video.currentTime = Math.min(position, video.duration);
+          },
+          { once: true }
+        );
+        video.src = source;
+      }
+    }
+    synchronizeCrystal();
+    if (stage?.dataset.crystal === "3d" && paintedTime >= 0 && video.paused) paintCrystal(paintedTime);
     synchronizePlayback();
   });
   crystalCanvas?.addEventListener("webglcontextlost", () => {

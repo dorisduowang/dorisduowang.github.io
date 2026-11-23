@@ -2,6 +2,7 @@
   const canvas = document.querySelector("[data-day-portrait]");
   const plate = canvas?.closest(".portrait-plate");
   const video = plate?.querySelector(".landing-video");
+  const stage = plate?.closest(".hero-stage");
   if (!canvas || !plate || !video) return;
 
   // Reuse the original clip's measured pose. All colour work is confined to
@@ -36,7 +37,10 @@
     varying vec2 uv;
     uniform sampler2D portrait;
     uniform sampler2D features;
+    uniform sampler2D hairTexture;
+    uniform float hairTextureReady;
     uniform vec4 pose;
+    uniform vec2 texel;
 
     void main() {
       vec3 source = texture2D(portrait, uv).rgb;
@@ -50,7 +54,7 @@
       float s = sin(pose.w);
       vec2 resting = vec2(c * offset.x + s * offset.y, -s * offset.x + c * offset.y);
       resting = resting / pose.z / vec2(1.078125, 1.0) + vec2(0.532, 0.269);
-      vec3 feature = texture2D(features, vec2(resting.x, 1.0 - resting.y)).rgb;
+      vec4 feature = texture2D(features, vec2(resting.x, 1.0 - resting.y));
       float headArea = smoothstep(0.23, 0.28, resting.x) * (1.0 - smoothstep(0.73, 0.78, resting.x));
       headArea *= 1.0 - smoothstep(0.61, 0.67, resting.y);
       float hair = headArea * (1.0 - feature.r);
@@ -67,19 +71,36 @@
       float signal = max(source.r, max(source.g, source.b));
       float coverage = smoothstep(0.008, 0.038, signal);
       coverage = max(coverage, feature.r);
+      coverage = max(coverage, feature.a * hair * smoothstep(0.003, 0.012, signal));
 
-      // Cool platinum with slightly ivory highlights. Original strand contrast
-      // supplies the volume, so the tint moves with the photographed hair.
-      float strand = pow(clamp(lightness * 3.8, 0.0, 1.0), 0.42);
-      vec3 platinum = mix(vec3(0.43, 0.445, 0.44), vec3(0.985, 0.985, 0.952), strand);
+      // Separate broad hair volume from fine strands. Compress sharp highlights
+      // into a matte ivory range rather than turning every strand into chrome.
+      vec3 softSource = source * 0.28;
+      softSource += texture2D(portrait, uv + texel * vec2(2.0, 0.0)).rgb * 0.12;
+      softSource += texture2D(portrait, uv - texel * vec2(2.0, 0.0)).rgb * 0.12;
+      softSource += texture2D(portrait, uv + texel * vec2(0.0, 2.0)).rgb * 0.12;
+      softSource += texture2D(portrait, uv - texel * vec2(0.0, 2.0)).rgb * 0.12;
+      softSource += texture2D(portrait, uv + texel * vec2(4.0, 1.0)).rgb * 0.12;
+      softSource += texture2D(portrait, uv - texel * vec2(4.0, 1.0)).rgb * 0.12;
+      float softLight = dot(softSource, vec3(0.2126, 0.7152, 0.0722));
+      float volume = pow(clamp(softLight * 2.8, 0.0, 1.0), 0.43);
+      float strand = clamp((lightness - softLight) * 0.32, -0.022, 0.022);
+      vec3 platinum = mix(vec3(0.55, 0.535, 0.485), vec3(0.945, 0.925, 0.86), volume) + strand;
+      // A registered photo edit contributes only the hair's colour and strand
+      // texture. The face and body continue to come from the original video.
+      vec3 dyedHair = texture2D(hairTexture, vec2(resting.x, 1.0 - resting.y)).rgb;
+      float dyedLight = dot(dyedHair, vec3(0.2126, 0.7152, 0.0722));
+      vec3 naturalPlatinum = mix(dyedHair, vec3(dyedLight + 0.018), 0.22) * 0.94 + 0.06;
+      naturalPlatinum += clamp((lightness - softLight) * 0.16, -0.012, 0.012);
+      platinum = mix(platinum, naturalPlatinum, hairTextureReady * smoothstep(0.035, 0.12, dyedLight));
       vec3 result = mix(source, platinum, hair);
       vec3 upperSkin = texture2D(portrait, uv + vec2(0.0, 0.016)).rgb;
       vec3 lowerSkin = texture2D(portrait, uv - vec2(0.0, 0.016)).rgb;
       float skinLight = dot((upperSkin + lowerSkin) * 0.5, vec3(0.2126, 0.7152, 0.0722));
-      float browInk = smoothstep(0.025, 0.15, skinLight - lightness);
-      float lashInk = smoothstep(0.025, 0.14, dot(upperSkin, vec3(0.2126, 0.7152, 0.0722)) - lightness);
-      float fineHair = max(feature.g * browInk * 0.80, feature.b * lashInk * 0.74);
-      vec3 finePlatinum = mix(vec3(0.56, 0.57, 0.51), vec3(0.90, 0.90, 0.81), sqrt(lightness));
+      float browInk = smoothstep(0.06, 0.19, skinLight - lightness);
+      float lashInk = smoothstep(0.09, 0.26, dot(upperSkin, vec3(0.2126, 0.7152, 0.0722)) - lightness);
+      float fineHair = max(feature.g * browInk * 0.42, feature.b * lashInk * 0.26);
+      vec3 finePlatinum = mix(vec3(0.47, 0.425, 0.335), vec3(0.77, 0.72, 0.60), sqrt(lightness));
       result = mix(result, finePlatinum, fineHair);
       result = mix(vec3(1.0), result, coverage);
 
@@ -129,7 +150,10 @@
   gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
   gl.uniform1i(gl.getUniformLocation(program, "portrait"), 0);
   gl.uniform1i(gl.getUniformLocation(program, "features"), 1);
+  gl.uniform1i(gl.getUniformLocation(program, "hairTexture"), 2);
+  const hairReadyUniform = gl.getUniformLocation(program, "hairTextureReady");
   const poseUniform = gl.getUniformLocation(program, "pose");
+  const texelUniform = gl.getUniformLocation(program, "texel");
 
   // Small vector masks separate skin, brows and lash rims. They are sampled in
   // the resting portrait's coordinates and follow its pose on every video frame.
@@ -152,12 +176,23 @@
   featureContext.lineCap = "round";
   featureContext.filter = "blur(2px)";
   featureContext.strokeStyle = "#0f0";
-  featureContext.lineWidth = 20;
+  featureContext.lineWidth = 13;
   featureContext.stroke(new Path2D("M419 264 Q448 239 486 252 M550 239 Q589 221 626 238"));
   featureContext.filter = "blur(1px)";
   featureContext.strokeStyle = "#00f";
-  featureContext.lineWidth = 4.2;
+  featureContext.lineWidth = 2.4;
   featureContext.stroke(new Path2D("M431 302 Q460 276 491 295 M562 283 Q590 259 625 279"));
+
+  // An inset silhouette keeps the interior locks opaque. The outermost strands
+  // still use the photographed edge, so no ellipse-shaped background returns.
+  featureContext.globalCompositeOperation = "destination-in";
+  featureContext.filter = "blur(5px)";
+  featureContext.fillStyle = "#fff";
+  featureContext.fill(
+    new Path2D(
+      "M373 307 C357 233 374 159 433 119 C477 87 508 85 543 91 C591 78 659 119 680 182 C694 223 683 268 688 314 C685 397 699 497 723 552 L739 591 Q712 606 680 587 L651 523 L638 471 Q541 529 453 477 L427 539 L449 600 Q421 643 359 642 L337 607 L339 567 C364 493 364 394 373 307Z"
+    )
+  );
 
   const featureTexture = gl.createTexture();
   gl.activeTexture(gl.TEXTURE1);
@@ -167,7 +202,16 @@
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, featureCanvas);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, featureCanvas);
+
+  const hairTexture = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE2);
+  gl.bindTexture(gl.TEXTURE_2D, hairTexture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
 
   const texture = gl.createTexture();
   gl.activeTexture(gl.TEXTURE0);
@@ -206,6 +250,7 @@
     try {
       const pose = portraitPoseAt?.(source === video ? video.currentTime : 0) ?? { x: 0.532, y: 0.269, scale: 1, roll: 0 };
       gl.uniform4f(poseUniform, pose.x, pose.y, pose.scale, pose.roll);
+      gl.uniform2f(texelUniform, 1 / (source.videoWidth || source.naturalWidth || 1104), 1 / (source.videoHeight || source.naturalHeight || 1024));
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, source);
@@ -219,6 +264,9 @@
 
   function requestFrame() {
     if (!isDay() || !visible || document.hidden || video.paused || video.readyState < video.HAVE_CURRENT_DATA) return;
+    // In 3D mode the shared media-clock event draws us immediately before the
+    // crystal's refraction pass, which can then sample the white-day portrait.
+    if (stage?.dataset.crystal === "3d") return;
     if (typeof video.requestVideoFrameCallback === "function") {
       videoFrame = video.requestVideoFrameCallback(() => {
         videoFrame = 0;
@@ -254,11 +302,32 @@
   });
   poster.src = video.poster;
 
+  let hairImage;
+  function loadHairTexture() {
+    if (hairImage || !isDay()) return;
+    hairImage = new Image();
+    hairImage.addEventListener("load", () => {
+      if (contextLost) return;
+      gl.activeTexture(gl.TEXTURE2);
+      gl.bindTexture(gl.TEXTURE_2D, hairTexture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, hairImage);
+      gl.uniform1f(hairReadyUniform, 1);
+      if (isDay()) render(video.readyState >= video.HAVE_CURRENT_DATA ? video : poster);
+    });
+    hairImage.src = "/assets/img/portfolio/doris-day-hair-texture-v3.webp";
+  }
+  window.addEventListener("themechange", loadHairTexture);
+  loadHairTexture();
+
   video.addEventListener("loadeddata", synchronize);
   video.addEventListener("playing", synchronize);
   video.addEventListener("seeked", () => {
     if (isDay()) render(video);
   });
+  stage?.addEventListener("hero-crystal-frame", () => {
+    if (isDay() && video.readyState >= video.HAVE_CURRENT_DATA) render(video);
+  });
+  stage?.addEventListener("hero-crystal-mode", synchronize);
   ["pause", "emptied", "error"].forEach((event) => video.addEventListener(event, stop));
   window.addEventListener("themechange", synchronize);
   window.addEventListener(
