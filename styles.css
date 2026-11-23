@@ -550,12 +550,6 @@ a {
   mask-image: linear-gradient(90deg, transparent, #000 35%, #000 65%, transparent);
 }
 
-/* The daylight studio portrait is a clean video with no face or head effects. */
-:root[data-theme="day"] .portrait-scan,
-:root[data-theme="day"] .portrait-crystal,
-:root[data-theme="day"] .hero-particles {
-  display: none !important;
-}
 @media (prefers-reduced-motion: reduce) {
   .portrait-scan,
   .portrait-crystal {

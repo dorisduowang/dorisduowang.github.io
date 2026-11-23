@@ -83,6 +83,10 @@
   const dayPoster = video.dataset.dayPoster;
   const nightPoster = video.poster;
   const dayMode = () => root.dataset.theme === "day" && Boolean(daySource);
+  // Day is encoded at its 26-second display cadence. Eye tracking and the
+  // original scan use the 292-frame, 24 fps source clock in both themes.
+  const portraitSourceTime = (seconds = video.currentTime) =>
+    dayMode() && Number.isFinite(video.duration) ? (seconds / video.duration) * Number(video.dataset.poseDuration) : seconds;
   const sourceForMode = () =>
     dayMode()
       ? daySource
@@ -116,7 +120,7 @@
   }
 
   function shouldUseCrystal() {
-    return crystalCanvas && !dayMode() && !smallScreen.matches && !reducedMotion.matches && !mediaFailed && !crystalFailed;
+    return crystalCanvas && (!smallScreen.matches || dayMode()) && !reducedMotion.matches && !mediaFailed && !crystalFailed;
   }
 
   function createCrystalOverlay() {
@@ -183,7 +187,7 @@
     return aligned;
   }
 
-  function paintCrystal(time, sourceTime = video.currentTime) {
+  function paintCrystal(time, sourceTime = portraitSourceTime()) {
     const { heroCrystalConfig: config, crystalCentroid, placeOnPortrait } = crystalModule;
     const loop = config.timeline;
     const pose = portraitPoseAt(sourceTime);
@@ -238,14 +242,16 @@
       if (dayMode()) video.defaultPlaybackRate = video.playbackRate = 1;
       return;
     }
-    if (stage.dataset.crystal !== "3d") {
-      const rate = video.duration / crystalModule.heroCrystalConfig.timeline.duration;
-      try {
+    const rate = video.duration / crystalModule.heroCrystalConfig.timeline.duration;
+    try {
+      if (video.playbackRate !== rate) {
         video.defaultPlaybackRate = video.playbackRate = rate;
-      } catch {
-        crystalFailed = true;
-        return;
       }
+    } catch {
+      crystalFailed = true;
+      return;
+    }
+    if (stage.dataset.crystal !== "3d") {
       stage.dataset.crystal = "3d";
       stage.dispatchEvent(new Event("hero-crystal-mode"));
       paintedTime = -1;
@@ -277,7 +283,7 @@
           const frame = Math.max(0, Math.min(duration, time));
           const sourceTime = (frame / duration) * video.duration;
           video.currentTime = sourceTime;
-          paintCrystal(frame, sourceTime);
+          paintCrystal(frame, portraitSourceTime(sourceTime));
         },
         resize() {
           if (stage.dataset.crystal === "3d") resizeCrystal();

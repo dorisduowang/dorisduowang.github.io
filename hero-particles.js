@@ -398,10 +398,6 @@
   }
 
   function drawScan(time, place, roll = 0) {
-    if (document.documentElement.dataset.theme === "day") {
-      clearScan();
-      return;
-    }
     const start = 1.08;
     const end = 6.8;
     if (!scan) return;
@@ -467,7 +463,6 @@
 
   function canAnimate() {
     return (
-      document.documentElement.dataset.theme !== "day" &&
       visible &&
       stage.dataset.crystal !== "3d" &&
       !reducedMotion.matches &&
@@ -484,7 +479,10 @@
       suspend();
       return;
     }
-    const time = video.currentTime;
+    const time =
+      document.documentElement.dataset.theme === "day" && Number.isFinite(video.duration)
+        ? (video.currentTime / video.duration) * Number(video.dataset.poseDuration)
+        : video.currentTime;
     if (time !== lastTime) {
       draw(time);
       lastTime = time;
