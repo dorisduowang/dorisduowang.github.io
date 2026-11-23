@@ -55,8 +55,29 @@
       vec2 resting = vec2(c * offset.x + s * offset.y, -s * offset.x + c * offset.y);
       resting = resting / pose.z / vec2(1.078125, 1.0) + vec2(0.532, 0.269);
       vec4 feature = texture2D(features, vec2(resting.x, 1.0 - resting.y));
-      float headArea = smoothstep(0.23, 0.28, resting.x) * (1.0 - smoothstep(0.73, 0.78, resting.x));
-      headArea *= 1.0 - smoothstep(0.61, 0.67, resting.y);
+
+      // The clip carries cream-white cracks across the face for the night
+      // sequence. On fair day skin they read as scratches. Inside the face
+      // (eyes excluded) a pixel much lighter than the skin around it takes
+      // the average of the neighbouring pixels that are not cracks themselves.
+      vec2 inner = (resting - vec2(0.476, 0.32)) / vec2(0.108, 0.18);
+      float faceInterior = feature.r * (1.0 - smoothstep(0.85, 1.0, length(inner)));
+      float eyes = 1.0 - smoothstep(0.8, 1.2, length((resting - vec2(0.418, 0.289)) / vec2(0.044, 0.024)));
+      eyes = max(eyes, 1.0 - smoothstep(0.8, 1.2, length((resting - vec2(0.537, 0.272)) / vec2(0.044, 0.024))));
+      vec4 around = vec4(0.0);
+      for (int i = 0; i < 6; i++) {
+        float angle = 1.0472 * float(i) + 0.3;
+        vec3 tap = texture2D(portrait, uv + texel * 10.0 * vec2(cos(angle), sin(angle))).rgb;
+        float tapLight = dot(tap, vec3(0.2126, 0.7152, 0.0722));
+        around += vec4(tap, 1.0) * (1.02 - smoothstep(0.62, 0.72, tapLight));
+      }
+      vec3 skinAround = around.rgb / around.a;
+      float crack = smoothstep(0.02, 0.06, lightness - dot(skinAround, vec3(0.2126, 0.7152, 0.0722)));
+      crack *= smoothstep(0.48, 0.6, lightness) * faceInterior * (1.0 - eyes);
+      source = mix(source, skinAround, crack);
+      lightness = dot(source, vec3(0.2126, 0.7152, 0.0722));
+      float headArea = smoothstep(0.2, 0.25, resting.x) * (1.0 - smoothstep(0.76, 0.81, resting.x));
+      headArea *= 1.0 - smoothstep(0.67, 0.73, resting.y);
       float hair = headArea * (1.0 - feature.r);
       float warmSkin = smoothstep(0.065, 0.16, source.r - source.b);
       hair *= 1.0 - warmSkin;
@@ -64,17 +85,34 @@
       // pixels still receive platinum, including the locks over the shoulders.
       float fabric = smoothstep(0.51, 0.56, resting.y) * (1.0 - smoothstep(-0.018, 0.008, source.r - source.b));
       hair *= 1.0 - fabric;
+      // A registered photo edit supplies the dye's strand texture. Below the
+      // chin it also tells loose locks apart from neutral-dark fabric.
+      vec3 dyedHair = texture2D(hairTexture, vec2(resting.x, 1.0 - resting.y)).rgb;
+      float dyedLight = dot(dyedHair, vec3(0.2126, 0.7152, 0.0722));
+      float dyed = smoothstep(0.035, 0.12, dyedLight);
+      hair *= mix(1.0, dyed, hairTextureReady * smoothstep(0.5, 0.56, resting.y));
+      // Mid-loop the clip draws thin light strokes in the black field around
+      // the head. Only pixels inside the traced silhouette or the dye's own
+      // soft hair edge count as hair, so those strokes are not dyed.
+      float headShape = max(feature.a, dyed);
+      hair *= mix(1.0, headShape, hairTextureReady);
+      // The skin mask also covers dark roots along the hairline and the hair
+      // tucked behind the jaw. Outside an inner ellipse that holds the eyes,
+      // brows, nostrils and mouth, return those pixels to the hair pass so no
+      // black band frames the face.
+      vec2 faceOffset = (resting - vec2(0.476, 0.325)) / vec2(0.112, 0.125);
+      float aroundFace = smoothstep(0.85, 1.0, length(faceOffset));
+      aroundFace *= mix(1.0, smoothstep(0.07, 0.1, abs(resting.x - 0.476)), smoothstep(0.4, 0.44, resting.y));
+      float tucked = headArea * feature.r * aroundFace * (1.0 - warmSkin) * (1.0 - smoothstep(0.1, 0.2, lightness));
+      float dyedHere = hairTextureReady * smoothstep(0.12, 0.3, dyedLight);
+      hair = max(hair, tucked * dyedHere);
+      // Along the forehead and temples the roots blend with skin and read as
+      // a brown band. Lift that band too, above the ears only.
+      float roots = headArea * aroundFace * (1.0 - smoothstep(0.26, 0.31, resting.y)) * (1.0 - smoothstep(0.16, 0.34, lightness));
+      hair = max(hair, roots * dyedHere * 0.85);
 
-      // Remove only the source's near-black studio field. The previous ellipse
-      // retained black background beyond the hair. Here the alpha comes from
-      // the actual pixels, with a short soft transition for fine edge strands.
-      float signal = max(source.r, max(source.g, source.b));
-      float coverage = smoothstep(0.008, 0.038, signal);
-      coverage = max(coverage, feature.r);
-      coverage = max(coverage, feature.a * hair * smoothstep(0.003, 0.012, signal));
-
-      // Separate broad hair volume from fine strands. Compress sharp highlights
-      // into a matte ivory range rather than turning every strand into chrome.
+      // A small blur separates broad volume from fine strands and gives the
+      // matte a soft edge.
       vec3 softSource = source * 0.28;
       softSource += texture2D(portrait, uv + texel * vec2(2.0, 0.0)).rgb * 0.12;
       softSource += texture2D(portrait, uv - texel * vec2(2.0, 0.0)).rgb * 0.12;
@@ -83,42 +121,71 @@
       softSource += texture2D(portrait, uv + texel * vec2(4.0, 1.0)).rgb * 0.12;
       softSource += texture2D(portrait, uv - texel * vec2(4.0, 1.0)).rgb * 0.12;
       float softLight = dot(softSource, vec3(0.2126, 0.7152, 0.0722));
+      float softSignal = max(softSource.r, max(softSource.g, softSource.b));
+
+      // The studio field is pure black, so the alpha comes from the pixels
+      // themselves. Blending in the blurred signal feathers the outer strands.
+      float signal = max(source.r, max(source.g, source.b));
+      float coverage = smoothstep(0.006, 0.036, mix(signal, softSignal, 0.55));
+      coverage = max(coverage, feature.r);
+      coverage = max(coverage, feature.a * hair * smoothstep(0.003, 0.012, signal));
+      // Around the head, anything outside that shape and not skin is one of
+      // those strokes; drop it so it disappears into the page.
+      float aboveShoulders = 1.0 - smoothstep(0.56, 0.62, resting.y);
+      coverage *= mix(1.0, max(headShape, max(feature.r, warmSkin)), hairTextureReady * aboveShoulders);
+
+      // White-gold hair. Every hair pixel is lifted into a light ivory range,
+      // including the dark rim where strands blend into the black field, so
+      // the edge fades to the page instead of leaving a dark outline.
       float volume = pow(clamp(softLight * 2.8, 0.0, 1.0), 0.43);
-      float strand = clamp((lightness - softLight) * 0.32, -0.022, 0.022);
-      vec3 platinum = mix(vec3(0.55, 0.553, 0.56), vec3(0.93, 0.935, 0.94), volume) + strand;
-      // A registered photo edit contributes only the hair's colour and strand
-      // texture. The face and body continue to come from the original video.
-      vec3 dyedHair = texture2D(hairTexture, vec2(resting.x, 1.0 - resting.y)).rgb;
-      float dyedLight = dot(dyedHair, vec3(0.2126, 0.7152, 0.0722));
-      // Neutralize the reference's brown/gold cast and lift diffuse midtones.
-      // Keep the texture's luminance ordering and cap highlights below white;
-      // this changes the dye colour without adding hard metallic reflections.
-      float diffuseLift = 0.085 * smoothstep(0.06, 0.36, dyedLight) * (1.0 - smoothstep(0.82, 1.0, dyedLight));
-      float platinumLight = min(0.945, dyedLight + diffuseLift);
-      vec3 naturalPlatinum = vec3(platinumLight) + (dyedHair - vec3(dyedLight)) * 0.14 + vec3(-0.003, 0.0, 0.003);
-      naturalPlatinum += clamp((lightness - softLight) * 0.16, -0.012, 0.012);
-      platinum = mix(platinum, naturalPlatinum, hairTextureReady * smoothstep(0.035, 0.12, dyedLight));
+      float strand = clamp((lightness - softLight) * 1.3, -0.06, 0.05);
+      vec3 platinum = mix(vec3(0.76, 0.715, 0.625), vec3(0.975, 0.955, 0.895), volume);
+      // The dye texture's luminance ordering is kept; its gold is reduced to
+      // a pale tint.
+      float tone = smoothstep(0.1, 0.92, dyedLight);
+      vec3 tint = mix(vec3(1.0, 0.95, 0.85), vec3(1.0, 0.985, 0.935), tone);
+      vec3 naturalPlatinum = mix(0.6, 0.99, tone) * tint + (dyedHair - vec3(dyedLight)) * 0.22;
+      platinum = mix(platinum, naturalPlatinum, hairTextureReady * dyed);
+      platinum = min(platinum + strand, vec3(0.99));
       vec3 result = mix(source, platinum, hair);
+
+      // Brows and lash rims take the same white-gold, mixed with the skin
+      // beside them so they read as fine pale hairs rather than paint.
       vec3 upperSkin = texture2D(portrait, uv + vec2(0.0, 0.016)).rgb;
       vec3 lowerSkin = texture2D(portrait, uv - vec2(0.0, 0.016)).rgb;
-      float skinLight = dot((upperSkin + lowerSkin) * 0.5, vec3(0.2126, 0.7152, 0.0722));
+      vec3 skinBeside = (upperSkin + lowerSkin) * 0.5;
+      float skinLight = dot(skinBeside, vec3(0.2126, 0.7152, 0.0722));
       float browInk = smoothstep(0.06, 0.19, skinLight - lightness);
-      float lashInk = smoothstep(0.09, 0.26, dot(upperSkin, vec3(0.2126, 0.7152, 0.0722)) - lightness);
-      float fineHair = max(feature.g * browInk * 0.42, feature.b * lashInk * 0.26);
-      vec3 finePlatinum = mix(vec3(0.47, 0.425, 0.335), vec3(0.77, 0.72, 0.60), sqrt(lightness));
-      result = mix(result, finePlatinum, fineHair);
+      float lashInk = smoothstep(0.07, 0.22, dot(upperSkin, vec3(0.2126, 0.7152, 0.0722)) - lightness);
+      vec3 browGold = mix(skinBeside, vec3(0.9, 0.84, 0.72), 0.45) + (lightness - skinLight) * 0.3;
+      result = mix(result, browGold, feature.g * browInk * 0.76);
+      vec3 lashGold = mix(upperSkin, vec3(0.88, 0.83, 0.73), 0.6) + (lightness - skinLight) * 0.12;
+      result = mix(result, lashGold, feature.b * lashInk * 0.5);
+
+      // Skin is one step fairer: a gentle lift that is stronger in blue, which
+      // also takes some orange out, with texture and shading left in place.
+      vec3 fair = vec3(1.0) - pow(vec3(1.0) - clamp(result, 0.0, 1.0), vec3(1.34, 1.44, 1.58));
+      fair = mix(vec3(dot(fair, vec3(0.2126, 0.7152, 0.0722))), fair, 0.92);
+      result = mix(result, fair, warmSkin * (1.0 - hair));
       result = mix(vec3(1.0), result, coverage);
 
       // The moving source remains untouched. Only its dark garment is remapped
-      // to a cool white fabric, with the source luminance retained as modelling.
+      // to a white fabric, with the source luminance retained as modelling.
+      // The garment's own signal gates the remap, so the black field beside
+      // the shoulders stays clear.
       float vertical = smoothstep(0.500, 0.690, point.y);
       float halfWidth = mix(0.085, 0.355, vertical);
       float insideGarment = 1.0 - smoothstep(halfWidth - 0.018, halfWidth + 0.018, abs(point.x - 0.5));
       insideGarment *= smoothstep(0.485, 0.555, point.y);
       float darkFabric = 1.0 - smoothstep(0.17, 0.48, lightness);
-      float fabricLight = clamp(0.815 + lightness * 1.05, 0.815, 0.965);
-      vec3 whiteFabric = vec3(fabricLight * 0.985, fabricLight * 0.995, fabricLight + 0.012);
-      result = mix(result, whiteFabric, insideGarment * darkFabric * (1.0 - hair));
+      float fabricLight = clamp(0.875 + lightness * 0.9, 0.875, 0.975);
+      vec3 whiteFabric = vec3(fabricLight * 0.995, fabricLight * 0.992, fabricLight * 0.98);
+      // Below the chin, any remaining neutral near-black (collar shadow, the
+      // gap behind the neck, a stray lock outside the dye) joins the fabric.
+      float belowChin = smoothstep(0.46, 0.52, resting.y) * (1.0 - smoothstep(0.1, 0.22, lightness));
+      float garment = max(insideGarment * darkFabric, belowChin) * (1.0 - warmSkin) * (1.0 - hair);
+      garment *= smoothstep(0.0015, 0.008, softSignal);
+      result = mix(result, whiteFabric, garment);
 
       gl_FragColor = vec4(result, 1.0);
     }
