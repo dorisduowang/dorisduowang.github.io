@@ -1,18 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>
-      {{ page.title | escape }}
-      | Research Portfolio
-    </title>
-    <meta name="description" content="{{ page.description | escape }}">
+    {% include metadata.liquid %}
     <meta name="theme-color" content="#080808">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ page.title | escape }}">
-    <meta property="og:description" content="{{ page.description | escape }}">
-    <meta property="og:image" content="{{ '/assets/img/portfolio/doris-portrait.webp' | absolute_url }}">
     <meta property="og:image:alt" content="Portrait of Doris Wang">
     <link rel="canonical" href="{{ page.url | absolute_url }}">
     <link rel="icon" type="image/png" href="{{ '/assets/img/portfolio/doris-mark.png' | relative_url }}">
@@ -342,7 +332,7 @@
         <div class="about-inner content-width">
           <div class="about-copy">
             <p class="eyebrow section-kicker">About me</p>
-            <h2 id="about-title">Hi, I’m Doris.</h2>
+            <h2 id="about-title">Hi, I’m Doris Wang (<span lang="zh-Hans">王朵</span>).</h2>
             <p>
               I’m an M.A. student in <a href="https://macss.uchicago.edu/">Computational Social Science (Economics)</a> at the University of Chicago.
               I received my B.Sc. in Political Economy from King’s College London.

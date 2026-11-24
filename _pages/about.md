@@ -1,6 +1,6 @@
 ---
 layout: portfolio
-title: Doris Wang · 王朵
+title: Research Portfolio
 permalink: /portfolio/
-description: Doris Wang studies strategic interaction under incomplete information and institutional design for people and AI agents.
+description: Research portfolio of Doris Wang (王朵), an M.A. student at the University of Chicago working on experimental economics, game theory and AI agents.
 ---

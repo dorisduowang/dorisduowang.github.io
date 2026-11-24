@@ -2,18 +2,19 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: blank # the website title (if blank, full name will be used instead)
-first_name: Duo (Doris)
+title: Doris Wang · 王朵
+first_name: Doris
 middle_name:
 last_name: Wang
+name_aliases: ["王朵", "Duo Wang", "Duo (Doris) Wang"]
 contact_note: >
   The best way to reach me is by email.
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Duo (Doris) Wang studies strategic interaction under incomplete information and institutional design for people and AI agents at the University of Chicago.
+  Doris Wang (王朵), an M.A. student at the University of Chicago, studies strategic interaction under incomplete information and institutional design for people and AI agents.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
-keywords: jekyll, jekyll-theme, academic-website, portfolio-website # add your own keywords or leave empty
+keywords: # leave empty; page titles and descriptions describe the research
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: ⚛️ # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
@@ -67,9 +68,9 @@ max_width: 930px
 # -----------------------------------------------------------------------------
 # Display links to the page with a preview object on social media.
 # see https://schema.org/docs/faq.html for more information
-serve_og_meta: false # Include Open Graph meta tags in the HTML head
-serve_schema_org: false # Include Schema.org in the HTML head
-og_image: # The site-wide (default for all links) Open Graph preview image
+serve_og_meta: true # Include Open Graph meta tags in the HTML head
+serve_schema_org: true # Include Schema.org in the HTML head
+og_image: /assets/img/portfolio/doris-centered-poster.webp
 
 # -----------------------------------------------------------------------------
 # Analytics and search engine verification
@@ -224,6 +225,10 @@ plugins:
 defaults:
   - scope:
       path: "assets"
+    values:
+      sitemap: false
+  - scope:
+      path: "pgg-feasibility/index.html"
     values:
       sitemap: false
 
