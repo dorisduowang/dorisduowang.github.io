@@ -26,7 +26,7 @@ ninja.data = [
           },
         },{id: "nav-cv",
           title: "CV",
-          description: "Academic curriculum vitae, updated November 2026",
+          description: "Academic CV of Doris Wang (王朵), M.A. student in Computational Social Science (Economics) at the University of Chicago. Updated November 2026.",
           section: "Navigation",
           handler: () => {
             window.location.href = "/cv/";
@@ -107,6 +107,13 @@ ninja.data = [
         section: 'Socials',
         handler: () => {
           window.open("https://github.com/dorisduowang", "_blank");
+        },
+      },{
+        id: 'social-linkedin',
+        title: 'LinkedIn',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://www.linkedin.com/in/duodoriswang", "_blank");
         },
       },{
         id: 'social-rss',
