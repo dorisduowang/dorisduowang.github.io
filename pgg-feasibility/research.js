@@ -237,6 +237,8 @@ async function init() {
     }
     renderStudies();
     document.documentElement.dataset.registryLoaded = "true";
+    const linkedSection = document.getElementById(window.location.hash.slice(1));
+    if (linkedSection) linkedSection.scrollIntoView({ block: "start" });
   } catch (error) {
     $("#registry-count").textContent = "Registry unavailable";
     $("#registry-error").hidden = false;
