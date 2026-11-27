@@ -77,11 +77,6 @@ function renderLinks(container, study, extra = {}) {
     }
   }
 }
-function stat(value, label) {
-  const node = element("div", "stat");
-  node.append(element("span", "stat-value", value), element("span", "stat-label", label));
-  return node;
-}
 function renderFeatured(studies, project) {
   const primary = studies.find((s) => ["current-policy", "current_policy"].includes(s.id));
   const reference = studies.find((s) => ["reference-inheritance", "reference_inheritance"].includes(s.id));
@@ -89,41 +84,29 @@ function renderFeatured(studies, project) {
   if (project?.updated) {
     const date = new Date(project.updated);
     if (Number.isFinite(date.getTime())) {
-      $("#updated-date").textContent = date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+      $("#updated-date").textContent = date.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
       $("#updated-date").dateTime = project.updated;
     }
   }
-  if (project?.title) document.title = `${project.title} · Doris Wang`;
   if (primary) {
     const a = primary.aggregate_results || {};
     const delta = a.mean_difference_HL_minus_H ?? primary.primary_result?.value;
     if (typeof delta === "number" && typeof a.H_mean_net_payoff === "number" && a.H_mean_net_payoff !== 0) {
-      const pct = (delta / a.H_mean_net_payoff) * 100;
-      const number = $("#headline-number");
-      number.replaceChildren(document.createTextNode(fmt(pct, 2)), element("span", "", "%"));
-      $("#headline-detail").textContent =
-        pct < 0
-          ? "Lower net group earnings when a language warning was added to the history rule."
-          : "Difference in net group earnings when a language warning was added to the history rule.";
+      $("#headline-number").textContent = `${fmt((delta / a.H_mean_net_payoff) * 100, 2)}%`;
     }
-    $("#headline-sample").textContent = `${a.games ?? 12} fresh games · ${a.independent_blocks ?? 6} randomized blocks`;
+    $("#primary-H-payoff").textContent = fmt(a.H_mean_net_payoff, 1);
+    $("#primary-HL-payoff").textContent = fmt(a.HL_mean_net_payoff, 1);
+    $("#primary-delta").textContent = fmt(delta, 1);
+    $("#headline-sample").textContent = `${a.games ?? 12} fresh games · ${a.independent_blocks ?? 6} randomized blocks · 15 rounds per game`;
     $("#primary-summary").textContent = [text(primary.summary), text(primary.design)].filter(Boolean).join(" ");
     renderLinks($("#primary-evidence-links"), primary);
-    const stats = $("#primary-stats");
-    stats.replaceChildren(
-      stat(fmt(a.H_mean_net_payoff, 1), "Mean group earnings · H"),
-      stat(fmt(a.HL_mean_net_payoff, 1), "Mean group earnings · H+L"),
-      stat(fmt(delta, 1), "H+L minus H · game tokens"),
-      stat(fmt(a.independent_blocks, 0), "Randomized blocks · two games each")
-    );
-    const findings = $("#primary-findings");
-    if (findings) findings.replaceChildren(...(primary.findings || []).slice(0, 3).map((item) => element("li", "", text(item))));
+    $("#primary-findings").replaceChildren(...(primary.findings || []).slice(0, 3).map((item) => element("li", "", text(item))));
     $("#primary-limit").textContent = (primary.limits || []).map(text).filter(Boolean).join(" ");
   }
   if (reference) {
     const metric = reference.primary_result || {};
     const value = metric.value ?? reference.aggregate_results?.primary_mean_delta_ref;
-    $("#reference-value").replaceChildren(document.createTextNode(fmt(value)), element("span", "", " group tokens"));
+    $("#reference-value").textContent = `${fmt(value)} group tokens`;
     $("#reference-summary").textContent = [text(reference.summary), text(reference.sample)].filter(Boolean).join(" ");
     $("#reference-limit").textContent = (reference.limits || []).map(text).filter(Boolean).join(" ");
     renderLinks($("#reference-links"), reference);
@@ -181,7 +164,7 @@ function renderStudies() {
   const more = $("#registry-more");
   more.replaceChildren();
   if (shown.length < matches.length) {
-    const button = element("button", "show-more", `Show ${Math.min(8, matches.length - shown.length)} more studies`);
+    const button = element("button", "text-control show-more", `Show ${Math.min(8, matches.length - shown.length)} more studies`);
     button.addEventListener("click", () => {
       state.limit += 8;
       renderStudies();
@@ -212,6 +195,7 @@ function installControls() {
     tabs.forEach((button) => {
       const selected = button === tab;
       button.setAttribute("aria-selected", String(selected));
+      button.setAttribute("aria-pressed", String(selected));
       button.tabIndex = selected ? 0 : -1;
       button.classList.toggle("active", selected);
       $(`#${button.getAttribute("aria-controls")}`).hidden = !selected;
@@ -231,21 +215,6 @@ function installControls() {
         next.focus();
       }
     });
-  });
-  const menu = $(".menu-toggle");
-  const navigation = $("#navigation");
-  const closeMenu = () => {
-    navigation.classList.remove("open");
-    menu.setAttribute("aria-expanded", "false");
-  };
-  menu.addEventListener("click", () => {
-    const open = menu.getAttribute("aria-expanded") !== "true";
-    navigation.classList.toggle("open", open);
-    menu.setAttribute("aria-expanded", String(open));
-  });
-  navigation.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMenu();
   });
 }
 async function init() {
