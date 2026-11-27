@@ -18,7 +18,7 @@
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="style.css?v=max-note-20261127" />
     <link rel="stylesheet" href="research.css?v=article-20261127" />
-    <script src="research.js?v=article-20261127" defer></script>
+    <script src="research.js?v=coverage-20261127" defer></script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to research</a>
@@ -50,6 +50,9 @@
           <span id="primary-delta">−367</span> tokens, or <span id="headline-number">−21.25%</span>.
         </p>
         <p class="method-note" id="headline-sample">12 fresh games · 6 randomized blocks · 15 rounds per game</p>
+        <p class="method-note" id="primary-model">
+          Player model: GPT-6.1-Sol (<code>gpt-6.1-sol</code>, low reasoning effort). The fixed language scorer is DistilGPT2.
+        </p>
         <ul id="primary-findings"></ul>
         <p class="artifact-links" id="primary-evidence-links"></p>
         <div class="wide policy-figures">
@@ -186,6 +189,28 @@
         >
       </section>
 
+      <section id="question-coverage" aria-labelledby="coverage-title">
+        <h2 id="coverage-title">Which learning questions remain open?</h2>
+        <ul>
+          <li>
+            <strong>Opaque enforcement.</strong> Four full/coarse disclosure games explored knowledge of the language scorer; the contribution penalty
+            remained public. A different hidden-threshold proposal was shelved before native collection. Learning an unknown execution rule remains
+            untested.
+          </li>
+          <li>
+            <strong>Communication and learning speed.</strong> Earlier chat/no-chat and public/private-preparation diagnostics used different
+            protocols. There is no matched opacity-by-communication test with a predefined rule-learning or stable-response outcome.
+          </li>
+        </ul>
+        <p>
+          The disclosed-policy pilot and reference-inheritance study answer separate questions. The proposed LIVE/YOKED by reference-update study is
+          also a distinct, unrun mechanism test.
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/research-question-coverage.md"
+            >Read the coverage record and prior evidence</a
+          >.
+        </p>
+      </section>
+
       <section id="methods" aria-labelledby="methods-title">
         <h2 id="methods-title">A transparent payoff benchmark</h2>
         <p>
@@ -208,6 +233,28 @@
         <p>
           Language surprisal is a fixed conditional likelihood score. It is a candidate warning, not a validated measure of dishonesty or cooperative
           risk. The fixed-reference study is kept distinct from earlier rule versions and diagnostic continuations.
+        </p>
+        <p>
+          The reference-inheritance and enforcement-demand studies also use GPT-6.1-Sol with low reasoning effort; the forecast audit reuses the six H
+          games. The original interactive case uses Qwen3-8B. The separate mixed-model screen compares GPT, Qwen and two-plus-two groups. DistilGPT2
+          supplies language scores rather than player decisions.
+        </p>
+      </section>
+
+      <section id="human-benchmark" aria-labelledby="human-title">
+        <h2 id="human-title">Human data as a separate measurement benchmark</h2>
+        <p>
+          The <a href="https://dorisduowang.github.io/#hero-human-title">homepage human panel</a> comes from
+          <a href="https://data.mendeley.com/datasets/wz77fd99cz/1">Morgan, Mason and Shupp's replication data</a>. This project's subset contains 110
+          five-round games across six sessions, with a 25-point endowment. Messages were private pregame requests to a policymaker, unlike the agents'
+          repeated public communication. These observations are not matched controls for the fifteen-round agent games.
+        </p>
+        <p>
+          A separate session-held-out forecast audit found no improvement from adding the mean human-coded request to history. It neither uses
+          DistilGPT2 to control human punishment nor identifies a human-agent treatment effect.
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/study-history.md#human-temporal-benchmark"
+            >Derived audit and scope</a
+          >.
         </p>
       </section>
 
