@@ -5,298 +5,714 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Doris Wang's research on language monitoring, automatic punishment, and collective outcomes in LLM public goods games. Completed results, distinct study records, data, and reproducible analyses."
+      content="An illustrated research note by Doris Wang, with the original Qwen measurement audit and completed policy, reference-inheritance, and forecasting studies."
     />
     <meta name="theme-color" content="#ffffff" />
-    <meta property="og:title" content="Language, Enforcement & Collective Outcomes" />
-    <meta
-      property="og:description"
-      content="A public research record of complete policy comparisons, controlled mechanisms, and exploratory language prediction in public goods games."
-    />
-    <meta property="og:type" content="website" />
-    <title>Language, Enforcement & Collective Outcomes · Doris Wang</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta property="og:title" content="Reading communication in a repeated public goods game" />
+    <meta property="og:description" content="Follow the observed rounds, inspect the original messages, and read the code behind the measurements." />
+    <meta property="og:type" content="article" />
+    <title>Reading communication in a repeated public goods game</title>
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="style.css?v=20261127-1" />
-    <script src="app.js?v=20261127-1" defer></script>
+    <link rel="stylesheet" href="style.css?v=max-note-20261127" />
+    <script src="app.js?v=max-note-20261127" defer></script>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to research</a>
+    <svg class="symbol-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <symbol id="person-icon" viewBox="0 0 40 52">
+          <circle cx="20" cy="9" r="6" fill="currentColor" />
+          <path
+            d="M20 19v16M9 29l11-10 11 10M20 35l-9 13M20 35l9 13"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </symbol>
+        <symbol id="agent-icon" viewBox="0 0 40 52">
+          <path d="M20 7V3M10 36v11M30 36v11M5 28H2M35 28h3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+          <circle cx="20" cy="2" r="2" fill="currentColor" />
+          <rect x="5" y="9" width="30" height="22" rx="5" fill="white" stroke="currentColor" stroke-width="2.5" />
+          <circle cx="14" cy="19" r="2.5" fill="currentColor" />
+          <circle cx="26" cy="19" r="2.5" fill="currentColor" />
+          <path d="M15 25h10" stroke="currentColor" stroke-width="2" />
+          <rect x="10" y="33" width="20" height="9" rx="2" fill="currentColor" />
+        </symbol>
+      </defs>
+    </svg>
+    <a class="skip" href="#article">Skip to article</a>
     <header class="site-header">
-      <a class="wordmark" href="#top" aria-label="PGG Research, top of page"
-        ><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>PGG <b>Research</b></span></a
-      >
-      <button class="menu-toggle" aria-controls="navigation" aria-expanded="false">Menu</button>
-      <nav id="navigation" aria-label="Main navigation">
-        <a href="#results">Results</a><a href="#registry">Study registry</a><a href="#methods">The game</a><a href="#reproduce">Reproduce</a>
-        <a class="repo-link" href="https://github.com/dorisduowang/pgg-feasibility">GitHub</a>
-      </nav>
+      <a href="#top">Doris Wang</a>
+      <nav aria-label="Page navigation"><a href="#reading-code">Code and data</a><a href="#references">References</a></nav>
     </header>
-    <main id="main">
-      <section class="hero page-width" id="top" aria-labelledby="project-title">
-        <div class="hero-copy">
-          <p class="eyebrow">Computational research · Public goods games</p>
-          <h1 id="project-title">Can language make automatic punishment worth its cost?</h1>
-          <p class="standfirst">Communication, monitoring rules, and collective outcomes in repeated games played by language-model agents.</p>
-          <p class="byline">
-            An independent research project by <strong>Doris Wang</strong><span class="byline-divider" aria-hidden="true"></span
-            ><time id="updated-date">Research record</time>
-          </p>
-        </div>
-        <aside class="headline-result" aria-labelledby="headline-label">
-          <p class="result-kicker" id="headline-label">Completed policy comparison</p>
-          <p class="headline-number" id="headline-number">−21.25<span>%</span></p>
-          <p id="headline-detail">Lower net group earnings when a language warning was added to the history rule.</p>
-          <p class="result-scope" id="headline-sample">12 fresh games · 6 randomized blocks</p>
-          <a class="text-link" href="#results">Read the complete result</a>
-        </aside>
-      </section>
-
-      <div class="scope-strip">
-        <div class="page-width scope-inner">
-          <span><b>4</b> players per game</span><span><b>15</b> rounds per complete game</span><span><b>20</b> fresh tokens per player per round</span
-          ><span>Net earnings include enforcement costs</span>
-        </div>
-      </div>
-
-      <section class="page-width result-section" id="results" aria-labelledby="primary-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Main result</p>
-            <h2 id="primary-title">A direct test of the complete monitoring policy.</h2>
-          </div>
-          <span class="status-label completed">Completed</span>
-        </div>
-        <div class="result-intro">
-          <p id="primary-summary">
-            In the new fixed-reference comparison, adding the specified language warning reduced net group earnings. Both conditions retained public
-            communication; each game began from an empty history.
-          </p>
-          <div id="primary-evidence-links" class="artifact-links"></div>
-        </div>
-        <div class="primary-stats" id="primary-stats" aria-label="Primary result details"></div>
-        <ul class="primary-findings" id="primary-findings"></ul>
-        <div class="figure-tabs" role="tablist" aria-label="Primary result figures">
-          <button id="tab-payoff" class="figure-tab active" role="tab" aria-selected="true" aria-controls="panel-payoff" data-figure="payoff">
-            Net earnings
-          </button>
-          <button id="tab-paths" class="figure-tab" role="tab" aria-selected="false" aria-controls="panel-paths" data-figure="paths" tabindex="-1">
-            Round-by-round paths
-          </button>
-        </div>
-        <div class="figure-panel" id="panel-payoff" role="tabpanel" aria-labelledby="tab-payoff">
-          <figure>
-            <a class="figure-image-link" href="figures/full_policy_comparison.svg" aria-label="Open complete policy comparison figure at full size"
-              ><img
-                src="figures/full_policy_comparison.svg"
-                width="1360"
-                height="770"
-                alt="Twelve complete-game net earnings paired by six randomized blocks, with the six H+L minus H contrasts and exploratory mean interval."
-            /></a>
-            <figcaption>
-              <span>Full 15-round policy comparison. H is the history rule; H+L adds a fixed language warning. The interval is exploratory.</span
-              ><a href="figures/full_policy_comparison.svg">Full size</a>
-            </figcaption>
-          </figure>
-        </div>
-        <div class="figure-panel" id="panel-paths" role="tabpanel" aria-labelledby="tab-paths" hidden>
-          <figure>
-            <a
-              class="figure-image-link"
-              href="figures/full_policy_trajectories.svg"
-              aria-label="Open contribution and enforcement trajectories at full size"
-              ><img
-                src="figures/full_policy_trajectories.svg"
-                width="1360"
-                height="750"
-                alt="Per-round contributions and actual punishment frequency for six games per policy. Policies were disclosed from round one; punishment was forced off in the first three rounds."
-                loading="lazy"
-            /></a>
-            <figcaption>
-              <span
-                >Thin lines are individual games; bold lines are arm means. These descriptive trajectories do not separately identify mediation.</span
-              ><a href="figures/full_policy_trajectories.svg">Full size</a>
-            </figcaption>
-          </figure>
-        </div>
-        <p class="scope-note" id="primary-limit">
-          A result for this specified policy, model, and fixed-reference game. It is not a claim about every possible use of language in enforcement.
-        </p>
-      </section>
-
-      <section class="evidence-band" aria-labelledby="other-evidence-title">
-        <div class="page-width">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Mechanism and measurement</p>
-              <h2 id="other-evidence-title">Different questions. Separate evidence.</h2>
-            </div>
-          </div>
-          <div class="evidence-grid">
-            <article class="evidence-note" id="reference-note">
-              <div class="note-header">
-                <span class="study-type">Controlled mechanism pilot</span><span class="status-label completed">Completed</span>
-              </div>
-              <h3>Language can change its future monitoring reference.</h3>
-              <p class="note-value" id="reference-value">−7.296 <span>group tokens</span></p>
-              <p id="reference-summary">
-                A controlled reference-inheritance contrast across four producer pairs linked policy-induced expression to later enforcement and
-                observed branch earnings.
-              </p>
-              <div class="mechanism-chain" aria-label="Mechanism studied">
-                <span>Policy</span><i aria-hidden="true"></i><span>Expression</span><i aria-hidden="true"></i><span>Reference</span
-                ><i aria-hidden="true"></i><span>Enforcement</span>
-              </div>
-              <p class="note-limit" id="reference-limit">
-                One shared source history. This is a controlled reference effect, separate from the complete policy comparison above.
-              </p>
-              <div class="artifact-links" id="reference-links"></div>
-            </article>
-            <article class="evidence-note" id="forecast-note">
-              <div class="note-header">
-                <span class="study-type">Exploratory forecast audit</span><span class="status-label completed">Completed</span>
-              </div>
-              <h3>Does speech add an early warning?</h3>
-              <p class="note-value qualitative" id="forecast-value">No stable increment</p>
-              <p id="forecast-summary">
-                Whole-game and action-family holdouts test language features against public-history baselines in the six history-policy games.
-              </p>
-              <p class="note-limit" id="forecast-limit">
-                Finite predictors and a small outcome set do not settle the information content of unrestricted language. Forecasting does not
-                identify policy value.
-              </p>
-              <div class="artifact-links" id="forecast-links"></div>
-              <details class="diagnostic-figure">
-                <summary>Inspect the forecast comparison</summary>
-                <figure>
-                  <a href="figures/incremental_warning_comparison.svg"
-                    ><img
-                      src="figures/incremental_warning_comparison.svg"
-                      width="1100"
-                      height="720"
-                      alt="Exploratory incremental language forecast results under whole-game and trajectory-family holdouts."
-                      loading="lazy"
-                  /></a>
-                  <figcaption>Exploratory results; held-out games are the evaluation units.</figcaption>
-                </figure>
-              </details>
-            </article>
-          </div>
-          <p class="separation-note">
-            The policy comparison, reference pilot, forecast audit, and earlier diagnostics answer distinct questions. Their observations are not
-            pooled.
-          </p>
-        </div>
-      </section>
-
-      <section class="page-width registry-section" id="registry" aria-labelledby="registry-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Public study registry</p>
-            <h2 id="registry-title">Inspect the record behind each claim.</h2>
-          </div>
-          <a class="text-link" href="data/research_registry.json">Registry JSON</a>
-        </div>
-        <p class="section-intro">
-          Completed studies, archived diagnostics, and unrun concepts retain their own status, design, and supporting files.
-        </p>
-        <div class="registry-controls">
-          <div class="status-filters" role="group" aria-label="Filter studies by status">
-            <button class="filter active" data-status="all" aria-pressed="true">All <span id="count-all"></span></button
-            ><button class="filter" data-status="completed" aria-pressed="false">Completed <span id="count-completed"></span></button
-            ><button class="filter" data-status="archived" aria-pressed="false">Archived <span id="count-archived"></span></button
-            ><button class="filter" data-status="planned" aria-pressed="false">Planned <span id="count-planned"></span></button>
-          </div>
-          <label class="search-field"
-            ><span class="visually-hidden">Search the study registry</span
-            ><input id="study-search" type="search" placeholder="Search studies or methods" autocomplete="off"
-          /></label>
-        </div>
-        <p class="registry-count" id="registry-count" role="status" aria-live="polite">Loading the published registry…</p>
-        <div class="study-list" id="study-list"></div>
-        <div id="registry-more" class="registry-more"></div>
-        <div class="load-error" id="registry-error" hidden>
-          <p>The study registry could not be loaded.</p>
-          <a href="data/research_registry.json">Open the registry file</a
-          ><a href="https://github.com/dorisduowang/pgg-feasibility">Browse the repository</a>
-        </div>
-        <noscript
-          ><p>
-            JavaScript is used for registry filtering. The complete <a href="data/research_registry.json">registry</a> and
-            <a href="https://github.com/dorisduowang/pgg-feasibility">repository</a> remain available.
-          </p></noscript
-        >
-      </section>
-
-      <section class="methods-section page-width" id="methods" aria-labelledby="methods-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">The current game</p>
-            <h2 id="methods-title">A transparent payoff benchmark.</h2>
-          </div>
-          <a class="text-link" href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/theory.md">Read the theory</a>
-        </div>
-        <div class="methods-layout">
-          <div class="game-clock" aria-label="Sequence within each game round">
-            <div>
-              <span class="clock-label">Observe</span>
-              <p>Past public records and current enforcement state</p>
-            </div>
-            <div>
-              <span class="clock-label">Communicate</span>
-              <p>Four simultaneous, nonbinding public messages</p>
-            </div>
-            <div>
-              <span class="clock-label">Choose</span>
-              <p>Private calculator, then free simultaneous contributions</p>
-            </div>
-            <div>
-              <span class="clock-label">Settle</span>
-              <p>Actual earnings and the following enforcement state</p>
-            </div>
-          </div>
-          <div class="payoff-note">
-            <p class="formula-label">Fixed public reference of 10</p>
-            <p class="equation">W<sub>t</sub> = 80 + 0.6∑c<sub>it</sub> − 12∑q<sub>it</sub></p>
-            <p>Each active sanction level is ⌊max(0, 10 − c<sub>it</sub>)/3⌋. Sender charges and recipient losses both leave the group.</p>
-            <p>
-              Language surprisal is a fixed conditional likelihood score. It is a candidate warning, not a validated measure of dishonesty or
-              cooperative risk.
-            </p>
-            <p class="version-note">
-              Rule versions matter: the fixed-reference study is kept distinct from earlier designs and diagnostic continuations.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="reproduction-section" id="reproduce">
-        <div class="page-width reproduction-layout">
-          <div>
-            <p class="eyebrow">Open research record</p>
-            <h2>Read, inspect, reproduce.</h2>
-            <p>
-              Saved outcomes, analysis code, protocol records, and scope notes make each study traceable. The archive retains the earlier feasibility
-              website.
-            </p>
-          </div>
-          <div class="resource-list">
-            <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/overview.md"
-              ><span>Research overview</span><small>Question, studies, and interpretation</small></a
-            ><a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/reproduction.md"
-              ><span>Reproduction guide</span><small>Inputs, analysis, and verification</small></a
-            ><a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/related-work.md"
-              ><span>Related work</span><small>Positioning and limits of the claims</small></a
-            ><a href="archive/qwen-20261120/"><span>Earlier Qwen feasibility site</span><small>Archived separately · 20 November 2026</small></a>
-          </div>
-        </div>
-      </section>
-    </main>
-    <footer class="site-footer page-width">
-      <p><strong>Doris Wang</strong> · Language, enforcement, and collective outcomes</p>
-      <p>
-        <a href="https://github.com/dorisduowang/pgg-feasibility">Source repository</a
-        ><a href="data/research_registry.json">Machine-readable registry</a><a href="#top">Back to top</a>
+    <div class="article-title" id="top">
+      <h1>Reading communication in a repeated public goods game</h1>
+      <p class="standfirst">
+        In round 10, with punishment active, P4 asked everyone to contribute 5 tokens to avoid sanctions. All 4 agents contributed 10. What can their
+        messages tell us about the choices that follow?
       </p>
-    </footer>
+      <p class="author-line">Doris Wang · Updated 27 November 2026</p>
+    </div>
+    <article id="article">
+      <p id="feasibility-update">
+        <strong>Research update · 27 November 2026.</strong> The interactive Qwen game remains a measurement audit. A subsequent randomized pilot
+        compared twelve fresh complete games: adding the specified language warning reduced mean group net earnings by 367 tokens (21.25%). The
+        <a href="#the-project">completed policy comparison</a>, a <a href="#reference-update">controlled reference study</a>, and the
+        <a href="#forecast-update">held-out forecast audit</a> are reported separately below. The
+        <a href="research.html">complete research record</a> links every version to its data and code.
+      </p>
+      <section id="the-dilemma">
+        <h2>What is a repeated public goods game?</h2>
+        <p>
+          In game theory, a public goods game models voluntary contributions to a shared resource, with its return divided among everyone regardless
+          of who contributed <a href="#ref-pgg">(Fehr &amp; G&auml;chter, 2000)</a>. Here 4 players each receive 20 tokens per round, and they choose
+          simultaneously how much to keep or contribute.
+        </p>
+        <figure class="wide payoff-figure">
+          <div class="figure-controls">
+            <label for="payoffControl">P1 contribution <output id="payoffOutput">10</output></label
+            ><input id="payoffControl" type="range" min="0" max="20" step="1" value="10" />
+          </div>
+          <div
+            id="payoffChart"
+            class="svg-figure"
+            role="group"
+            aria-label="Illustrative earnings when the other 3 players each contribute 10 and punishment is off"
+          ></div>
+          <div class="path-key">
+            <span><i class="area-key retained-key"></i>Tokens kept</span><span><i class="area-key return-key"></i>Return from the public fund</span>
+          </div>
+          <p class="payoff-summary" id="payoffSummary" aria-live="polite"></p>
+          <figcaption>
+            Contributions are multiplied by 1.6, and each player receives an equal 1/4 share of the fund. The human figures illustrate hypothetical
+            payoffs with the other 3 players fixed at 10 and punishment off, and the recorded results below come from agents.
+          </figcaption>
+        </figure>
+        <p>
+          With the other choices fixed and punishment off, each extra contribution token reduces the contributor's immediate earnings by 0.6 and
+          raises group earnings by 0.6. This creates an incentive to free ride, even though contributions benefit the group. Repeated interaction adds
+          possible future responses, making communication and enforcement part of the strategic problem.
+        </p>
+        <p>
+          The same players meet again and can see each other’s earlier choices. That shared history lets them respond to what happened in previous
+          rounds.
+        </p>
+        <figure class="wide repetition-figure">
+          <div
+            id="repeatDiagram"
+            class="svg-figure"
+            role="img"
+            aria-label="The same 4 players return in rounds 1, 2 and 15, with intervening rounds omitted"
+          ></div>
+          <figcaption>The group stays together throughout the game, and cumulative payoff adds up earnings across all 15 rounds.</figcaption>
+        </figure>
+      </section>
+      <section id="the-agents">
+        <h2>Let 4 agents play the same game</h2>
+        <p>
+          I used the same model checkpoint for all 4 agents and gave them neutral prompts without assigned personalities. Each agent generated its own
+          public messages and contribution decisions.
+        </p>
+        <div class="agent-roster" aria-label="4 agent roles using the same Qwen3-8B checkpoint">
+          <div>
+            <svg class="actor-icon" viewBox="0 0 40 52" aria-hidden="true"><use href="#agent-icon" /></svg><span>P1</span>
+          </div>
+          <div>
+            <svg class="actor-icon" viewBox="0 0 40 52" aria-hidden="true"><use href="#agent-icon" /></svg><span>P2</span>
+          </div>
+          <div>
+            <svg class="actor-icon" viewBox="0 0 40 52" aria-hidden="true"><use href="#agent-icon" /></svg><span>P3</span>
+          </div>
+          <div>
+            <svg class="actor-icon" viewBox="0 0 40 52" aria-hidden="true"><use href="#agent-icon" /></svg><span>P4</span>
+          </div>
+        </div>
+        <div class="byline">
+          <div><span>Archived audit</span>1 Qwen game</div>
+          <div><span>Generating model</span>Qwen3-8B</div>
+          <div><span>Prompt</span>No assigned personality</div>
+          <div><span>Source</span>Midway job 63458254</div>
+        </div>
+      </section>
+      <section id="the-game">
+        <h2>Start with the game clock</h2>
+        <p>
+          At the start of each round, agents get a fresh endowment of 20 tokens. The prompts tell them to maximize their cumulative net earnings and
+          leave the contribution amount up to each agent.
+        </p>
+        <div class="with-note">
+          <p>
+            Public messages come before simultaneous contributions, and settlement reveals the completed choices. Only the history rule activates
+            punishment in this game, with its next state announced after settlement.
+          </p>
+          <aside class="sidenote">
+            The generating model is Qwen3-8B with native thinking enabled, at the checkpoint recorded in the downloadable metadata
+            <a href="#ref-qwen">(Qwen Team, 2025)</a>.
+          </aside>
+        </div>
+        <figure class="wide timing-figure">
+          <div class="stage-controls" role="group" aria-label="Inspect what is known at each stage of the game">
+            <button data-stage="0" aria-pressed="true">Public messages</button><button data-stage="1" aria-pressed="false">Contributions</button
+            ><button data-stage="2" aria-pressed="false">Settlement</button><button data-stage="3" aria-pressed="false">Next round</button>
+          </div>
+          <svg
+            id="clockDiagram"
+            viewBox="0 0 1000 128"
+            role="img"
+            aria-label="The order of messages, contributions, settlement, and the next round"
+          ></svg>
+          <div class="stage-reading" id="stageReading" aria-live="polite"></div>
+          <figcaption>
+            Select a stage to inspect the information available at that moment, keeping message time separate from the end-of-round forecast origin.
+          </figcaption>
+        </figure>
+      </section>
+      <section id="punishment">
+        <h2>When punishment starts and who pays</h2>
+        <p>
+          The history rule uses the previous round's completed contributions, with a warning issued if any agent contributes 7 or less. Eligible
+          warnings after rounds 3 through 14 activate punishment for 1 following round, and rounds 1 through 3 are always inactive. A fresh warning is
+          required to keep punishment active, and round 15 ends the game without a further activation.
+        </p>
+        <p>
+          In an active round, the contribution gap below the reference of 10 is divided by 3 and rounded down, giving a sanction level for each
+          target. Each of the other 3 agents automatically sends that many punishment points, and each point costs its sender 1 token and removes 3
+          tokens from its target.
+        </p>
+        <div
+          class="equation"
+          role="math"
+          aria-label="An active target's sanction level is the floor of its nonnegative contribution gap below 10 divided by 3"
+        >
+          q<sub>i</sub> = floor(max(0, 10 &minus; c<sub>i</sub>) / 3)
+        </div>
+        <p>
+          An agent's sender cost adds up its points against the other 3 targets, and its own recipient fine is calculated separately. For each target
+          with sanction level <span class="math">q<sub>i</sub></span
+          >, the partners together spend <span class="math">3q<sub>i</sub></span> and the target loses <span class="math">9q<sub>i</sub></span
+          >. Both deductions leave the group, reducing its total payoff by <span class="math">12q<sub>i</sub></span
+          >.
+        </p>
+        <figure class="wide punishment-figure">
+          <div class="figure-controls">
+            <div class="segmented" role="group" aria-label="Choose recorded punishment outcomes or a hypothetical rule illustration">
+              <button data-punishment-view="recorded" aria-pressed="true">Recorded game</button
+              ><button data-punishment-view="illustration" aria-pressed="false">Rule illustration</button>
+            </div>
+          </div>
+          <div id="recordedPunishmentControls" class="figure-controls">
+            <label for="punishmentRound">Observed round <output id="punishmentRoundOutput">14</output></label
+            ><input id="punishmentRound" type="range" min="1" max="15" step="1" value="14" />
+          </div>
+          <div id="rulePunishmentControls" class="figure-controls" hidden>
+            <label for="sanctionContribution">P3 contribution <output id="sanctionContributionOutput">7</output></label
+            ><input id="sanctionContribution" type="range" min="0" max="20" step="1" value="7" /><span>Illustration with punishment active</span>
+          </div>
+          <div
+            id="punishmentGate"
+            class="svg-figure"
+            role="group"
+            aria-label="How completed contributions determine the following round's punishment state"
+          ></div>
+          <p id="activationReading" class="mechanism-reading" aria-live="polite"></p>
+          <div
+            id="deductionChart"
+            class="svg-figure"
+            role="group"
+            aria-label="Each agent's payoff before deductions, sender cost, recipient fine and net payoff"
+          ></div>
+          <p id="punishmentReading" class="mechanism-reading" aria-live="polite"></p>
+          <figcaption id="punishmentCaption">
+            The recorded view reads the original 15 rounds, with deductions calculated under the frozen payoff rule. Switch to the rule illustration
+            to inspect hypothetical deductions without changing any recorded choice.
+          </figcaption>
+        </figure>
+        <p>
+          Round 13 activates punishment for round 14 because its minimum contribution is 0, but round 14's deductions use round 14's choices. P3
+          contributes 8 in that active round, giving a gap of 2 and a rounded sanction level of 0. The other 3 agents each contribute 10, leaving
+          every sanction level at 0 and producing no sender costs or recipient fines.
+        </p>
+        <p>
+          Punishment is active in 6 recorded rounds, and every contribution in those rounds is at least 8. Realized enforcement costs therefore total
+          0 across the game, leaving cumulative group net payoff at 1417.8 tokens. This accounting explains the absence of deductions, without
+          establishing what those agents would have contributed under another institution.
+        </p>
+        <details class="source-block">
+          <summary>Read the exact activation function</summary>
+          <div class="source-meta" data-source="next_active"></div>
+          <pre><code data-code="next_active"></code></pre>
+          <p class="code-note">The function reads completed contributions, and its Boolean result becomes the next round's state.</p>
+        </details>
+        <details class="source-block">
+          <summary>Read the exact payoff settlement</summary>
+          <div class="source-meta" data-source="settle"></div>
+          <pre><code data-code="settle"></code></pre>
+          <p class="code-note">The sender costs and recipient fines both leave the group, and the returned ledger records them separately.</p>
+        </details>
+      </section>
+      <section id="the-path">
+        <span id="trajectory"></span>
+        <h2>Follow the contribution path</h2>
+        <p>
+          This interactive path preserves the original Qwen game. The
+          <a href="#the-project">new twelve-game policy comparison</a> uses a different generating model and is analyzed separately; its observations
+          do not replace or enlarge this archived trajectory.
+        </p>
+        <p>
+          Mean contributions change at all 14 transitions. They are higher when punishment is active, in rounds 4, 6, 8, 10, 12 and 14. The rule uses
+          earlier contributions to decide when punishment is active. I calculated the language scores after the game.
+        </p>
+        <p>
+          Start at round 10 to see P4’s request beside the recorded choice. Move to round 11, when punishment was off and the average contribution
+          dropped to 2.5 tokens. The players already knew the next punishment state when round 10 ended. Select a round or a message score to read
+          what the players said and what they contributed.
+        </p>
+        <figure class="wide path-figure" id="path-figure">
+          <div class="figure-controls">
+            <label for="roundControl">Round <output id="roundOutput">10</output></label
+            ><input id="roundControl" type="range" min="1" max="15" step="1" value="10" /><label class="check-control"
+              ><input id="individuals" type="checkbox" />Individual contributions</label
+            >
+          </div>
+          <div id="pathChart" class="svg-figure" role="group" aria-label="Linked contribution and surprisal trajectories"></div>
+          <div class="path-key">
+            <span><i class="line-key contribution"></i>Mean contribution</span><span><i class="area-key"></i>Current punishment active</span
+            ><span><i class="line-key language"></i>Maximum message loss</span>
+          </div>
+          <div id="agentLegend" class="agent-key" hidden></div>
+          <figcaption>
+            The upper panel uses the complete 0 to 20 contribution scale, and the lower panel shows the original maximum message score. Filled dots
+            beneath the rounds mark an active next state, and hollow dots mark inactivity. This state was already public at the round's end, with the
+            terminal observation labelled End. <a href="figures/trajectory.pdf" download>Download the figure</a>.
+          </figcaption>
+          <div class="round-annotation" id="roundAnnotation" aria-live="polite"></div>
+          <table class="message-table">
+            <thead>
+              <tr>
+                <th>Agent</th>
+                <th>Original public message</th>
+                <th>Loss</th>
+                <th>Contribution</th>
+              </tr>
+            </thead>
+            <tbody id="messages"></tbody>
+          </table>
+          <p class="message-reading" id="messageReading"></p>
+        </figure>
+      </section>
+      <section id="the-score">
+        <span id="measurement"></span>
+        <h2>What makes a message unexpected?</h2>
+        <p>
+          The score is mean negative log probability under a fixed DistilGPT2 checkpoint, using only the current message tokens in the average. The
+          model receives exactly the preceding round's 4 public messages in player order, followed by the current player's header
+          <a href="#ref-distil">(Hugging Face, n.d.)</a>. A high score means that this text is less expected under that particular context, without
+          supplying a direct measure of cooperative intent.
+        </p>
+        <div class="equation" role="math" aria-label="A message score is the average negative log probability of its target tokens">
+          s<sub>i,t</sub> = &minus;<span class="fraction"
+            ><span>1</span><span>N<sub>i,t</sub></span></span
+          >
+          &sum;<sub>k</sub> log p(x<sub>i,t,k</sub> | C<sub>t&minus;1</sub>, P<sub>i</sub>, x<sub>i,t,&lt;k</sub>)
+        </div>
+        <div class="with-note">
+          <p>
+            The group statistic is <span class="math">S<sub>t</sub> = max<sub>i</sub> s<sub>i,t</sub></span
+            >, preserving the existing aggregation over the 4 messages. Round 1 remains unscored because it has no preceding message round, leaving 56
+            scored messages across rounds 2 through 15.
+          </p>
+          <aside class="sidenote">
+            The score excludes current peer messages and contribution records, so its context differs from the agent's complete game history. Natural
+            logarithms give units of nats per target token.
+          </aside>
+        </div>
+        <details class="source-block" open>
+          <summary>Read the scoring function</summary>
+          <div class="source-meta" data-source="score"></div>
+          <pre><code data-code="score"></code></pre>
+          <p class="code-note">
+            The prefix offset keeps context tokens out of the mean, and inputs beyond 1024 tokens are rejected without truncation.
+          </p>
+        </details>
+        <p>
+          The largest score belongs to P4 in <button class="text-control" data-example="10">round 10</button>, where a request for 5 receives a loss
+          of 4.237 despite the author's actual contribution of 10. The message says this request avoids sanctions, although contributing 5 under that
+          round's active rule would incur a recipient fine of 9. This is a concrete inconsistency with the rule, and it does not reveal the author's
+          private intent.
+        </p>
+        <p>
+          The contrast is different in <button class="text-control" data-example="14">round 14</button>, where all 4 players send identical text and
+          the group score is 2.144. The next mean contribution falls from 9.5 to 0, producing the largest decline despite this relatively low score.
+          Punishment has already been announced as inactive for the final round, giving context for the change before it occurs.
+        </p>
+        <figure class="wide text-figure">
+          <div class="text-selector" role="group" aria-label="Compare the existing message examples">
+            <button data-text-example="10" aria-pressed="true">Round 10</button><button data-text-example="14" aria-pressed="false">Round 14</button
+            ><button data-text-example="15" aria-pressed="false">Round 15</button>
+          </div>
+          <div class="reading-layout">
+            <div>
+              <div class="small-label" id="exampleLabel">Round 10, P4</div>
+              <blockquote id="exampleText"></blockquote>
+            </div>
+            <div class="example-note" id="exampleNote"></div>
+          </div>
+          <figcaption>
+            The examples retain their original wording, and their scores come from the same fixed model. The final-round example remains a terminal
+            observation, with no round 16 to predict.
+          </figcaption>
+        </figure>
+        <p>
+          A public request should also be kept separate from a personal promise, because asking everyone to contribute 10 does not state what the
+          speaker will choose. In the final round, P1 and P4 still request 10 while all players choose 0. P2 explicitly advocates free riding and
+          scores 3.974, below the earlier cooperative-sounding message that produced the maximum loss.
+        </p>
+      </section>
+      <section id="the-next-round">
+        <span id="temporal"></span>
+        <h2>Read the next change with the known state</h2>
+        <p>
+          Across the 12 eligible origins in rounds 3 through 14, mean contributions rise in all 6 active next rounds and fall in all 6 inactive next
+          rounds. Their mean changes are +6.167 and &minus;6.375 tokens respectively, separating the observed directions by information already
+          announced at time <span class="math">t</span>.
+        </p>
+        <figure class="wide transition-figure">
+          <div class="figure-controls">
+            <span>Read the same observations by</span
+            ><button id="stateColor" class="text-control" aria-pressed="false">Reveal the announced next state</button>
+          </div>
+          <div
+            id="transitionChart"
+            class="svg-figure"
+            role="group"
+            aria-label="Current surprisal and next contribution change, with an optional known-state annotation"
+          ></div>
+          <p class="point-reading" id="pointReading" aria-live="polite">
+            Hover over a labelled round to inspect its score and the change that follows.
+          </p>
+          <figcaption>
+            Each point is 1 completed round from the same game, with its label identifying the forecast origin. Revealing the next state changes the
+            annotation, leaving every coordinate unchanged. <a href="figures/transitions.pdf" download>Download the figure</a>.
+          </figcaption>
+        </figure>
+        <div class="with-note">
+          <p>
+            The group score has a descriptive Spearman association of &minus;0.127 with the next contribution change, and the plot places high scores
+            before both increases and decreases. That association summarizes the displayed path, with no significance test or claim of validation
+            across independent games.
+          </p>
+          <aside class="sidenote">
+            The next state is a deterministic function of the current minimum contribution and round eligibility, making it known policy context
+            rather than an independent language signal.
+          </aside>
+        </div>
+        <p>
+          This observation motivated a later <a href="#forecast-update">exploratory forecast audit</a>: compare history with history plus language on
+          the same held-out games, while retaining the announced next punishment state in both feature sets. The audit uses the six newer H games,
+          rather than treating the rounds of this Qwen game as independent replications. The timing principle follows forecast-evaluation practice
+          <a href="#ref-forecast">(Hewamalage et al., 2023)</a>.
+        </p>
+        <details class="source-block">
+          <summary>Inspect the forecast origins in the saved data</summary>
+          <pre><code id="originCode"></code></pre>
+          <p class="code-note">
+            This browser view reads saved observations, and it does not fit a forecasting model or regenerate any future choices.
+          </p>
+        </details>
+      </section>
+      <section id="quantities">
+        <h2>Check whether quantities drive the score</h2>
+        <p>
+          Numerical strings and number words from 0 through 20 are replaced by NUMBER in both the previous context and current message, providing an
+          input-sensitivity check. The same 56 messages are then scored under the same checkpoint, with a raw-to-masked Spearman association of 0.987.
+          Their mean shift is &minus;0.121 nats per token, preserving most of the ordering.
+        </p>
+        <figure class="wide mask-figure">
+          <div class="figure-controls">
+            <span>Show the recorded scores</span>
+            <div class="segmented" role="group" aria-label="Choose the input version">
+              <button data-mask="raw" aria-pressed="true">Original text</button
+              ><button data-mask="masked" aria-pressed="false">Quantities masked</button>
+            </div>
+          </div>
+          <div class="mask-layout">
+            <div id="maskChart" class="svg-figure" role="group" aria-label="Original scores against the selected recorded input version"></div>
+            <div class="mask-reading">
+              <span class="small-label" id="maskLabel">Round 10, P4</span>
+              <blockquote id="maskText"></blockquote>
+              <p id="maskNumbers"></p>
+            </div>
+          </div>
+          <figcaption>
+            The horizontal coordinate always uses the original score, and the vertical coordinate switches between the 2 recorded input versions.
+            Select a point to read its message, with the diagonal marking equal scores.
+          </figcaption>
+        </figure>
+        <div class="with-note">
+          <p>
+            This result does not support attributing the score pattern mainly to requests saying 5 instead of 10, although masking also changes
+            tokenization. The raw score remains the measurement throughout the note, and neither version was used to activate punishment in this
+            archived Qwen game.
+          </p>
+          <aside class="sidenote">
+            Across the 56 messages, descriptive rank associations are 0.355 with word count and 0.342 with target-token count. These are associations
+            with length, not identified length effects.
+          </aside>
+        </div>
+        <details class="source-block">
+          <summary>Read the saved-score reproduction check</summary>
+          <div class="source-meta" data-source="mask"></div>
+          <pre><code data-code="mask"></code></pre>
+          <p class="code-note">
+            NUMBER is defined by the quantity pattern in the full source, and every reproduced score is checked against its saved counterpart.
+          </p>
+        </details>
+        <p>
+          Exactly 2 scored messages repeat text from the immediately preceding round, with mean loss 1.056 compared with 2.279 for the other 54
+          messages. At round 14, identical current text still yields losses from 2.142285 to 2.144318 across players, because the fixed player header
+          remains part of the context. These observations identify properties worth checking in a measurement, without isolating a general repetition
+          effect.
+        </p>
+      </section>
+      <section id="the-project">
+        <span id="project"></span>
+        <h2>What happened when language entered the policy?</h2>
+        <p>
+          I have now completed the comparison that motivated the original note. H uses completed contributions to activate punishment for the
+          following round. H+L adds a language warning when the maximum DistilGPT2 message score strictly exceeds the independently frozen threshold,
+          4.620724508132623. Both arms allow the same public communication and retain the fixed sanction reference of 10.
+        </p>
+        <p>
+          Twelve fresh 15-round games using GPT-6.1-Sol were randomized within six blocks, one game per arm in each block. Every game began from an
+          empty history. Mean cumulative group net earnings were 1,727.4 tokens under H and 1,360.4 under H+L: a difference of &minus;367.0 tokens
+          (&minus;21.25%). All six block differences were negative. The exploratory 95% t interval is [&minus;566.26, &minus;167.74]; the six block
+          contrasts are the analysis units.
+        </p>
+        <table class="resource-table">
+          <thead>
+            <tr>
+              <th>Full-game outcome</th>
+              <th>H</th>
+              <th>H+L</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mean group net earnings, 15 rounds</td>
+              <td>1,727.4</td>
+              <td>1,360.4</td>
+            </tr>
+            <tr>
+              <td>Mean contribution per player-round</td>
+              <td>14.65</td>
+              <td>4.46</td>
+            </tr>
+            <tr>
+              <td>Mean active punishment rounds per game</td>
+              <td>0.50</td>
+              <td>6.83</td>
+            </tr>
+            <tr>
+              <td>Actual sanction deductions, both cost types</td>
+              <td>0</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
+        <figure class="wide">
+          <a href="figures/full_policy_comparison.svg"
+            ><img
+              src="figures/full_policy_comparison.svg"
+              style="display: block; width: 100%; height: auto"
+              alt="Mean complete-game group earnings and all six within-block H+L minus H contrasts. Every contrast is negative."
+          /></a>
+          <figcaption>
+            Twelve fresh games; six independent randomized blocks. Each game contributes one complete 15-round net-earnings outcome. The interval is
+            exploratory.
+            <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/current_policy">Data and reproduction</a>.
+          </figcaption>
+        </figure>
+        <p>
+          Actual sender charges and recipient fines were zero in both arms. The earnings loss came from lower contributions, rather than realized
+          punishment deductions. Contributions already differed during the first three rounds, when punishment was unconditionally off. The result
+          estimates the total effect of the disclosed policy package. It does not separately identify announcement, communication, or actual routing
+          as the cause of the loss.
+        </p>
+        <p>
+          The payoff benchmark remains explicit: the one-round own-payoff optimum is 0 when punishment is off and 8 when it is on, holding partners'
+          contributions fixed. This stage-game calculation does not determine equilibrium play in the repeated game. It helps interpret a possible
+          shift toward the lowest unpenalized contribution, which the complete-policy result alone does not establish as its causal mechanism.
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/theory.md">Read the benchmark</a>.
+        </p>
+      </section>
+      <section id="reference-update">
+        <h2>When expression becomes the next reference</h2>
+        <p>
+          A separate controlled experiment asks what happens when policy-induced messages become the background against which later messages are
+          scored. Four independent producer-pair blocks share one archived source history. Recipients see the same two candidate reference texts; the
+          intervention changes which reference is actually used. Their new communication and freely chosen contributions are then observed in ON/OFF
+          continuation branches.
+        </p>
+        <p>
+          Using the language-control producer's reference rather than its paired YOKED reference lowered branch-weighted three-round group net
+          earnings by 7.296 tokens on average. This is a local reference effect, estimated separately from the &minus;367-token full-policy contrast.
+          It does not identify a mediator of that larger difference. The recipient-policy by reference-source interaction was zero, and ordinary
+          permitted messages could still cross the scoring threshold. The evidence therefore does not establish irreversible channel failure or
+          recipient-specific readaptation.
+        </p>
+        <p>
+          This connects the game to strategic adaptation and state-dependent monitoring: a fixed neural scorer can still produce a changing effective
+          rule when its reference text changes. The
+          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/reference_inheritance">study record</a>
+          gives the exact branches, payoff weights and scope; the
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/related-work.md">related-work comparison</a>
+          distinguishes this particular enforcement setting from those broader ideas.
+        </p>
+      </section>
+      <section id="forecast-update">
+        <h2>Does language add an early warning?</h2>
+        <p>
+          An exploratory offline audit reused the six H games from the new policy comparison. There were 72 eligible forecast origins and 69 where
+          language could add an activation beyond H. The tested fixed text method did not stably improve on strong public-history baselines under
+          game-held-out prediction and trajectory-family sensitivity checks.
+        </p>
+        <p>
+          Among the 69 candidate origins, game-held-out Brier loss was 0.03854 with text, 0.03433 for history, and 0.03309 for a history-state lookup;
+          lower is better. Only eight positive risk events occurred, five at the final-round transition. These are exploratory results from already
+          viewed paths, not a prospective validation. They neither rule out all language representations nor establish that a directly collected
+          structured report would be sufficient.
+        </p>
+        <p>
+          Predicting risk and improving welfare are separate claims. This audit collected no same-state counterfactual choices and identifies no
+          causal gain from acting on its predictions.
+          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/early_warning">Read the audit and reproduce its predictions</a>.
+        </p>
+      </section>
+      <section id="next-step">
+        <h2>Can anchoring the reference change the feedback?</h2>
+        <p>
+          The proposed mechanism study crosses whether messages causally control enforcement or follow a matched YOKED schedule with whether the
+          future scoring reference rolls with new expression or remains independently anchored. Players would know their actual update rule before
+          writing fresh messages, and their contributions would remain freely chosen under the original payoff rule. This conceptual design has not
+          been run; exposure matching, history-warning priority, and anchor selection still require a finalized protocol.
+        </p>
+        <p>
+          The test compares the LIVE minus YOKED earnings gap under rolling references with the same gap under anchored references. The hypothesis is
+          that control-induced expression creates an additional later loss under rolling references. Merely rescoring frozen old messages under a new
+          background would not test this response to the update policy. The existing zero recipient-policy interaction does not establish this
+          different, prospective interaction.
+        </p>
+        <p id="discussion-question">
+          Does the reference-update rule change strategic expression and subsequent group earnings specifically when expression controls enforcement?
+          The
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/future-mechanism.md">proposed mechanism study</a>
+          sets out this prediction without promising a positive welfare repair. Explaining the separate full-policy loss, including the early
+          contribution shift, remains a distinct question. I would value feedback on whether this interaction is the clearest test of an institutional
+          feedback mechanism beyond ordinary strategic adaptation.
+        </p>
+      </section>
+      <section id="reading-code">
+        <span id="methods"></span>
+        <h2>Read and reproduce the calculation</h2>
+        <p>
+          The scoring code uses the cached DistilGPT2 revision <code>2290a62682d06624634c1f46a6ad5be0f47f38aa</code>, with 1 CPU thread and
+          deterministic execution. The existing reproduction check matched all 56 original scores and all 56 masking diagnostics within 0.000001 nats
+          per target token, preserving full precision in the downloadable data.
+        </p>
+        <p>
+          Each code excerpt above is taken directly from its linked source file, with its original line numbers displayed. The reproduction archive
+          contains the saved round records, and running its script scores those records without generating new agent responses.
+        </p>
+        <p>
+          The downloads below reproduce the archived Qwen measurements. Newer studies have their own
+          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/current_policy">policy data</a>,
+          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/reference_inheritance">reference data</a>, and
+          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/early_warning">forecast data</a>. The
+          <a href="research.html">research registry</a> covers all 33 study families, including archived diagnostics and unrun concepts, with
+          version-specific evidence and code.
+        </p>
+        <table class="resource-table">
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th>What it contains</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="qwen-scoring-reproduction.zip" download>Reproduction archive</a></td>
+              <td>Saved inputs with the scoring script and verification data</td>
+            </tr>
+            <tr>
+              <td><a href="scoring.py" download>Complete scoring source</a></td>
+              <td>The exact Python file behind the scoring excerpts</td>
+            </tr>
+            <tr>
+              <td><a href="payoff_rules.py" download>Frozen payoff rules</a></td>
+              <td>The source rule used for the Midway game</td>
+            </tr>
+            <tr>
+              <td><a href="message_scores.csv" download>Message scores</a></td>
+              <td>60 public messages with 56 defined original losses</td>
+            </tr>
+            <tr>
+              <td><a href="round_scores.csv" download>Round measurements</a></td>
+              <td>Observed contributions with their announced next states</td>
+            </tr>
+            <tr>
+              <td><a href="data.json" download>Full analysis data</a></td>
+              <td>Exact values used by every interactive figure</td>
+            </tr>
+            <tr>
+              <td><a href="figures/trajectory.png" download>Trajectory PNG</a> and <a href="figures/transitions.png" download>transition PNG</a></td>
+              <td>Standalone figures for slides or discussion</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="method-note">
+          Qwen checkpoint <code>b968826d9c46dd6066d109eabc6255188de91218</code>. The original score runtime used Python 3.13 with PyTorch 2.9.1 and
+          Transformers 5.20.2. No language threshold was applied during this archived Qwen game. The later policy pilot used its separately frozen
+          threshold.
+        </p>
+      </section>
+      <section id="references" class="references">
+        <h2>References</h2>
+        <p id="ref-pgg">
+          Fehr, E., &amp; G&auml;chter, S. (2000). Cooperation and punishment in public goods experiments. <em>American Economic Review, 90</em>(4),
+          980&ndash;994. <a href="https://doi.org/10.1257/aer.90.4.980">https://doi.org/10.1257/aer.90.4.980</a>
+        </p>
+        <p id="ref-forecast">
+          Hewamalage, H., Ackermann, K., &amp; Bergmeir, C. (2023). Forecast evaluation for data scientists: common pitfalls and best practices.
+          <em>Data Mining and Knowledge Discovery, 37</em>, 788&ndash;832.
+          <a href="https://doi.org/10.1007/s10618-022-00894-5">https://doi.org/10.1007/s10618-022-00894-5</a>
+        </p>
+        <p id="ref-distil">
+          Hugging Face. (n.d.). <em>DistilGPT2</em> [Model card, revision 2290a62682d06624634c1f46a6ad5be0f47f38aa].
+          <a href="https://huggingface.co/distilbert/distilgpt2/blob/2290a62682d06624634c1f46a6ad5be0f47f38aa/README.md">Pinned model documentation</a
+          >.
+        </p>
+        <p id="ref-qwen">
+          Qwen Team. (2025). <em>Qwen3 Technical Report</em>. arXiv. <a href="https://arxiv.org/abs/2505.09388">https://arxiv.org/abs/2505.09388</a>
+        </p>
+        <p id="ref-design">
+          Sanchez-Lengeling, B., Reif, E., Pearce, A., &amp; Wiltschko, A. B. (2021). A gentle introduction to graph neural networks.
+          <em>Distill</em>. <a href="https://doi.org/10.23915/distill.00033">https://doi.org/10.23915/distill.00033</a>
+        </p>
+      </section>
+      <p class="design-note">
+        The article layout and linked explanations take their design reference from the Distill article
+        <a href="#ref-design">(Sanchez-Lengeling et al., 2021)</a>, with diagrams implemented for this game's existing observations.
+      </p>
+    </article>
+    <footer><span>Doris Wang</span><a href="#top">Back to the beginning</a></footer>
+    <noscript
+      ><p class="fallback">
+        The article and code downloads are available without JavaScript, and the interactive figures require JavaScript to display their saved
+        observations.
+      </p></noscript
+    >
+    <p id="loadError" class="fallback" hidden>The figures could not load. Please reload this page or use the downloadable data.</p>
   </body>
 </html>
