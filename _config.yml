@@ -231,6 +231,10 @@ defaults:
       path: "pgg-feasibility/index.html"
     values:
       sitemap: false
+  - scope:
+      path: "pgg-feasibility/archive/qwen-20261120/index.html"
+    values:
+      sitemap: false
 
 sass:
   style: compressed
