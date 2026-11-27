@@ -50,19 +50,84 @@
     <div class="article-title" id="top">
       <h1>Reading communication in a repeated public goods game</h1>
       <p class="standfirst">
-        In round 10, with punishment active, P4 asked everyone to contribute 5 tokens to avoid sanctions. All 4 agents contributed 10. What can their
-        messages tell us about the choices that follow?
+        Does adding a disclosed language warning to a contribution-history rule improve cooperation? In a twelve-game pilot, it reduced mean group net
+        earnings by 367 tokens (21.25%). The question is how the institution changes both expression and behavior.
       </p>
       <p class="author-line">Doris Wang · Updated 27 November 2026</p>
     </div>
     <article id="article">
       <p id="feasibility-update">
-        <strong>Research update · 27 November 2026.</strong> The interactive Qwen game remains a measurement audit. A subsequent randomized pilot
-        compared twelve fresh complete games: adding the specified language warning reduced mean group net earnings by 367 tokens (21.25%). The
-        <a href="#the-project">completed policy comparison</a>, a <a href="#reference-update">controlled reference study</a>, and the
-        <a href="#forecast-update">held-out forecast audit</a> are reported separately below. The
-        <a href="research.html">complete research record</a> links every version to its data and code.
+        <strong>Updated 27 November 2026.</strong> The <a href="#the-project">completed policy comparison</a> comes first. The original
+        <a href="#the-path">interactive Qwen case</a> explains the measurement problem, followed by the reference study and next mechanism test. The
+        <a href="research.html">research record</a> links each study to its data and code.
       </p>
+      <section id="the-project">
+        <span id="project"></span>
+        <h2>What happened when language entered the policy?</h2>
+        <p>
+          H activates next-round punishment from completed contributions. H+L adds a warning when the maximum DistilGPT2 message score strictly
+          exceeds the frozen threshold, 4.620724508132623. Both permit the same public communication and retain the sanction reference of 10.
+        </p>
+        <p>
+          Twelve fresh 15-round GPT-6.1-Sol games were randomized within six blocks, one empty-history game per arm in each block. H+L reduced mean
+          group net earnings by 367.0 tokens (21.25%); all six block contrasts were negative. Their exploratory 95% t interval is [&minus;566.26,
+          &minus;167.74].
+        </p>
+        <table class="resource-table">
+          <thead>
+            <tr>
+              <th>Full-game outcome</th>
+              <th>H</th>
+              <th>H+L</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mean group net earnings, 15 rounds</td>
+              <td>1,727.4</td>
+              <td>1,360.4</td>
+            </tr>
+            <tr>
+              <td>Mean contribution per player-round</td>
+              <td>14.65</td>
+              <td>4.46</td>
+            </tr>
+            <tr>
+              <td>Mean active punishment rounds per game</td>
+              <td>0.50</td>
+              <td>6.83</td>
+            </tr>
+            <tr>
+              <td>Actual sanction deductions, both cost types</td>
+              <td>0</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
+        <figure class="wide">
+          <a href="figures/full_policy_comparison.svg"
+            ><img
+              src="figures/full_policy_comparison.svg"
+              style="display: block; width: 100%; height: auto"
+              alt="Mean complete-game group earnings and all six within-block H+L minus H contrasts. Every contrast is negative."
+          /></a>
+          <figcaption>
+            Twelve fresh games; six independent randomized blocks. Each game contributes one complete 15-round net-earnings outcome. The interval is
+            exploratory.
+            <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/current_policy">Data and reproduction</a>.
+          </figcaption>
+        </figure>
+        <p>
+          Actual sender charges and recipient fines were zero in both arms: the loss came from lower contributions. Differences already appeared in
+          the first three forced-OFF rounds. This estimates the total disclosed-policy effect, without separating announcement, communication and
+          routing.
+        </p>
+        <p>
+          Holding partners' contributions fixed, the one-round own-payoff optimum is 0 under OFF and 8 under ON. This
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/theory.md">stage-game benchmark</a>
+          helps interpret responses to enforcement; it does not determine repeated-game equilibrium or establish the mechanism behind this loss.
+        </p>
+      </section>
       <section id="the-dilemma">
         <h2>What is a repeated public goods game?</h2>
         <p>
@@ -91,13 +156,8 @@
           </figcaption>
         </figure>
         <p>
-          With the other choices fixed and punishment off, each extra contribution token reduces the contributor's immediate earnings by 0.6 and
-          raises group earnings by 0.6. This creates an incentive to free ride, even though contributions benefit the group. Repeated interaction adds
-          possible future responses, making communication and enforcement part of the strategic problem.
-        </p>
-        <p>
-          The same players meet again and can see each other’s earlier choices. That shared history lets them respond to what happened in previous
-          rounds.
+          With partners' choices fixed and punishment off, each extra contribution token lowers the contributor's immediate earnings by 0.6 and raises
+          group earnings by 0.6. The same four players meet for 15 rounds, observing earlier choices and receiving 20 fresh tokens each round.
         </p>
         <figure class="wide repetition-figure">
           <div
@@ -106,14 +166,14 @@
             role="img"
             aria-label="The same 4 players return in rounds 1, 2 and 15, with intervening rounds omitted"
           ></div>
-          <figcaption>The group stays together throughout the game, and cumulative payoff adds up earnings across all 15 rounds.</figcaption>
+          <figcaption>The same group plays all 15 rounds; cumulative payoff sums its round earnings.</figcaption>
         </figure>
       </section>
       <section id="the-agents">
-        <h2>Let 4 agents play the same game</h2>
+        <h2>The original Qwen measurement case</h2>
         <p>
-          I used the same model checkpoint for all 4 agents and gave them neutral prompts without assigned personalities. Each agent generated its own
-          public messages and contribution decisions.
+          The earlier measurement case uses four Qwen3-8B roles with the same checkpoint and neutral prompts, without assigned personalities. It
+          remains separate from the newer GPT policy comparison.
         </p>
         <div class="agent-roster" aria-label="4 agent roles using the same Qwen3-8B checkpoint">
           <div>
@@ -138,14 +198,12 @@
       </section>
       <section id="the-game">
         <h2>Start with the game clock</h2>
-        <p>
-          At the start of each round, agents get a fresh endowment of 20 tokens. The prompts tell them to maximize their cumulative net earnings and
-          leave the contribution amount up to each agent.
-        </p>
+
         <div class="with-note">
           <p>
-            Public messages come before simultaneous contributions, and settlement reveals the completed choices. Only the history rule activates
-            punishment in this game, with its next state announced after settlement.
+            Agents are instructed to maximize cumulative net earnings without a prescribed contribution. Public messages precede simultaneous
+            contributions; settlement reveals the choices and announces the next punishment state. Only the history rule controls this archived Qwen
+            game.
           </p>
           <aside class="sidenote">
             The generating model is Qwen3-8B with native thinking enabled, at the checkpoint recorded in the downloadable metadata
@@ -189,11 +247,9 @@
           q<sub>i</sub> = floor(max(0, 10 &minus; c<sub>i</sub>) / 3)
         </div>
         <p>
-          An agent's sender cost adds up its points against the other 3 targets, and its own recipient fine is calculated separately. For each target
-          with sanction level <span class="math">q<sub>i</sub></span
-          >, the partners together spend <span class="math">3q<sub>i</sub></span> and the target loses <span class="math">9q<sub>i</sub></span
-          >. Both deductions leave the group, reducing its total payoff by <span class="math">12q<sub>i</sub></span
-          >.
+          Each target's sanction level <span class="math">q<sub>i</sub></span> costs the three partners <span class="math">3q<sub>i</sub></span> in
+          total and removes <span class="math">9q<sub>i</sub></span> from the target. Both amounts leave the group: the net cost is
+          <span class="math">12q<sub>i</sub></span> per target.
         </p>
         <figure class="wide punishment-figure">
           <div class="figure-controls">
@@ -229,15 +285,10 @@
             to inspect hypothetical deductions without changing any recorded choice.
           </figcaption>
         </figure>
+
         <p>
-          Round 13 activates punishment for round 14 because its minimum contribution is 0, but round 14's deductions use round 14's choices. P3
-          contributes 8 in that active round, giving a gap of 2 and a rounded sanction level of 0. The other 3 agents each contribute 10, leaving
-          every sanction level at 0 and producing no sender costs or recipient fines.
-        </p>
-        <p>
-          Punishment is active in 6 recorded rounds, and every contribution in those rounds is at least 8. Realized enforcement costs therefore total
-          0 across the game, leaving cumulative group net payoff at 1417.8 tokens. This accounting explains the absence of deductions, without
-          establishing what those agents would have contributed under another institution.
+          In all six active rounds of this Qwen game, contributions were at least 8, so actual deductions were zero and cumulative group net earnings
+          were 1,417.8 tokens. The interactive ledger explains why a contribution of 8 escapes a fine despite the reference of 10.
         </p>
         <details class="source-block">
           <summary>Read the exact activation function</summary>
@@ -256,18 +307,13 @@
         <span id="trajectory"></span>
         <h2>Follow the contribution path</h2>
         <p>
-          This interactive path preserves the original Qwen game. The
-          <a href="#the-project">new twelve-game policy comparison</a> uses a different generating model and is analyzed separately; its observations
-          do not replace or enlarge this archived trajectory.
+          This figure preserves the original Qwen game; the <a href="#the-project">new policy comparison</a>
+          uses a different model and is analyzed separately. Contributions were higher in the active rounds (4, 6, 8, 10, 12 and 14). Language scores
+          were calculated only after play.
         </p>
         <p>
-          Mean contributions change at all 14 transitions. They are higher when punishment is active, in rounds 4, 6, 8, 10, 12 and 14. The rule uses
-          earlier contributions to decide when punishment is active. I calculated the language scores after the game.
-        </p>
-        <p>
-          Start at round 10 to see P4’s request beside the recorded choice. Move to round 11, when punishment was off and the average contribution
-          dropped to 2.5 tokens. The players already knew the next punishment state when round 10 ended. Select a round or a message score to read
-          what the players said and what they contributed.
+          Start at round 10 to compare P4's request with its recorded choice, then move to round 11, when mean contribution fell to 2.5. Select a
+          round or message score to inspect its text, contribution and already announced next state.
         </p>
         <figure class="wide path-figure" id="path-figure">
           <div class="figure-controls">
@@ -328,7 +374,7 @@
             logarithms give units of nats per target token.
           </aside>
         </div>
-        <details class="source-block" open>
+        <details class="source-block">
           <summary>Read the scoring function</summary>
           <div class="source-meta" data-source="score"></div>
           <pre><code data-code="score"></code></pre>
@@ -337,15 +383,9 @@
           </p>
         </details>
         <p>
-          The largest score belongs to P4 in <button class="text-control" data-example="10">round 10</button>, where a request for 5 receives a loss
-          of 4.237 despite the author's actual contribution of 10. The message says this request avoids sanctions, although contributing 5 under that
-          round's active rule would incur a recipient fine of 9. This is a concrete inconsistency with the rule, and it does not reveal the author's
-          private intent.
-        </p>
-        <p>
-          The contrast is different in <button class="text-control" data-example="14">round 14</button>, where all 4 players send identical text and
-          the group score is 2.144. The next mean contribution falls from 9.5 to 0, producing the largest decline despite this relatively low score.
-          Punishment has already been announced as inactive for the final round, giving context for the change before it occurs.
+          P4's <button class="inline-link" data-example="10">round-10</button> request for 5 scores 4.237, although its author contributes 10;
+          contributing 5 would incur a recipient fine of 9. In <button class="inline-link" data-example="14">round 14</button>, identical messages
+          score only 2.144 before mean contribution falls from 9.5 to 0. The final-round boundary and inactive next state were already known.
         </p>
         <figure class="wide text-figure">
           <div class="text-selector" role="group" aria-label="Compare the existing message examples">
@@ -365,9 +405,8 @@
           </figcaption>
         </figure>
         <p>
-          A public request should also be kept separate from a personal promise, because asking everyone to contribute 10 does not state what the
-          speaker will choose. In the final round, P1 and P4 still request 10 while all players choose 0. P2 explicitly advocates free riding and
-          scores 3.974, below the earlier cooperative-sounding message that produced the maximum loss.
+          A request is not a personal commitment. In the final round, all players choose 0; P2's explicit free-riding appeal scores 3.974, below the
+          earlier cooperative-sounding request.
         </p>
       </section>
       <section id="the-next-round">
@@ -397,22 +436,11 @@
             annotation, leaving every coordinate unchanged. <a href="figures/transitions.pdf" download>Download the figure</a>.
           </figcaption>
         </figure>
-        <div class="with-note">
-          <p>
-            The group score has a descriptive Spearman association of &minus;0.127 with the next contribution change, and the plot places high scores
-            before both increases and decreases. That association summarizes the displayed path, with no significance test or claim of validation
-            across independent games.
-          </p>
-          <aside class="sidenote">
-            The next state is a deterministic function of the current minimum contribution and round eligibility, making it known policy context
-            rather than an independent language signal.
-          </aside>
-        </div>
         <p>
-          This observation motivated a later <a href="#forecast-update">exploratory forecast audit</a>: compare history with history plus language on
-          the same held-out games, while retaining the announced next punishment state in both feature sets. The audit uses the six newer H games,
-          rather than treating the rounds of this Qwen game as independent replications. The timing principle follows forecast-evaluation practice
-          <a href="#ref-forecast">(Hewamalage et al., 2023)</a>.
+          The score's descriptive Spearman association with next contribution change is &minus;0.127. High scores precede both rises and falls, while
+          the next punishment state is already known. This motivated the <a href="#forecast-update">later forecast audit</a>, which includes that
+          state in both predictor sets on held-out games, following
+          <a href="#ref-forecast">forecast-evaluation practice (Hewamalage et al., 2023)</a>.
         </p>
         <details class="source-block">
           <summary>Inspect the forecast origins in the saved data</summary>
@@ -450,188 +478,87 @@
             Select a point to read its message, with the diagonal marking equal scores.
           </figcaption>
         </figure>
-        <div class="with-note">
-          <p>
-            This result does not support attributing the score pattern mainly to requests saying 5 instead of 10, although masking also changes
-            tokenization. The raw score remains the measurement throughout the note, and neither version was used to activate punishment in this
-            archived Qwen game.
-          </p>
-          <aside class="sidenote">
-            Across the 56 messages, descriptive rank associations are 0.355 with word count and 0.342 with target-token count. These are associations
-            with length, not identified length effects.
-          </aside>
-        </div>
+        <p>
+          Masking preserved most score ordering, although it also changes tokenization. Both versions remain offline measurements of this Qwen game.
+        </p>
         <details class="source-block">
-          <summary>Read the saved-score reproduction check</summary>
+          <summary>Reproduction and additional measurement diagnostics</summary>
           <div class="source-meta" data-source="mask"></div>
           <pre><code data-code="mask"></code></pre>
           <p class="code-note">
             NUMBER is defined by the quantity pattern in the full source, and every reproduced score is checked against its saved counterpart.
           </p>
+          <p>
+            Across the 56 messages, descriptive rank associations are 0.355 with word count and 0.342 with target-token count. These are associations
+            with length, not identified length effects.
+          </p>
+          <p>
+            Exactly 2 scored messages repeat text from the immediately preceding round, with mean loss 1.056 compared with 2.279 for the other 54
+            messages. At round 14, identical current text still yields losses from 2.142285 to 2.144318 across players, because the fixed player
+            header remains part of the context. These observations identify properties worth checking in a measurement, without isolating a general
+            repetition effect.
+          </p>
         </details>
-        <p>
-          Exactly 2 scored messages repeat text from the immediately preceding round, with mean loss 1.056 compared with 2.279 for the other 54
-          messages. At round 14, identical current text still yields losses from 2.142285 to 2.144318 across players, because the fixed player header
-          remains part of the context. These observations identify properties worth checking in a measurement, without isolating a general repetition
-          effect.
-        </p>
       </section>
-      <section id="the-project">
-        <span id="project"></span>
-        <h2>What happened when language entered the policy?</h2>
-        <p>
-          I have now completed the comparison that motivated the original note. H uses completed contributions to activate punishment for the
-          following round. H+L adds a language warning when the maximum DistilGPT2 message score strictly exceeds the independently frozen threshold,
-          4.620724508132623. Both arms allow the same public communication and retain the fixed sanction reference of 10.
-        </p>
-        <p>
-          Twelve fresh 15-round games using GPT-6.1-Sol were randomized within six blocks, one game per arm in each block. Every game began from an
-          empty history. Mean cumulative group net earnings were 1,727.4 tokens under H and 1,360.4 under H+L: a difference of &minus;367.0 tokens
-          (&minus;21.25%). All six block differences were negative. The exploratory 95% t interval is [&minus;566.26, &minus;167.74]; the six block
-          contrasts are the analysis units.
-        </p>
-        <table class="resource-table">
-          <thead>
-            <tr>
-              <th>Full-game outcome</th>
-              <th>H</th>
-              <th>H+L</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Mean group net earnings, 15 rounds</td>
-              <td>1,727.4</td>
-              <td>1,360.4</td>
-            </tr>
-            <tr>
-              <td>Mean contribution per player-round</td>
-              <td>14.65</td>
-              <td>4.46</td>
-            </tr>
-            <tr>
-              <td>Mean active punishment rounds per game</td>
-              <td>0.50</td>
-              <td>6.83</td>
-            </tr>
-            <tr>
-              <td>Actual sanction deductions, both cost types</td>
-              <td>0</td>
-              <td>0</td>
-            </tr>
-          </tbody>
-        </table>
-        <figure class="wide">
-          <a href="figures/full_policy_comparison.svg"
-            ><img
-              src="figures/full_policy_comparison.svg"
-              style="display: block; width: 100%; height: auto"
-              alt="Mean complete-game group earnings and all six within-block H+L minus H contrasts. Every contrast is negative."
-          /></a>
-          <figcaption>
-            Twelve fresh games; six independent randomized blocks. Each game contributes one complete 15-round net-earnings outcome. The interval is
-            exploratory.
-            <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/current_policy">Data and reproduction</a>.
-          </figcaption>
-        </figure>
-        <p>
-          Actual sender charges and recipient fines were zero in both arms. The earnings loss came from lower contributions, rather than realized
-          punishment deductions. Contributions already differed during the first three rounds, when punishment was unconditionally off. The result
-          estimates the total effect of the disclosed policy package. It does not separately identify announcement, communication, or actual routing
-          as the cause of the loss.
-        </p>
-        <p>
-          The payoff benchmark remains explicit: the one-round own-payoff optimum is 0 when punishment is off and 8 when it is on, holding partners'
-          contributions fixed. This stage-game calculation does not determine equilibrium play in the repeated game. It helps interpret a possible
-          shift toward the lowest unpenalized contribution, which the complete-policy result alone does not establish as its causal mechanism.
-          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/theory.md">Read the benchmark</a>.
-        </p>
-      </section>
+
       <section id="reference-update">
         <h2>When expression becomes the next reference</h2>
         <p>
-          A separate controlled experiment asks what happens when policy-induced messages become the background against which later messages are
-          scored. Four independent producer-pair blocks share one archived source history. Recipients see the same two candidate reference texts; the
-          intervention changes which reference is actually used. Their new communication and freely chosen contributions are then observed in ON/OFF
-          continuation branches.
+          Four producer-pair blocks sharing one archived history test the reference inherited by later recipients. They see both candidate texts; the
+          intervention changes which one scores their new messages, followed by free contributions and ON/OFF continuation branches.
         </p>
         <p>
-          Using the language-control producer's reference rather than its paired YOKED reference lowered branch-weighted three-round group net
-          earnings by 7.296 tokens on average. This is a local reference effect, estimated separately from the &minus;367-token full-policy contrast.
-          It does not identify a mediator of that larger difference. The recipient-policy by reference-source interaction was zero, and ordinary
-          permitted messages could still cross the scoring threshold. The evidence therefore does not establish irreversible channel failure or
-          recipient-specific readaptation.
-        </p>
-        <p>
-          This connects the game to strategic adaptation and state-dependent monitoring: a fixed neural scorer can still produce a changing effective
-          rule when its reference text changes. The
-          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/reference_inheritance">study record</a>
-          gives the exact branches, payoff weights and scope; the
-          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/related-work.md">related-work comparison</a>
-          distinguishes this particular enforcement setting from those broader ideas.
+          The language-control reference lowered branch-weighted three-round group earnings by 7.296 tokens relative to its paired YOKED reference.
+          The recipient-policy by reference-source interaction was zero, and ordinary permitted messages could still trigger enforcement. This local
+          effect does not identify its contribution to the separate &minus;367-token policy contrast.
+          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/reference_inheritance">Data and analysis</a> ·
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/related-work.md">Related work</a>.
         </p>
       </section>
       <section id="forecast-update">
         <h2>Does language add an early warning?</h2>
         <p>
-          An exploratory offline audit reused the six H games from the new policy comparison. There were 72 eligible forecast origins and 69 where
-          language could add an activation beyond H. The tested fixed text method did not stably improve on strong public-history baselines under
-          game-held-out prediction and trajectory-family sensitivity checks.
+          An exploratory audit reused the six H games: 72 eligible forecast origins, including 69 where language could add an activation. The fixed
+          text method did not consistently improve on strong history baselines under game and trajectory-family holdouts.
         </p>
         <p>
-          Among the 69 candidate origins, game-held-out Brier loss was 0.03854 with text, 0.03433 for history, and 0.03309 for a history-state lookup;
-          lower is better. Only eight positive risk events occurred, five at the final-round transition. These are exploratory results from already
-          viewed paths, not a prospective validation. They neither rule out all language representations nor establish that a directly collected
-          structured report would be sufficient.
-        </p>
-        <p>
-          Predicting risk and improving welfare are separate claims. This audit collected no same-state counterfactual choices and identifies no
-          causal gain from acting on its predictions.
-          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/early_warning">Read the audit and reproduce its predictions</a>.
+          Game-held-out candidate-state Brier loss was 0.03854 with text, 0.03433 for history and 0.03309 for a state lookup; lower is better. There
+          were eight risk events, five at the terminal transition. These exploratory analyses of already viewed paths identify neither a welfare gain
+          nor the sufficiency of directly collected structured reports, and do not rule out other language methods.
+          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/early_warning">Data and reproduction</a>.
         </p>
       </section>
       <section id="next-step">
         <h2>Can anchoring the reference change the feedback?</h2>
         <p>
-          The proposed mechanism study crosses whether messages causally control enforcement or follow a matched YOKED schedule with whether the
-          future scoring reference rolls with new expression or remains independently anchored. Players would know their actual update rule before
-          writing fresh messages, and their contributions would remain freely chosen under the original payoff rule. This conceptual design has not
-          been run; exposure matching, history-warning priority, and anchor selection still require a finalized protocol.
+          A proposed 2×2 study crosses LIVE versus matched YOKED enforcement with rolling versus independently anchored references. Players would know
+          their update rule before writing fresh messages and freely choosing contributions under the original payoff rule.
         </p>
         <p>
-          The test compares the LIVE minus YOKED earnings gap under rolling references with the same gap under anchored references. The hypothesis is
-          that control-induced expression creates an additional later loss under rolling references. Merely rescoring frozen old messages under a new
-          background would not test this response to the update policy. The existing zero recipient-policy interaction does not establish this
-          different, prospective interaction.
+          The contrast compares LIVE minus YOKED earnings under rolling references with the same gap under anchored references. The hypothesis is an
+          additional later loss under rolling references, not a guaranteed welfare repair. The study is unrun; exposure matching, history-warning
+          priority and anchor selection still require a finalized protocol.
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/future-mechanism.md">Proposed mechanism study</a>.
         </p>
         <p id="discussion-question">
-          Does the reference-update rule change strategic expression and subsequent group earnings specifically when expression controls enforcement?
-          The
-          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/future-mechanism.md">proposed mechanism study</a>
-          sets out this prediction without promising a positive welfare repair. Explaining the separate full-policy loss, including the early
-          contribution shift, remains a distinct question. I would value feedback on whether this interaction is the clearest test of an institutional
-          feedback mechanism beyond ordinary strategic adaptation.
+          Does this interaction isolate institutional feedback beyond ordinary strategic adaptation? Explaining the separate full-policy loss remains
+          a distinct question.
         </p>
       </section>
       <section id="reading-code">
         <span id="methods"></span>
         <h2>Read and reproduce the calculation</h2>
         <p>
-          The scoring code uses the cached DistilGPT2 revision <code>2290a62682d06624634c1f46a6ad5be0f47f38aa</code>, with 1 CPU thread and
-          deterministic execution. The existing reproduction check matched all 56 original scores and all 56 masking diagnostics within 0.000001 nats
-          per target token, preserving full precision in the downloadable data.
+          The archived Qwen package reproduces all 56 original and 56 quantity-masked scores within 0.000001 nats per target token, using DistilGPT2
+          revision
+          <code>2290a62682d06624634c1f46a6ad5be0f47f38aa</code>, one CPU thread and deterministic execution. The excerpts above link to the original
+          source and line numbers; no new choices are generated.
         </p>
         <p>
-          Each code excerpt above is taken directly from its linked source file, with its original line numbers displayed. The reproduction archive
-          contains the saved round records, and running its script scores those records without generating new agent responses.
-        </p>
-        <p>
-          The downloads below reproduce the archived Qwen measurements. Newer studies have their own
-          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/current_policy">policy data</a>,
-          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/reference_inheritance">reference data</a>, and
+          New studies have separate <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/current_policy">policy data</a>,
+          <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/reference_inheritance">reference data</a> and
           <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/early_warning">forecast data</a>. The
-          <a href="research.html">research registry</a> covers all 33 study families, including archived diagnostics and unrun concepts, with
-          version-specific evidence and code.
+          <a href="research.html">research registry</a> covers all study versions, including archived diagnostics and unrun concepts.
         </p>
         <table class="resource-table">
           <thead>
