@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Doris Wang's research on language monitoring, automatic punishment, and collective outcomes in LLM public goods games. Completed results, distinct study records, data, and reproducible analyses."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:title" content="Language, Enforcement & Collective Outcomes" />
+    <meta
+      property="og:description"
+      content="A public research record of complete policy comparisons, controlled mechanisms, and exploratory language prediction in public goods games."
+    />
+    <meta property="og:type" content="website" />
+    <title>Language, Enforcement & Collective Outcomes · Doris Wang</title>
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="research.css?v=20261127-2" />
+    <script src="research.js?v=20261127-2" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to research</a>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="PGG Research, top of page"
+        ><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>PGG <b>Research</b></span></a
+      >
+      <button class="menu-toggle" aria-controls="navigation" aria-expanded="false">Menu</button>
+      <nav id="navigation" aria-label="Main navigation">
+        <a href="#results">Results</a><a href="#registry">Study registry</a><a href="#methods">The game</a><a href="#reproduce">Reproduce</a>
+        <a class="repo-link" href="https://github.com/dorisduowang/pgg-feasibility">GitHub</a>
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero page-width" id="top" aria-labelledby="project-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Computational research · Public goods games</p>
+          <h1 id="project-title">Can language make automatic punishment worth its cost?</h1>
+          <p class="standfirst">Communication, monitoring rules, and collective outcomes in repeated games played by language-model agents.</p>
+          <p class="byline">
+            An independent research project by <strong>Doris Wang</strong><span class="byline-divider" aria-hidden="true"></span
+            ><time id="updated-date">Research record</time>
+          </p>
+        </div>
+        <aside class="headline-result" aria-labelledby="headline-label">
+          <p class="result-kicker" id="headline-label">Completed policy comparison</p>
+          <p class="headline-number" id="headline-number">−21.25<span>%</span></p>
+          <p id="headline-detail">Lower net group earnings when a language warning was added to the history rule.</p>
+          <p class="result-scope" id="headline-sample">12 fresh games · 6 randomized blocks</p>
+          <a class="text-link" href="#results">Read the complete result</a>
+        </aside>
+      </section>
+
+      <div class="scope-strip">
+        <div class="page-width scope-inner">
+          <span><b>4</b> players per game</span><span><b>15</b> rounds per complete game</span><span><b>20</b> fresh tokens per player per round</span
+          ><span>Net earnings include enforcement costs</span>
+        </div>
+      </div>
+
+      <section class="page-width result-section" id="results" aria-labelledby="primary-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Main result</p>
+            <h2 id="primary-title">A direct test of the complete monitoring policy.</h2>
+          </div>
+          <span class="status-label completed">Completed</span>
+        </div>
+        <div class="result-intro">
+          <p id="primary-summary">
+            In the new fixed-reference comparison, adding the specified language warning reduced net group earnings. Both conditions retained public
+            communication; each game began from an empty history.
+          </p>
+          <div id="primary-evidence-links" class="artifact-links"></div>
+        </div>
+        <div class="primary-stats" id="primary-stats" aria-label="Primary result details"></div>
+        <ul class="primary-findings" id="primary-findings"></ul>
+        <div class="figure-tabs" role="tablist" aria-label="Primary result figures">
+          <button id="tab-payoff" class="figure-tab active" role="tab" aria-selected="true" aria-controls="panel-payoff" data-figure="payoff">
+            Net earnings
+          </button>
+          <button id="tab-paths" class="figure-tab" role="tab" aria-selected="false" aria-controls="panel-paths" data-figure="paths" tabindex="-1">
+            Round-by-round paths
+          </button>
+        </div>
+        <div class="figure-panel" id="panel-payoff" role="tabpanel" aria-labelledby="tab-payoff">
+          <figure>
+            <a class="figure-image-link" href="figures/full_policy_comparison.svg" aria-label="Open complete policy comparison figure at full size"
+              ><img
+                src="figures/full_policy_comparison.svg"
+                width="1360"
+                height="770"
+                alt="Twelve complete-game net earnings paired by six randomized blocks, with the six H+L minus H contrasts and exploratory mean interval."
+            /></a>
+            <figcaption>
+              <span>Full 15-round policy comparison. H is the history rule; H+L adds a fixed language warning. The interval is exploratory.</span
+              ><a href="figures/full_policy_comparison.svg">Full size</a>
+            </figcaption>
+          </figure>
+        </div>
+        <div class="figure-panel" id="panel-paths" role="tabpanel" aria-labelledby="tab-paths" hidden>
+          <figure>
+            <a
+              class="figure-image-link"
+              href="figures/full_policy_trajectories.svg"
+              aria-label="Open contribution and enforcement trajectories at full size"
+              ><img
+                src="figures/full_policy_trajectories.svg"
+                width="1360"
+                height="750"
+                alt="Per-round contributions and actual punishment frequency for six games per policy. Policies were disclosed from round one; punishment was forced off in the first three rounds."
+                loading="lazy"
+            /></a>
+            <figcaption>
+              <span
+                >Thin lines are individual games; bold lines are arm means. These descriptive trajectories do not separately identify mediation.</span
+              ><a href="figures/full_policy_trajectories.svg">Full size</a>
+            </figcaption>
+          </figure>
+        </div>
+        <p class="scope-note" id="primary-limit">
+          A result for this specified policy, model, and fixed-reference game. It is not a claim about every possible use of language in enforcement.
+        </p>
+      </section>
+
+      <section class="evidence-band" aria-labelledby="other-evidence-title">
+        <div class="page-width">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Mechanism and measurement</p>
+              <h2 id="other-evidence-title">Different questions. Separate evidence.</h2>
+            </div>
+          </div>
+          <div class="evidence-grid">
+            <article class="evidence-note" id="reference-note">
+              <div class="note-header">
+                <span class="study-type">Controlled mechanism pilot</span><span class="status-label completed">Completed</span>
+              </div>
+              <h3>Language can change its future monitoring reference.</h3>
+              <p class="note-value" id="reference-value">−7.296 <span>group tokens</span></p>
+              <p id="reference-summary">
+                A controlled reference-inheritance contrast across four producer pairs linked policy-induced expression to later enforcement and
+                observed branch earnings.
+              </p>
+              <div class="mechanism-chain" aria-label="Mechanism studied">
+                <span>Policy</span><i aria-hidden="true"></i><span>Expression</span><i aria-hidden="true"></i><span>Reference</span
+                ><i aria-hidden="true"></i><span>Enforcement</span>
+              </div>
+              <p class="note-limit" id="reference-limit">
+                One shared source history. This is a controlled reference effect, separate from the complete policy comparison above.
+              </p>
+              <div class="artifact-links" id="reference-links"></div>
+            </article>
+            <article class="evidence-note" id="forecast-note">
+              <div class="note-header">
+                <span class="study-type">Exploratory forecast audit</span><span class="status-label completed">Completed</span>
+              </div>
+              <h3>Does speech add an early warning?</h3>
+              <p class="note-value qualitative" id="forecast-value">No stable increment</p>
+              <p id="forecast-summary">
+                Whole-game and action-family holdouts test language features against public-history baselines in the six history-policy games.
+              </p>
+              <p class="note-limit" id="forecast-limit">
+                Finite predictors and a small outcome set do not settle the information content of unrestricted language. Forecasting does not
+                identify policy value.
+              </p>
+              <div class="artifact-links" id="forecast-links"></div>
+              <details class="diagnostic-figure">
+                <summary>Inspect the forecast comparison</summary>
+                <figure>
+                  <a href="figures/incremental_warning_comparison.svg"
+                    ><img
+                      src="figures/incremental_warning_comparison.svg"
+                      width="1100"
+                      height="720"
+                      alt="Exploratory incremental language forecast results under whole-game and trajectory-family holdouts."
+                      loading="lazy"
+                  /></a>
+                  <figcaption>Exploratory results; held-out games are the evaluation units.</figcaption>
+                </figure>
+              </details>
+            </article>
+          </div>
+          <p class="separation-note">
+            The policy comparison, reference pilot, forecast audit, and earlier diagnostics answer distinct questions. Their observations are not
+            pooled.
+          </p>
+        </div>
+      </section>
+
+      <section class="page-width registry-section" id="registry" aria-labelledby="registry-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Public study registry</p>
+            <h2 id="registry-title">Inspect the record behind each claim.</h2>
+          </div>
+          <a class="text-link" href="data/research_registry.json">Registry JSON</a>
+        </div>
+        <p class="section-intro">
+          Completed studies, archived diagnostics, and unrun concepts retain their own status, design, and supporting files.
+        </p>
+        <div class="registry-controls">
+          <div class="status-filters" role="group" aria-label="Filter studies by status">
+            <button class="filter active" data-status="all" aria-pressed="true">All <span id="count-all"></span></button
+            ><button class="filter" data-status="completed" aria-pressed="false">Completed <span id="count-completed"></span></button
+            ><button class="filter" data-status="archived" aria-pressed="false">Archived <span id="count-archived"></span></button
+            ><button class="filter" data-status="planned" aria-pressed="false">Planned <span id="count-planned"></span></button>
+          </div>
+          <label class="search-field"
+            ><span class="visually-hidden">Search the study registry</span
+            ><input id="study-search" type="search" placeholder="Search studies or methods" autocomplete="off"
+          /></label>
+        </div>
+        <p class="registry-count" id="registry-count" role="status" aria-live="polite">Loading the published registry…</p>
+        <div class="study-list" id="study-list"></div>
+        <div id="registry-more" class="registry-more"></div>
+        <div class="load-error" id="registry-error" hidden>
+          <p>The study registry could not be loaded.</p>
+          <a href="data/research_registry.json">Open the registry file</a
+          ><a href="https://github.com/dorisduowang/pgg-feasibility">Browse the repository</a>
+        </div>
+        <noscript
+          ><p>
+            JavaScript is used for registry filtering. The complete <a href="data/research_registry.json">registry</a> and
+            <a href="https://github.com/dorisduowang/pgg-feasibility">repository</a> remain available.
+          </p></noscript
+        >
+      </section>
+
+      <section class="methods-section page-width" id="methods" aria-labelledby="methods-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">The current game</p>
+            <h2 id="methods-title">A transparent payoff benchmark.</h2>
+          </div>
+          <a class="text-link" href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/theory.md">Read the theory</a>
+        </div>
+        <div class="methods-layout">
+          <div class="game-clock" aria-label="Sequence within each game round">
+            <div>
+              <span class="clock-label">Observe</span>
+              <p>Past public records and current enforcement state</p>
+            </div>
+            <div>
+              <span class="clock-label">Communicate</span>
+              <p>Four simultaneous, nonbinding public messages</p>
+            </div>
+            <div>
+              <span class="clock-label">Choose</span>
+              <p>Private calculator, then free simultaneous contributions</p>
+            </div>
+            <div>
+              <span class="clock-label">Settle</span>
+              <p>Actual earnings and the following enforcement state</p>
+            </div>
+          </div>
+          <div class="payoff-note">
+            <p class="formula-label">Fixed public reference of 10</p>
+            <p class="equation">W<sub>t</sub> = 80 + 0.6∑c<sub>it</sub> − 12∑q<sub>it</sub></p>
+            <p>Each active sanction level is ⌊max(0, 10 − c<sub>it</sub>)/3⌋. Sender charges and recipient losses both leave the group.</p>
+            <p>
+              Language surprisal is a fixed conditional likelihood score. It is a candidate warning, not a validated measure of dishonesty or
+              cooperative risk.
+            </p>
+            <p class="version-note">
+              Rule versions matter: the fixed-reference study is kept distinct from earlier designs and diagnostic continuations.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="reproduction-section" id="reproduce">
+        <div class="page-width reproduction-layout">
+          <div>
+            <p class="eyebrow">Open research record</p>
+            <h2>Read, inspect, reproduce.</h2>
+            <p>
+              Saved outcomes, analysis code, protocol records, and scope notes make each study traceable. The archive retains the earlier feasibility
+              website.
+            </p>
+          </div>
+          <div class="resource-list">
+            <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/overview.md"
+              ><span>Research overview</span><small>Question, studies, and interpretation</small></a
+            ><a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/reproduction.md"
+              ><span>Reproduction guide</span><small>Inputs, analysis, and verification</small></a
+            ><a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/related-work.md"
+              ><span>Related work</span><small>Positioning and limits of the claims</small></a
+            ><a href="archive/qwen-20261120/"><span>Earlier Qwen feasibility site</span><small>Archived separately · 20 November 2026</small></a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer page-width">
+      <p><strong>Doris Wang</strong> · Language, enforcement, and collective outcomes</p>
+      <p>
+        <a href="https://github.com/dorisduowang/pgg-feasibility">Source repository</a
+        ><a href="data/research_registry.json">Machine-readable registry</a><a href="#top">Back to top</a>
+      </p>
+    </footer>
+  </body>
+</html>
