@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="An illustrated research note by Doris Wang, with the original Qwen measurement audit and completed policy, reference-inheritance, and forecasting studies."
+      content="A 60-block experiment by Doris Wang finds that announced language control changes cooperation before punishment begins."
     />
     <meta name="theme-color" content="#ffffff" />
     <meta name="robots" content="noindex,nofollow" />
@@ -50,82 +50,80 @@
     <div class="article-title" id="top">
       <h1>Reading communication in a repeated public goods game</h1>
       <p class="standfirst">
-        Does adding a disclosed language warning to a contribution-history rule improve cooperation? In a twelve-game pilot, it reduced mean group net
-        earnings by 367 tokens (21.25%). The question is how the institution changes both expression and behavior.
+        When agents know their words can activate punishment, the monitor becomes part of the game. In 60 randomized blocks, announcing that control
+        reduced opening earnings by 16.45% before any punishment could occur.
       </p>
       <p class="author-line">Doris Wang · Updated 27 November 2026</p>
     </div>
     <article id="article">
       <p id="feasibility-update">
-        <strong>Updated 27 November 2026.</strong> The <a href="#the-project">completed policy comparison</a> comes first. The original
-        <a href="#the-path">interactive Qwen case</a> explains the measurement problem, followed by the reference study and next mechanism test. The
-        <a href="research.html">research record</a> links each study to its data and code.
+        The latest experiment separates a monitor that records language from one whose warnings can activate future punishment. The
+        <a href="#the-path">interactive Qwen case</a> remains below, and the <a href="research.html">research record</a> connects this result to the
+        earlier complete games.
       </p>
       <section id="the-project">
         <span id="project"></span>
-        <h2>What happened when language entered the policy?</h2>
+        <h2>The control rule changes behavior before it acts</h2>
         <p>
-          H activates next-round punishment from completed contributions. H+L adds a warning when the maximum DistilGPT2 message score strictly
-          exceeds the frozen threshold, 4.620724508132623. Both permit the same public communication and retain the sanction reference of 10.
+          I built a 3-condition experiment around the original public goods game. H activates next-round punishment from contribution history. SHADOW
+          describes the same language monitor as LIVE but explicitly excludes its scores from punishment and payoff rules. LIVE lets a language
+          warning activate future punishment. Each of 60 randomized blocks contains 1 fresh game per condition, all announced as 15-round games.
         </p>
         <p>
-          Twelve fresh 15-round GPT-6.1-Sol games were randomized within six blocks, one empty-history game per arm in each block. H+L reduced mean
-          group net earnings by 367.0 tokens (21.25%); all six block contrasts were negative. Their exploratory 95% t interval is [&minus;566.26,
-          &minus;167.74].
+          Collection pauses after round 3, without telling players it is a terminal round. Punishment is unavailable throughout these opening rounds,
+          so any earnings difference appears before enforcement is realized.
         </p>
         <table class="resource-table">
           <thead>
             <tr>
-              <th>Full-game outcome</th>
+              <th>Opening outcome</th>
               <th>H</th>
-              <th>H+L</th>
+              <th>SHADOW</th>
+              <th>LIVE</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Mean group net earnings, 15 rounds</td>
-              <td>1,727.4</td>
-              <td>1,360.4</td>
+              <td>Mean group earnings, rounds 1 to 3</td>
+              <td>325.28</td>
+              <td>329.51</td>
+              <td>275.32</td>
             </tr>
             <tr>
-              <td>Mean contribution per player-round</td>
-              <td>14.65</td>
-              <td>4.46</td>
-            </tr>
-            <tr>
-              <td>Mean active punishment rounds per game</td>
-              <td>0.50</td>
-              <td>6.83</td>
-            </tr>
-            <tr>
-              <td>Actual sanction deductions, both cost types</td>
-              <td>0</td>
-              <td>0</td>
+              <td>Games with all 12 contributions equal to 20</td>
+              <td>9/60</td>
+              <td>13/60</td>
+              <td>0/60</td>
             </tr>
           </tbody>
         </table>
+        <p>
+          Announcing future language control lowered earnings by 54.19 tokens relative to SHADOW, or 16.45%. Its pre-specified 98.75% interval is
+          [−70.37, −38.01]. SHADOW minus H was +4.23 [−14.61, 23.07]. The pre-specified rule places SHADOW closer to H, although it does not establish
+          equality between them.
+        </p>
         <figure class="wide">
-          <a href="figures/full_policy_comparison.svg"
+          <a href="figures/announcement_comparison.svg"
             ><img
-              src="figures/full_policy_comparison.svg"
+              src="figures/announcement_comparison.svg"
               style="display: block; width: 100%; height: auto"
-              alt="Mean complete-game group earnings and all six within-block H+L minus H contrasts. Every contrast is negative."
+              alt="Opening earnings under H, SHADOW and LIVE with both pre-specified announcement contrasts."
           /></a>
           <figcaption>
-            Twelve fresh games; six independent randomized blocks. Each game contributes one complete 15-round net-earnings outcome. The interval is
-            exploratory.
-            <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/current_policy">Data and reproduction</a>.
+            The technical monitoring description is identical under SHADOW and LIVE. Their announced future control differs.
+            <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/announcement_screen">Data and reproduction</a>.
           </figcaption>
         </figure>
         <p>
-          Actual sender charges and recipient fines were zero in both arms: the loss came from lower contributions. Differences already appeared in
-          the first three forced-OFF rounds. This estimates the total disclosed-policy effect, without separating announcement, communication and
-          routing.
+          In the earlier 12-game comparison, language-enabled enforcement reduced full 15-round group earnings by 367.0 tokens (21.25%), with an
+          exploratory 95% interval [−566.26, −167.74]. The comparable opening LIVE minus H gap was −91.8 then and −49.96 in the new sample. Fully
+          cooperative H openings were 4/6 and 9/60. The earlier full-game magnitude therefore needs its small-sample context, and the new openings do
+          not estimate how that gap develops after round 3.
         </p>
         <p>
-          Holding partners' contributions fixed, the one-round own-payoff optimum is 0 under OFF and 8 under ON. This
-          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/theory.md">stage-game benchmark</a>
-          helps interpret responses to enforcement; it does not determine repeated-game equilibrium or establish the mechanism behind this loss.
+          The new result locates a design problem at the point where language receives control. The next step is to redesign that control rule and
+          evaluate complete-game earnings after players have adapted. <a href="research.html#complete-policy">The full-game comparison</a> and the
+          <a href="research.html#reference-note">controlled reference study</a> provide the supporting evidence.
         </p>
       </section>
       <section id="the-dilemma">
@@ -529,26 +527,24 @@
         </p>
       </section>
       <section id="next-step">
-        <h2>Which mechanisms remain untested?</h2>
+        <h2>How should language receive punishment control?</h2>
         <p>
-          Two earlier learning questions remain open: how agents learn an opaque enforcement rule, and whether communication accelerates that process.
-          Existing disclosure and chat/no-chat diagnostics do not provide a matched learning-speed comparison.
-          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/research-question-coverage.md">Evidence and unfinished questions</a
-          >.
+          The announcement experiment now separates a monitor's technical description from its announced future authority. Its opening loss makes the
+          control rule itself a design choice, before the institution can benefit from better later decisions.
         </p>
         <p>
-          A separate proposed 2×2 study crosses LIVE versus matched YOKED enforcement with rolling versus independently anchored references. Players
-          would know their update rule before writing fresh messages and freely choosing contributions under the original payoff rule.
+          The next step is to specify a payoff-based benchmark for giving language that authority, then evaluate complete-game earnings after agents
+          adapt. Reference updating belongs within this question because today's messages become the context used to assess tomorrow's language.
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/future-mechanism.md">Control-design note</a>.
         </p>
         <p>
-          The contrast compares LIVE minus YOKED earnings under rolling references with the same gap under anchored references. The hypothesis is an
-          additional later loss under rolling references, not a guaranteed welfare repair. The study is unrun; exposure matching, history-warning
-          priority and anchor selection still require a finalized protocol.
-          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/future-mechanism.md">Proposed mechanism study</a>.
+          Learning an opaque enforcement rule and testing whether communication accelerates that process remain distinct questions. The earlier
+          disclosure and chat comparisons supply development evidence, while the
+          <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/research-question-coverage.md">coverage record</a> states the
+          matched tests they have not yet supplied.
         </p>
         <p id="discussion-question">
-          Does this interaction isolate institutional feedback beyond ordinary strategic adaptation? Explaining the separate full-policy loss remains
-          a distinct question.
+          Can an institution use language to improve enforcement without weakening the cooperation it is meant to protect?
         </p>
       </section>
       <section id="reading-code">
@@ -561,7 +557,8 @@
           source and line numbers; no new choices are generated.
         </p>
         <p>
-          New studies have separate <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/current_policy">policy data</a>,
+          The latest <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/announcement_screen">announcement data</a> accompany
+          the earlier <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/current_policy">full-game records</a>,
           <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/reference_inheritance">reference data</a> and
           <a href="https://github.com/dorisduowang/pgg-feasibility/tree/main/studies/early_warning">forecast data</a>. The
           <a href="research.html">research registry</a> covers all study versions, including archived diagnostics and unrun concepts.

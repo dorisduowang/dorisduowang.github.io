@@ -79,7 +79,7 @@ ninja.data = [
               window.location.href = "/projects/lstm_arima/";
             },},{id: "projects-language-monitoring-in-repeated-public-goods-games",
           title: 'Language Monitoring in Repeated Public Goods Games',
-          description: "Testing when communication can improve a history-based enforcement rule",
+          description: "How announced language control changes cooperation before punishment begins",
           section: "Projects",handler: () => {
               window.location.href = "/projects/punishment_on_demand/";
             },},{id: "projects-which-reviews-identify-quality",
