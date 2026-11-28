@@ -558,36 +558,3 @@ The fixed text method did not stably improve the operational prediction baseline
 Interpretation: Exploratory reuse of already viewed trajectories, with post-fit feature-description clarifications retained. Prediction error is not policy welfare; no same-state counterfactual behavior was collected by this audit. It does not rule out every language representation or establish direct structured-report sufficiency.
 
 Provenance: `workspace:pgg_language_early_warning_audit_20261127/RESULTS.json`, `workspace:pgg_language_early_warning_audit_20261127/INDEPENDENT_RESULT_REVIEW.json`, `workspace:pgg_language_early_warning_audit_20261127/POSTFIT_CLARIFICATIONS.json`.
-
-<a id="reference-feedback-preparation"></a>
-
-### Reference by score-feedback preparation
-
-**Status:** planned. **Version:** inactive prepared follow-up; not current empirical result.
-
-Prepared reference/feedback contrast using frozen inheritance drafts and newly revised text if executed. Software fixtures only; no native follow-up observations.
-
-The prepared experiment was not executed and is not a completed finding.
-
-- Offline software and identification checks were prepared.
-
-Interpretation: No adaptive repair, feedback benefit or positive welfare effect has been measured by this package. Software fixture outputs cannot be used as empirical evidence.
-
-Provenance: `workspace:pgg_reference_feedback_preparation_20261127/IDENTIFICATION_REVIEW.json`, `workspace:pgg_reference_feedback_preparation_20261127/ENGINE_OFFLINE_TEST_RECEIPT.json`.
-
-<a id="control-reference-concept"></a>
-
-### Control rights by reference update: next mechanism question
-
-**Status:** planned_concept. **Version:** planned conceptual mechanism; not a result.
-
-Conceptual 2x2: LIVE versus matched YOKED control crossed with rolling versus independently anchored reference rules announced before fresh expression. Conceptual design only; no new data and no executable protocol.
-
-The candidate contribution is the interaction of enforcement control and reference updating.
-
-- Proposed contrast J=(LIVE-ROLL minus YOKED-ROLL) minus (LIVE-ANCHOR minus YOKED-ANCHOR).
-- The sign, design repair and cross-monitor robustness are untested.
-
-Interpretation: The old recipient-policy by donor-reference interaction is zero and is a different estimand. Exposure matching, original history-warning priority, anchor independence and comparable calibration remain to be specified before collection. Ordinary feasible trigger messages exist; a hypothesis about costly/limited adaptation must not be relabeled physical channel exhaustion.
-
-Provenance: `workspace:PGG_论文贡献与最小鉴别路线_20261127.txt`.

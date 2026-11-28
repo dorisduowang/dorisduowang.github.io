@@ -1,8 +1,8 @@
-# Announcing language control changes cooperation before punishment
+# Adding a language-triggered enforcement channel changes opening cooperation
 
-An automated monitor changes the game when players know their words can activate
-punishment. This experiment separates that announced control from a monitor
-whose scores are recorded but excluded from punishment and payoff rules.
+This experiment compares an additional language-triggered enforcement channel
+with a monitor whose scores are recorded but excluded from punishment and
+payoff rules.
 
 Each of 60 randomized blocks contains 1 fresh game per condition. H uses the
 original contribution-history rule. SHADOW describes the same monitoring
@@ -24,8 +24,9 @@ closer to H. Equivalence between those conditions is not established.
 The loss therefore begins before any realized punishment. In this model and
 wording, announcing that language will influence future enforcement lowers
 opening contributions relative to describing a monitor without that authority.
-The result concerns the announcement arrangement rather than a uniquely
-identified psychological mechanism.
+LIVE adds both a connection from the group's own messages to punishment and
+an additional route to enforcement. A general response to anticipated
+enforcement remains a competing explanation for the policy effect.
 
 ## Relation to the complete-game pilot
 

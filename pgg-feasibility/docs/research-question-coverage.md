@@ -1,8 +1,10 @@
 # Coverage of the research questions
 
-The 60-block announcement experiment is finished. It separates monitoring
-disclosure from announced future language control in rounds 1 to 3, before
-punishment is available. The earlier full-game pilot remains a separate
+The 60-block announcement experiment is finished. It compares a recording-only
+monitor with an additional language-triggered enforcement route in rounds
+1 to 3, before punishment is available. LIVE adds both an enforcement route
+and a connection to the group's own messages, which remain competing
+explanations of the opening effect. The earlier full-game pilot remains a separate
 6-block comparison. Neither is a matched test of the rule-learning questions
 below.
 
@@ -25,9 +27,9 @@ Changing the disclosed policy package does not by itself identify learning
 speed. The zero-risk or cooperative behavior in other protocols is not evidence
 that communication cannot accelerate adaptation in an opaque institution.
 
-The proposed LIVE/YOKED by rolling/anchored-reference interaction addresses a
-different mechanism. It is unexecuted and is not a substitute for the missing
-opacity-by-communication comparison.
+The current proposed own-message versus paired-group-message comparison
+addresses the source of an additional enforcement warning. It is unexecuted
+and is not a substitute for the missing opacity-by-communication comparison.
 
 ## Evidence and provenance
 
@@ -38,7 +40,7 @@ opacity-by-communication comparison.
 - [Shelved opacity proposal](study-history.md#opacity-shelved)
 - [Human temporal benchmark](study-history.md#human-temporal-benchmark)
 - [Full policy comparison](../studies/current_policy/)
-- [Separate reference-update proposal](future-mechanism.md)
+- [Current paired-warning-source comparison](future-mechanism.md)
 
 The early Qwen no-punishment specification was checked against the original
 frozen feasibility scripts; public aggregate provenance is retained in the

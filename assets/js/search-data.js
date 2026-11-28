@@ -79,7 +79,7 @@ ninja.data = [
               window.location.href = "/projects/lstm_arima/";
             },},{id: "projects-language-monitoring-in-repeated-public-goods-games",
           title: 'Language Monitoring in Repeated Public Goods Games',
-          description: "How announced language control changes cooperation before punishment begins",
+          description: "The opening cost of adding a language-triggered enforcement channel",
           section: "Projects",handler: () => {
               window.location.href = "/projects/punishment_on_demand/";
             },},{id: "projects-which-reviews-identify-quality",
@@ -88,13 +88,6 @@ ninja.data = [
           section: "Projects",handler: () => {
               window.location.href = "/projects/review_information/";
             },},{
-        id: 'social-cv',
-        title: 'CV',
-        section: 'Socials',
-        handler: () => {
-          window.open("/assets/pdf/Duo_Wang_CV.pdf", "_blank");
-        },
-      },{
         id: 'social-email',
         title: 'email',
         section: 'Socials',
