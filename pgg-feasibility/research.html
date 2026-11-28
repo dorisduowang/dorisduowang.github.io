@@ -14,7 +14,7 @@
     <meta property="og:title" content="Language and automatic punishment: the research record" />
     <meta
       property="og:description"
-      content="Complete policy comparisons, controlled reference mechanisms, and the full versioned record of public goods game studies."
+      content="A 60-block experiment shows how announced language control changes cooperation before punishment begins."
     />
     <meta property="og:type" content="article" />
     <title>Language and automatic punishment: the research record · Doris Wang (王朵)</title>
@@ -26,7 +26,7 @@
         "@id": "https://dorisduowang.github.io/pgg-feasibility/research.html#article",
         "url": "https://dorisduowang.github.io/pgg-feasibility/research.html",
         "headline": "Language and automatic punishment: the research record",
-        "image": "https://dorisduowang.github.io/pgg-feasibility/figures/full_policy_comparison.png",
+        "image": "https://dorisduowang.github.io/pgg-feasibility/figures/announcement_comparison.png",
         "isPartOf": { "@id": "https://dorisduowang.github.io/#website" },
         "author": {
           "@type": "Person",
@@ -40,7 +40,7 @@
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="style.css?v=max-note-20261127" />
     <link rel="stylesheet" href="research.css?v=article-20261127" />
-    <script src="research.js?v=coverage-20261127" defer></script>
+    <script src="research.js?v=announcement-20261127" defer></script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to research</a>
@@ -50,35 +50,71 @@
     </header>
     <div class="article-title" id="top">
       <h1>Language and automatic punishment: the research record</h1>
-      <p class="standfirst">Communication, monitoring rules, and collective outcomes in repeated games played by language-model agents.</p>
+      <p class="standfirst">Giving language control over future punishment changes cooperation before enforcement begins.</p>
       <p class="author-line">
         <a href="/">Doris Wang (<span lang="zh-Hans">王朵</span>)</a> · Updated <time id="updated-date">27 November 2026</time>
       </p>
     </div>
     <article id="main">
       <p>
-        This is the complete research record accompanying <a href="index.html">Reading communication in a repeated public goods game</a>. The policy
-        comparison, controlled reference study, and forecast audit below answer distinct questions. Their observations are not pooled. The
-        <a href="#registry">study registry</a> retains the data, code, and scope of every completed study, archived diagnostic, and unrun concept.
+        An agent can react to a punishment rule before the institution makes its first decision. The latest experiment asks whether that response
+        comes from describing a language monitor or from announcing that language can control future enforcement. The
+        <a href="index.html">original research note</a> shows how this question grew from observed play, and the
+        <a href="#registry">study registry</a> links each result to its data.
       </p>
 
       <section id="results" aria-labelledby="primary-title">
-        <h2 id="primary-title">A direct test of the complete monitoring policy</h2>
+        <h2 id="primary-title">The rule changes cooperation before punishment begins</h2>
         <p id="primary-summary">
-          In the new fixed-reference comparison, adding the specified language warning reduced net group earnings. Both conditions retained public
-          communication; each game began from an empty history.
+          When agents know their words can activate punishment, the monitoring rule becomes part of their decision. In 60 randomized blocks,
+          announcing that control lowered opening group earnings relative to describing the same monitor without giving its outputs any authority.
         </p>
         <p>
-          Mean net group earnings were <span id="primary-H-payoff">1,727.4</span> tokens under the history rule (H) and
-          <span id="primary-HL-payoff">1,360.4</span> under history plus the specified language warning (H+L). The H+L minus H difference was
-          <span id="primary-delta">−367</span> tokens, or <span id="headline-number">−21.25%</span>.
+          Mean earnings over rounds 1 to 3 were <span id="primary-H-payoff">325.28</span> tokens under the history rule,
+          <span id="primary-SHADOW-payoff">329.51</span> under SHADOW and <span id="primary-LIVE-payoff">275.32</span> under LIVE. LIVE minus SHADOW
+          was <span id="primary-delta">−54.19</span>, or <span id="headline-number">−16.45%</span> relative to SHADOW.
         </p>
-        <p class="method-note" id="headline-sample">12 fresh games · 6 randomized blocks · 15 rounds per game</p>
+        <p class="method-note" id="headline-sample">60 randomized blocks with 180 fresh game openings. All 3 observed rounds had punishment OFF.</p>
         <p class="method-note" id="primary-model">
           Player model: GPT-6.1-Sol (<code>gpt-6.1-sol</code>, low reasoning effort). The fixed language scorer is DistilGPT2.
         </p>
-        <ul id="primary-findings"></ul>
+        <p id="primary-findings">
+          The pre-specified 98.75% interval for LIVE minus SHADOW is [−70.37, −38.01]. SHADOW minus H is +4.23 [−14.61, 23.07], placing SHADOW closer
+          to H under the pre-specified rule.
+        </p>
+        <figure class="wide">
+          <a href="figures/announcement_comparison.svg"
+            ><img
+              class="research-figure"
+              src="figures/announcement_comparison.svg"
+              width="1360"
+              height="650"
+              alt="Three opening earnings means and the two pre-specified paired contrasts. LIVE is below SHADOW, while the SHADOW minus H interval includes zero."
+          /></a>
+          <figcaption>
+            The same monitoring technology is described in SHADOW and LIVE. Their announced future control differs. Intervals use the pre-specified
+            adjustment for 2 comparisons and 2 possible looks.
+          </figcaption>
+        </figure>
         <p class="artifact-links" id="primary-evidence-links"></p>
+        <p class="method-note" id="primary-limit">
+          The 3-round comparison estimates the response to announced future control while sanctions remain OFF. The SHADOW minus H interval includes
+          both gains and losses, so closeness does not establish equal performance.
+        </p>
+      </section>
+
+      <section id="complete-policy" aria-labelledby="complete-policy-title">
+        <h2 id="complete-policy-title">The earlier complete-game comparison</h2>
+        <p>
+          In 6 earlier randomized blocks, 12 fresh games ran through all 15 rounds. Mean group earnings were 1,727.4 under H and 1,360.4 under the
+          language policy. Every block difference was negative, with a mean of −367.0 tokens (−21.25%) and an exploratory 95% interval [−566.26,
+          −167.74]. Actual sanction deductions were zero, so the observed loss came from lower contributions.
+        </p>
+        <p>
+          The larger opening study revises the magnitude of the comparable opening contrast. LIVE minus H was −91.8 in the earlier sample and −49.96
+          in the new sample. Fully cooperative H openings were 4/6 and 9/60. These differences caution against treating the earlier full-game
+          magnitude as stable, while new rounds 1 to 3 cannot re-estimate its rounds 4 to 15.
+        </p>
         <div class="wide policy-figures">
           <div class="text-selector" role="tablist" aria-label="Primary result figures">
             <button id="tab-payoff" role="tab" aria-selected="true" aria-pressed="true" aria-controls="panel-payoff" data-figure="payoff">
@@ -107,7 +143,8 @@
                   alt="Twelve complete-game net earnings paired by six randomized blocks, with the six H+L minus H contrasts and exploratory mean interval."
               /></a>
               <figcaption>
-                Full 15-round policy comparison. H is the history rule; H+L adds a fixed language warning. The interval is exploratory.
+                Full 15-round policy comparison. H uses the contribution history, while H+L adds a fixed language warning. The interval is
+                exploratory.
                 <a href="figures/full_policy_comparison.svg">View the full-size figure</a>.
               </figcaption>
             </figure>
@@ -124,14 +161,16 @@
                   loading="lazy"
               /></a>
               <figcaption>
-                Thin lines are individual games; bold lines are arm means. These descriptive trajectories do not separately identify mediation.
+                Thin lines show individual games, while bold lines show arm means. These descriptive trajectories do not separately identify
+                mediation.
                 <a href="figures/full_policy_trajectories.svg">View the full-size figure</a>.
               </figcaption>
             </figure>
           </div>
         </div>
-        <p class="method-note" id="primary-limit">
-          A result for this specified policy, model, and fixed-reference game. It is not a claim about every possible use of language in enforcement.
+        <p class="method-note">
+          The earlier 15-round result and the new announcement contrasts remain separate estimates. The next full-game evaluation will test how a
+          redesigned control rule performs after agents adapt to it.
         </p>
       </section>
 
@@ -143,7 +182,8 @@
         </p>
         <p>The controlled inherited-reference contrast was <span id="reference-value">−7.296 group tokens</span>.</p>
         <p class="method-note" id="reference-limit">
-          One shared source history. This is a controlled reference effect, separate from the complete policy comparison above.
+          The reference effect is measured across 4 producer pairs from 1 archived history, with fixed model weights. It concerns continuation value
+          at matched checkpoints, separately from the announcement contrast.
         </p>
         <p class="artifact-links" id="reference-links"></p>
       </section>
@@ -155,8 +195,9 @@
         </p>
         <p>The fixed text method showed <strong>no stable increment</strong> over the operational prediction baselines.</p>
         <p class="method-note" id="forecast-limit">
-          Finite predictors and a small outcome set do not settle the information content of unrestricted language. Forecasting does not identify
-          policy value.
+          This exploratory forecast audit reuses the 6 history-only games and compares fixed text features with public history using
+          leave-one-game-out predictions. Its prediction errors describe information in observed trajectories, rather than an effect on policy
+          earnings.
         </p>
         <p class="artifact-links" id="forecast-links"></p>
         <details class="source-block">
@@ -217,9 +258,9 @@
         <h2 id="coverage-title">Which learning questions remain open?</h2>
         <ul>
           <li>
-            <strong>Opaque enforcement.</strong> Four full/coarse disclosure games explored knowledge of the language scorer; the contribution penalty
-            remained public. A different hidden-threshold proposal was shelved before native collection. Learning an unknown execution rule remains
-            untested.
+            <strong>Opaque enforcement.</strong> 4 full/coarse disclosure games explored knowledge of the language scorer, while the contribution
+            penalty remained public. A different hidden-threshold proposal was shelved before native collection. Learning an unknown execution rule
+            remains untested.
           </li>
           <li>
             <strong>Communication and learning speed.</strong> Earlier chat/no-chat and public/private-preparation diagnostics used different
@@ -227,8 +268,8 @@
           </li>
         </ul>
         <p>
-          The disclosed-policy pilot and reference-inheritance study answer separate questions. The proposed LIVE/YOKED by reference-update study is
-          also a distinct, unrun mechanism test.
+          The announcement experiment now separates disclosure from announced future control. The next design question is how to give language access
+          to punishment while preserving cooperation, then evaluate that rule across complete games.
           <a href="https://github.com/dorisduowang/pgg-feasibility/blob/main/docs/research-question-coverage.md"
             >Read the coverage record and prior evidence</a
           >.
@@ -238,7 +279,7 @@
       <section id="methods" aria-labelledby="methods-title">
         <h2 id="methods-title">A transparent payoff benchmark</h2>
         <p>
-          Four players each receive 20 fresh tokens in each of 15 rounds. They observe the public record and current enforcement state, exchange four
+          Each of 4 players receives 20 fresh tokens in each of 15 rounds. They observe the public record and current enforcement state, exchange four
           simultaneous nonbinding messages, use a private calculator, and choose simultaneous contributions. Settlement records actual earnings and
           the following enforcement state.
         </p>
@@ -259,9 +300,9 @@
           risk. The fixed-reference study is kept distinct from earlier rule versions and diagnostic continuations.
         </p>
         <p>
-          The reference-inheritance and enforcement-demand studies also use GPT-6.1-Sol with low reasoning effort; the forecast audit reuses the six H
-          games. The original interactive case uses Qwen3-8B. The separate mixed-model screen compares GPT, Qwen and two-plus-two groups. DistilGPT2
-          supplies language scores rather than player decisions.
+          The reference-inheritance and enforcement-demand studies also use GPT-6.1-Sol with low reasoning effort, and the forecast audit reuses the 6
+          H games. The original interactive case uses Qwen3-8B. The separate mixed-model screen compares GPT with Qwen and with groups containing 2
+          agents from each model. DistilGPT2 supplies language scores rather than player decisions.
         </p>
       </section>
 
@@ -270,8 +311,8 @@
         <p>
           The <a href="https://dorisduowang.github.io/#hero-human-title">homepage human panel</a> comes from
           <a href="https://data.mendeley.com/datasets/wz77fd99cz/1">Morgan, Mason and Shupp's replication data</a>. This project's subset contains 110
-          five-round games across six sessions, with a 25-point endowment. Messages were private pregame requests to a policymaker, unlike the agents'
-          repeated public communication. These observations are not matched controls for the fifteen-round agent games.
+          5-round games across 6 sessions, with a 25-point endowment. Messages were private pregame requests to a policymaker, unlike the agents'
+          repeated public communication. These observations are not matched controls for the 15-round agent games.
         </p>
         <p>
           A separate session-held-out forecast audit found no improvement from adding the mean human-coded request to history. It neither uses
@@ -283,7 +324,7 @@
       </section>
 
       <section id="reproduce" aria-labelledby="reproduce-title">
-        <h2 id="reproduce-title">Read, inspect, reproduce</h2>
+        <h2 id="reproduce-title">Inspect the evidence</h2>
         <p>
           Saved outcomes, analysis code, protocol records, and scope notes make each study traceable. The archive retains the earlier feasibility
           website.

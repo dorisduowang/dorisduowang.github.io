@@ -1,26 +1,18 @@
 ---
 layout: page
 title: Language Monitoring in Repeated Public Goods Games
-description: Testing when communication can improve a history-based enforcement rule
+description: How announced language control changes cooperation before punishment begins
 img:
 importance: 1
 category: research
 ---
 
-## Research question
+An automated monitor can change cooperation before it imposes a penalty. I built a repeated public goods experiment in which 4 AI agents know whether their messages can activate punishment, then separated the effect of describing the monitor from the effect of announcing its future control.
 
-Players can promise to cooperate before they contribute. That message is cheap. The institutional question is whether language still contains useful information once players know how the monitor works.
+Across 60 randomized blocks, each containing 3 fresh games, group earnings over the first 3 rounds averaged 325.28 tokens under the history rule and 329.51 when language scores were recorded but excluded from punishment decisions. Earnings fell to 275.32 when the same monitoring technology could control future punishment. That last comparison is a decline of 54.19 tokens, or 16.45%, with a pre-specified 98.75% interval of [-70.37, -38.01]. All 3 opening rounds had punishment switched off, so actual sanctions cannot explain the difference. The recording condition was closer to the history condition under the pre-specified rule, although the data do not establish their equivalence.
 
-My current design compares 2 enforcement rules over 15 rounds. Both use the same contribution history. The second rule also issues a disclosed warning when the language signal crosses a calibrated threshold. The outcome is cumulative group net payoff, so any improvement must cover the cost of punishment.
+An earlier 12-game comparison followed play through all 15 rounds and found a mean earnings difference of -367 tokens between the language-enabled and history policies. Its opening difference was -91.8, compared with -49.96 for the same contrast in the larger sample. The old history sample contained more fully cooperative openings, with 4/6 games compared with 9/60. These results make the opening response clearer while leaving the old full-game magnitude as a separate small-sample estimate.
 
-## Why the design changed
-
-An earlier 9-arm simulation generated 1,350 group-round observations across 90 groups. Maximum token surprisal did not predict next-round contribution declines across 3 thresholds. A surprisal-only rule intervened in 3.3% of rounds and remained close to the no-punishment benchmark.
-
-That result changed the question. The new experiment does not ask a language score to replace contribution history. It asks whether language adds information at the margin, after the history rule has already made its decision.
-
-## Current comparison
-
-The game has 4 AI agents. Each receives 20 tokens per round. Contributions are multiplied by 1.6 and divided equally. The warning rule, contribution rule, and punishment cost are visible to every player.
+In a controlled reference experiment, messages generated under language control became the context used to score later messages. Changing the selected reference while keeping both candidate texts visible reduced probability-weighted continuation earnings by an average of 7.296 tokens across 4 producer pairs. The monitor's weights stayed fixed. Together, these experiments show why the rules governing a monitor's control and reference context belong in the economic model of enforcement. The next question is how to give language a useful role in punishment decisions without undermining the cooperation it is meant to support.
 
 [Open the interactive feasibility study](/pgg-feasibility/)

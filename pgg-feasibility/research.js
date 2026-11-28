@@ -78,7 +78,7 @@ function renderLinks(container, study, extra = {}) {
   }
 }
 function renderFeatured(studies, project) {
-  const primary = studies.find((s) => ["current-policy", "current_policy"].includes(s.id));
+  const primary = studies.find((s) => s.id === "announcement-screen");
   const reference = studies.find((s) => ["reference-inheritance", "reference_inheritance"].includes(s.id));
   const forecast = studies.find((s) => ["early-warning", "early_warning"].includes(s.id));
   if (project?.updated) {
@@ -90,30 +90,32 @@ function renderFeatured(studies, project) {
   }
   if (primary) {
     const a = primary.aggregate_results || {};
-    const delta = a.mean_difference_HL_minus_H ?? primary.primary_result?.value;
-    if (typeof delta === "number" && typeof a.H_mean_net_payoff === "number" && a.H_mean_net_payoff !== 0) {
-      $("#headline-number").textContent = `${fmt((delta / a.H_mean_net_payoff) * 100, 2)}%`;
+    const delta = a.contrasts?.["LIVE-SHADOW"]?.mean ?? primary.primary_result?.value;
+    if (typeof delta === "number" && typeof a.arm_means?.SHADOW === "number" && a.arm_means.SHADOW !== 0) {
+      $("#headline-number").textContent = `${fmt((delta / a.arm_means.SHADOW) * 100, 2)}%`;
     }
-    $("#primary-H-payoff").textContent = fmt(a.H_mean_net_payoff, 1);
-    $("#primary-HL-payoff").textContent = fmt(a.HL_mean_net_payoff, 1);
-    $("#primary-delta").textContent = fmt(delta, 1);
-    $("#headline-sample").textContent = `${a.games ?? 12} fresh games · ${a.independent_blocks ?? 6} randomized blocks · 15 rounds per game`;
+    $("#primary-H-payoff").textContent = fmt(a.arm_means?.H, 2);
+    $("#primary-SHADOW-payoff").textContent = fmt(a.arm_means?.SHADOW, 2);
+    $("#primary-LIVE-payoff").textContent = fmt(a.arm_means?.LIVE, 2);
+    $("#primary-delta").textContent = fmt(delta, 2);
+    $("#headline-sample").textContent =
+      `${a.independent_blocks ?? 60} randomized blocks with ${a.fresh_openings ?? 180} fresh game openings. All 3 observed rounds had punishment OFF.`;
     $("#primary-summary").textContent = [text(primary.summary), text(primary.design)].filter(Boolean).join(" ");
     renderLinks($("#primary-evidence-links"), primary);
-    $("#primary-findings").replaceChildren(...(primary.findings || []).slice(0, 3).map((item) => element("li", "", text(item))));
-    $("#primary-limit").textContent = (primary.limits || []).map(text).filter(Boolean).join(" ");
+    $("#primary-findings").textContent = (primary.findings || []).map(text).filter(Boolean).join(" ");
+    $("#primary-limit").textContent = text(primary.featured_scope) || (primary.limits || []).map(text).filter(Boolean).join(" ");
   }
   if (reference) {
     const metric = reference.primary_result || {};
     const value = metric.value ?? reference.aggregate_results?.primary_mean_delta_ref;
     $("#reference-value").textContent = `${fmt(value)} group tokens`;
     $("#reference-summary").textContent = [text(reference.summary), text(reference.sample)].filter(Boolean).join(" ");
-    $("#reference-limit").textContent = (reference.limits || []).map(text).filter(Boolean).join(" ");
+    $("#reference-limit").textContent = text(reference.featured_scope) || (reference.limits || []).map(text).filter(Boolean).join(" ");
     renderLinks($("#reference-links"), reference);
   }
   if (forecast) {
     $("#forecast-summary").textContent = [text(forecast.summary), text(forecast.design)].filter(Boolean).join(" ");
-    $("#forecast-limit").textContent = (forecast.limits || []).map(text).filter(Boolean).join(" ");
+    $("#forecast-limit").textContent = text(forecast.featured_scope) || (forecast.limits || []).map(text).filter(Boolean).join(" ");
     renderLinks($("#forecast-links"), forecast);
   }
 }
