@@ -28,58 +28,18 @@ and no sample size, cost or executable protocol is frozen. The broader goal
 remains to evaluate how language should enter enforcement through its
 consequences for complete-game net earnings.
 
-The reference-inheritance result motivates a separate question about how
-scoring context updates. The earlier concept below remains an unexecuted
-proposal rather than the next scheduled experiment.
+Message coding would be specified before collection, covering explicit
+commitments, concrete contribution plans and responses to other players.
+Those measures would be examined alongside other players' subsequent
+contributions. Lower monitor scores alone do not establish more conservative
+expression, and associations between messages and contributions do not by
+themselves identify causal mediation.
 
-# Earlier reference-update concept
+A difference between the two conditions would support a source-dependent
+policy effect, with perceived enforcement risk still to examine. An
+imprecise or nonsignificant contrast would not establish equivalence or
+confirm that general enforcement expectations explain the existing loss.
 
-**Conceptual design, not executed.**
-
-The prospective question is whether enforcement control and reference updating
-interact: does policy-induced expression create an additional later control
-loss under rolling references, and does anchoring the reference attenuate it?
-
-| Enforcement authority           | Rolling reference | Anchored reference |
-| ------------------------------- | ----------------- | ------------------ |
-| Own language has causal control | LIVE-ROLL         | LIVE-ANCHOR        |
-| Matched inherited exposure      | YOKED-ROLL        | YOKED-ANCHOR       |
-
-The original PGG payoffs, sanction schedule and message/action timing would
-remain. Update rules must be truthfully disclosed before producers express
-themselves, with fresh messages and free actions in every condition. Removing
-an already frozen text from scoring can mechanically remove its effect; that
-alone is not evidence for this incentive interaction.
-
-The proposed contrast is:
-
-```text
-J = (V_LIVE,ROLL - V_YOKED,ROLL)
-    - (V_LIVE,ANCHOR - V_YOKED,ANCHOR)
-```
-
-`J < 0` is a directional hypothesis, not a result. Values must come from new
-communication, actual routing, contributions and settlement. A score change
-alone is insufficient.
-
-Before execution, the design must resolve exposure matching without overriding
-the original history-warning priority, independent anchor selection,
-calibration, information display, comparable opportunities and checkpoint
-construction. These are unresolved protocol requirements; no sample size or
-execution is represented as finalized.
-
-The previous recipient-policy-by-reference-source interaction was zero. That
-is a different contrast from an ex-ante update-policy interaction and cannot
-be presented as confirmation of the new hypothesis.
-
-If anchoring changes all conditions equally, it does not establish the
-control-specific mechanism. A result only on one weak likelihood scorer does
-not warrant a broad mechanism claim; that requires another independently
-chosen monitoring rule or justified, tested model conditions. Scorers and
-thresholds must not be selected after seeing favorable outcomes.
-
-Legal triggers remain feasible in the existing reference spaces. The question
-concerns realized adaptation, not physical exhaustion of a control resource.
-Failure to obtain the predicted interaction would narrow the account. No
-positive welfare repair or mediation of the observed full-policy loss is
-promised.
+The completed reference-inheritance experiment remains a separate result.
+It does not establish mediation of the announcement effect or a benefit from
+redesigning the enforcement channel.

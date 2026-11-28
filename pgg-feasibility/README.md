@@ -3,17 +3,19 @@
 An independent research project by Duo Wang (Doris Wang).
 
 When agents know their words can activate punishment, the monitor becomes part
-of the game. I study how that control changes cooperation before enforcement
-begins and how the resulting messages become the monitor's future reference.
+of the game. I study the cooperation costs of adding that enforcement route,
+alongside a separate experiment on the messages used as its future reference.
 
 ## Current result
 
-In **60 randomized blocks**, announcing future language control reduced opening
+In **60 randomized blocks**, announcing an additional language-triggered
+enforcement route reduced opening
 group earnings by **54.19 tokens (16.45%)** relative to describing the same
 monitor without giving its scores control over punishment or payoffs. Each
 block contained 1 fresh game under each of 3 conditions. Games announced 15
 rounds, while collection paused after round 3. Punishment was unavailable in
-all observed rounds.
+all observed rounds. The player model is `gpt-6.1-sol`, with DistilGPT2 supplying
+the fixed language scores.
 
 | Opening outcome                             |      H | SHADOW |   LIVE |
 | ------------------------------------------- | -----: | -----: | -----: |
@@ -23,8 +25,10 @@ all observed rounds.
 LIVE minus SHADOW is −54.19 with a pre-specified 98.75% interval
 [−70.37, −38.01]. SHADOW minus H is +4.23 [−14.61, 23.07]. The pre-specified
 position rule places SHADOW closer to H, without establishing their equivalence.
-This identifies an opening effect of the announcement arrangement in the fixed
-model and wording.
+This identifies an opening effect of the announced policy in the fixed model
+and wording. LIVE adds both a connection from the group's own messages to
+punishment and an additional enforcement route, so a general response to
+anticipated enforcement remains a competing explanation.
 
 ![Opening earnings and pre-specified announcement contrasts](figures/announcement_comparison.svg)
 
@@ -52,11 +56,11 @@ an identified mediator of either policy contrast.
 
 ## Where the project goes next
 
-The announcement experiment locates a design problem where language receives
-punishment control. The next task is to specify that control rule around the
-payoff consequences of enforcement, then evaluate complete-game earnings after
-agents adapt. The [design note](docs/future-mechanism.md) connects this task to
-reference updating. Earlier learning questions remain in the
+The next comparison would retain an additional enforcement channel while
+sourcing its warnings from the group's own messages or a paired group's
+messages. It would test whether opening behavior depends on that connection.
+The [design note](docs/future-mechanism.md) describes the comparison and the
+message measures to specify before collection. Earlier learning questions remain in the
 [coverage record](docs/research-question-coverage.md).
 
 ## Explore and reproduce
@@ -66,8 +70,7 @@ retains the original interactive Qwen case. The
 [research record](https://dorisduowang.github.io/pgg-feasibility/research.html)
 connects the latest experiment to the versioned
 [study registry](data/research_registry.json). The
-[overview](docs/overview.md) gives the research argument and
-[history](docs/study-history.md) preserves earlier diagnostics.
+[study history](docs/study-history.md) preserves earlier diagnostics.
 
 ```bash
 python3 reproduce.py
@@ -76,7 +79,7 @@ python3 reproduce.py
 The standard-library entry checks 6 saved-data studies without model calls.
 [Reproduction instructions](docs/reproduction.md) explain each export and
 analysis. The [theory note](docs/theory.md) states the payoff benchmark, while
-[related work](docs/related-work.md) positions the mechanism.
+[related work](docs/related-work.md) positions the findings and open mechanism question.
 
 Application documents and operational access records are not part of this
 public project. Citation information is in [CITATION.cff](CITATION.cff).

@@ -56,10 +56,16 @@ function check(name, fn) {
   fn();
   passed.push(name);
 }
-check("all registry renders eight of 34", () => {
+check("registry opens with completed studies", () => {
+  assert.equal(ui.state.status, "completed");
   ui.renderStudies();
-  assert.equal(nodes.get("#registry-count").textContent, "8 of 34 studies");
+  assert.equal(nodes.get("#registry-count").textContent, "8 of 16 completed studies");
   assert.equal(nodes.get("#study-list").children.length, 8);
+});
+check("all registry renders eight of 33", () => {
+  ui.state.status = "all";
+  ui.renderStudies();
+  assert.equal(nodes.get("#registry-count").textContent, "8 of 33 studies");
 });
 check("featured renderer uses the completed announcement study", () => {
   ui.renderFeatured(registry.studies, registry.project);
@@ -83,12 +89,13 @@ check("version search finds registered version text", () => {
   assert.equal(nodes.get("#study-list").children.length, 1);
   assert.equal(nodes.get("#study-list").children[0].id, "study-reference-inheritance");
 });
-check("planned status displays exactly two unrun studies", () => {
+check("planned status displays only the current unrun comparison", () => {
   ui.state.query = "";
   ui.state.status = "planned";
   ui.renderStudies();
-  assert.equal(nodes.get("#registry-count").textContent, "2 of 2 planned studies");
-  assert.equal(nodes.get("#study-list").children.length, 2);
+  assert.equal(nodes.get("#registry-count").textContent, "1 of 1 planned studies");
+  assert.equal(nodes.get("#study-list").children.length, 1);
+  assert.equal(nodes.get("#study-list").children[0].id, "study-paired-warning-source");
 });
 check("archived status paginates 16 correctly", () => {
   ui.state.status = "archived";
@@ -108,7 +115,7 @@ check("unmatched query displays explicit empty state", () => {
   assert.equal(nodes.get("#study-list").children[0].textContent, "No studies match these filters.");
 });
 check("GitHub deep reading works for mirrored site", () => {
-  for (const path of ["docs/overview.md", "studies/current_policy/data.json", "studies/current_policy/code/ledger.py"])
+  for (const path of ["docs/future-mechanism.md", "studies/current_policy/data.json", "studies/current_policy/code/ledger.py"])
     assert.equal(ui.readableHref(path), "https://github.com/dorisduowang/pgg-feasibility/blob/main/" + path);
   assert.equal(
     ui.readableHref("studies/current_policy/code/"),

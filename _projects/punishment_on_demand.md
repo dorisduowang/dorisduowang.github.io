@@ -1,18 +1,16 @@
 ---
 layout: page
 title: Language Monitoring in Repeated Public Goods Games
-description: How announced language control changes cooperation before punishment begins
+description: The opening cost of adding a language-triggered enforcement channel
 img:
 importance: 1
 category: research
 ---
 
-An automated monitor can change cooperation before it imposes a penalty. I built a repeated public goods experiment in which 4 AI agents know whether their messages can activate punishment, then separated the effect of describing the monitor from the effect of announcing its future control.
+I built a repeated public goods experiment to study how the announced use of a language monitor changes cooperation. Across 60 randomized blocks with 3 fresh games each, adding a language-triggered enforcement channel reduced mean opening group earnings by 54.19 tokens, or 16.45%, relative to recording the same monitor's scores without consequences. The pre-specified 98.75% interval was [-70.37, -38.01]. All 3 observed rounds had punishment switched off.
 
-Across 60 randomized blocks, each containing 3 fresh games, group earnings over the first 3 rounds averaged 325.28 tokens under the history rule and 329.51 when language scores were recorded but excluded from punishment decisions. Earnings fell to 275.32 when the same monitoring technology could control future punishment. That last comparison is a decline of 54.19 tokens, or 16.45%, with a pre-specified 98.75% interval of [-70.37, -38.01]. All 3 opening rounds had punishment switched off, so actual sanctions cannot explain the difference. The recording condition was closer to the history condition under the pre-specified rule, although the data do not establish their equivalence.
+The comparison adds both a route to future punishment and a connection from the group's own messages to that route. The next comparison would retain an additional channel while sourcing its warnings from either the group's own messages or a paired group's messages. It would examine whether the opening response depends on that connection, with expectations of future punishment requiring separate attention.
 
-An earlier 12-game comparison followed play through all 15 rounds and found a mean earnings difference of -367 tokens between the language-enabled and history policies. Its opening difference was -91.8, compared with -49.96 for the same contrast in the larger sample. The old history sample contained more fully cooperative openings, with 4/6 games compared with 9/60. These results make the opening response clearer while leaving the old full-game magnitude as a separate small-sample estimate.
+The [research record](/pgg-feasibility/research.html) presents the full results alongside the earlier 12 complete games and a separate reference-inheritance experiment. Public data and offline reproduction are available in the [project repository](https://github.com/dorisduowang/pgg-feasibility).
 
-In a controlled reference experiment, messages generated under language control became the context used to score later messages. Changing the selected reference while keeping both candidate texts visible reduced probability-weighted continuation earnings by an average of 7.296 tokens across 4 producer pairs. The monitor's weights stayed fixed. Together, these experiments show why the rules governing a monitor's control and reference context belong in the economic model of enforcement. The next question is how to give language a useful role in punishment decisions without undermining the cooperation it is meant to support.
-
-[Open the interactive feasibility study](/pgg-feasibility/)
+[Explore the original interactive case](/pgg-feasibility/)

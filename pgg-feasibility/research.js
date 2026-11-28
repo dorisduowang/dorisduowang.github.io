@@ -3,7 +3,7 @@
 const $ = (selector) => document.querySelector(selector);
 const REGISTRY = "data/research_registry.json";
 const REPO = "https://github.com/dorisduowang/pgg-feasibility";
-const state = { studies: [], status: "all", query: "", limit: 8, loaded: false };
+const state = { studies: [], status: "completed", query: "", limit: 8, loaded: false };
 const statusNames = { completed: "Completed", archived: "Archived", planned: "Planned" };
 const scopeNames = { screening: "Screening evidence", shelved: "Shelved design", planned_concept: "Concept only", planned: "Prepared, not executed" };
 

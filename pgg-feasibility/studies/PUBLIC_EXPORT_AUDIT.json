@@ -20,8 +20,8 @@
     },
     {
       "path": "studies/announcement_screen/README.md",
-      "sha256": "7046f418dedd528581ba8a1fd0a1392228842d3289d802a56eddfc2a43044315",
-      "bytes": 3319
+      "sha256": "b3a87f328551284f13ad3c860fe0826dc9b969d1f8283db1ce2c3ad601a775ed",
+      "bytes": 3370
     },
     {
       "path": "studies/announcement_screen/data.json",
@@ -283,5 +283,10 @@
       "sha256": "c9af9f87f3d9bbbcf738591da46ef6a4566365f3dd13d08efd0f1189df8e7bf6",
       "bytes": 11015
     }
-  ]
+  ],
+  "documentation_hash_refresh": {
+    "date": "2026-11-27",
+    "path": "studies/announcement_screen/README.md",
+    "reason": "Current policy interpretation and competing explanation updated. Scientific data and analysis code unchanged."
+  }
 }

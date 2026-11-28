@@ -23,15 +23,17 @@ reports that communication raises contributions while lowering payoffs in its
 standard public goods treatment with peer punishment. A welfare loss from
 communication is already an observed result.
 
-The [60-block experiment](../studies/announcement_screen/) focuses on what
-happens when the same disclosed language monitor receives future enforcement
-authority. SHADOW records its scores but excludes them from punishment and
+The [60-block experiment](../studies/announcement_screen/) focuses on the
+opening response to adding a language-triggered enforcement route. SHADOW
+records the monitor's scores but excludes them from punishment and
 payoff rules, while LIVE gives its warning a role in future punishment decisions.
 All arms retain public communication, with punishment unavailable during the
 3 observed opening rounds. The comparison measures the effect of the announced
-control arrangement on cooperation and net earnings before realized sanctions
-can contribute to the difference. It separates the monitoring description from
-that announcement of future authority within the documented model and rules.
+policy arrangement on cooperation and net earnings before realized sanctions
+can contribute to the difference. LIVE adds both a connection from the group's
+own messages to punishment and another enforcement route. The current result
+does not separate a language-specific response from general anticipated
+enforcement, within the documented model and rules.
 
 History-dependent monitoring has precedents too. Who Else Is In? includes a
 stateful monitor with a private scratchpad, while
@@ -83,7 +85,9 @@ study how punishment's welfare effects depend on the surrounding game design.
 These provide context for evaluating an enforcement rule through economic
 outcomes after agents respond.
 
-The [next design question](future-mechanism.md) is how language should obtain
-punishment authority and whether a redesigned arrangement improves complete-game
-net earnings. The current announcement result and separate controlled reference
-effect give that task concrete outcomes to explain.
+The [next comparison](future-mechanism.md) would retain an additional
+enforcement channel while sourcing its warnings from either the group's own
+messages or a paired group's messages. It would test whether behavior depends
+on that connection. The current announcement result and separate controlled
+reference effect provide outcomes to explain without establishing a unified
+mechanism.

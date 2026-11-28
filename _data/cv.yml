@@ -4,7 +4,7 @@ cv:
   phone: "+1 (773) 457-7102"
   location: Chicago, IL
   summary: >-
-    I study strategic interaction under incomplete information. My current public goods experiment asks whether communication can improve costly enforcement. A matched-team study holds private evidence fixed and changes the group. My operations work holds firm roles fixed and changes agent capability. The broader agenda is institutional design for settings in which AI agents act for people or firms.
+    I study strategic interaction under incomplete information. My current public goods experiment examines how announced enforcement changes cooperation before any punishment occurs. A matched-team study holds private evidence fixed and changes the group. My operations work holds firm roles fixed and changes agent capability. The broader agenda is institutional design for settings in which AI agents act for people or firms.
 
   sections:
     Education:
@@ -67,7 +67,7 @@ cv:
           - "Group stability was associated with 29.25 percentage points more cooperation. Institutional enforcement was moderately positive, while peer punishment had no standalone association."
 
     Working Papers:
-      - bullet: "**Can Transformer Surprisal Identify When Peer Punishment Is Needed in Repeated Public Goods Games?** Designed a 9-arm experiment with 90 groups and 1,350 group-round observations. The first language signal did not predict contribution declines across 3 thresholds. The revised design tests whether a disclosed language warning adds information after a contribution-history rule has made its decision."
+      - bullet: "**Language Monitoring and Automated Enforcement in Public Goods Games.** Designed a randomized comparison across 60 blocks and 180 fresh openings. Adding a language-triggered enforcement channel reduced first-3-round group earnings by 16.45% relative to a recording-only monitor, before punishment was available. The comparison identifies the effect of the announced arrangement. The roles of own-message control and an additional enforcement route remain to be separated."
       - bullet: "**News Metadata and Market Volatility Around FOMC Meetings.** Built distributed TF-IDF processing for more than 2 million GDELT metadata records around an 88-meeting calendar. The writing sample uses 33 meetings, 5 strictly later returns, HC3 OLS, and 20,000 permutations across 7 archived dates."
 
     Teaching:

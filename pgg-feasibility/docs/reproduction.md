@@ -80,10 +80,11 @@ and their hashes. They document executed game, payoff, policy and diagnostic
 implementations, while portable study reproductions are the supported default
 workflow. Credential brokers and paid execution entry points are excluded.
 
-The root legacy Qwen scoring files and archived article retain their earlier
-rule version. Re-scoring that archive requires the separately pinned local
-scorer described in its own README. It is not part of the zero-model-call
-verification above.
+The root Qwen scoring files retain their earlier rule version and support the
+interactive case in `index.html`. Earlier website presentations are available
+in Git history rather than duplicated in this checkout. Re-scoring the Qwen
+case requires the pinned local scorer described in `scoring.py`; it is not
+part of the zero-model-call verification above.
 
 ## Study units
 

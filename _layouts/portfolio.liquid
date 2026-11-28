@@ -63,21 +63,25 @@
           <article class="feature" id="public-goods" aria-labelledby="pgg-title">
             <div class="feature-copy">
               <p class="eyebrow">Monitoring and enforcement</p>
-              <h2 id="pgg-title">Can cheap talk improve the timing of punishment?</h2>
+              <h2 id="pgg-title">When words can trigger punishment</h2>
               <p>
-                In round 10 of a public goods game I ran with 4 AI agents, P4 asked everyone to contribute 5 tokens and then put in 10. Choose a round
-                and a player to place the message beside the action. The current experiment asks whether a disclosed language warning improves group
-                earnings when it is added to the same history rule.
+                Across 60 randomized blocks, announcing an additional language-triggered enforcement channel reduced opening group earnings by 16.45%
+                relative to a recording-only monitor. All 3 observed rounds had punishment switched off. The remaining question is whether the loss
+                depends on linking the group's own messages to enforcement or on the additional route to punishment.
+              </p>
+              <p>
+                The interactive record below comes from an earlier Qwen3-8B game. Choose a round and a player to compare the message with the
+                contribution, separately from the latest announcement experiment.
               </p>
               <div class="feature-links">
-                <a class="solid-link" href="{{ '/pgg-feasibility/' | relative_url }}">Open the interactive study</a>
+                <a class="solid-link" href="{{ '/pgg-feasibility/research.html' | relative_url }}">Read the latest result</a>
                 <a class="text-link" href="https://github.com/dorisduowang/pgg-feasibility">Code &amp; data</a>
-                <a class="text-link" href="{{ '/projects/punishment_on_demand/' | relative_url }}">Earlier simulation</a>
+                <a class="text-link" href="{{ '/pgg-feasibility/' | relative_url }}">Explore recorded play</a>
               </div>
             </div>
             <figure class="pgg-figure">
               <div class="pgg-figure-header">
-                <h3>Mean contribution per agent</h3>
+                <h3>Earlier Qwen case: mean contribution per agent</h3>
               </div>
               <div class="pgg-canvas">
                 <canvas id="pgg-chart" aria-hidden="true"></canvas>
@@ -338,10 +342,10 @@
               I received my B.Sc. in Political Economy from King’s College London.
             </p>
             <p>
-              I study strategic interaction under incomplete information. My current public goods experiment asks whether communication can improve
-              the timing of costly enforcement. The next project holds private reports fixed and changes the team. My operations work holds firm roles
-              fixed and changes agent capability. The broader agenda is institutional design for settings in which AI agents hold information and act
-              for people or firms.
+              I study strategic interaction under incomplete information. My current public goods experiment examines how announced enforcement
+              changes cooperation before any punishment occurs. The next project holds private reports fixed and changes the team. My operations work
+              holds firm roles fixed and changes agent capability. The broader agenda is institutional design for settings in which AI agents hold
+              information and act for people or firms.
             </p>
             <div class="about-links">
               <a class="text-link" href="{{ '/cv/' | relative_url }}">Curriculum vitae</a>
