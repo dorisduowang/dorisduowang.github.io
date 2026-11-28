@@ -1,28 +1,36 @@
-# Designing language access to punishment
+# The next comparison: own messages or paired-group messages
 
-The 60-block announcement experiment now separates monitoring disclosure from
-announced future control. LIVE minus SHADOW is −54.19 opening tokens, while
-SHADOW minus H is +4.23 with an interval spanning zero. All observed rounds are
-OFF, so a new institution must address the response to its announced control
-rule before evaluating what its later ON decisions accomplish.
+The 60-block experiment measures the opening response to adding a
+language-triggered enforcement channel. LIVE minus SHADOW is −54.19 tokens,
+while SHADOW minus H is +4.23 with an interval spanning zero. LIVE adds both
+a connection from the group's language to punishment and an additional route
+to future enforcement. The randomized result remains a policy effect, with
+those two explanations still to separate.
 
-The next design task is to specify when language should be allowed to change
-the punishment decision. A likelihood warning currently obtains that authority
-directly. A payoff-based rule would instead need to justify enforcement through
-its expected effect on group earnings, using the same decision permissions
-across information conditions. Public history supplies the baseline against
-which any language increment must be evaluated.
+The next planned comparison would retain the history rule and scoring
+technology while sourcing the added warning from either the group's own
+messages or a paired group's messages. Both conditions would retain an
+additional enforcement channel. A prespecified one-way pairing would share
+the added warning stream without making the groups' message sources mutually
+dependent. Public instructions would truthfully state which source governs,
+with the same monitoring technology described in both conditions.
 
-A future comparison should truthfully disclose each rule before agents play
-and measure complete-game net earnings from fresh histories. The scientific
-question is whether a redesigned rule preserves cooperation while using
-language to improve consequential enforcement decisions. Sample size and
-execution remain separate decisions after that rule and benchmark are fixed.
+Matching the added warning stream does not by itself match total punishment
+paths, because each group's history rule continues to operate. It also does
+not guarantee identical expectations of future punishment. Source pairing and
+public risk information therefore need an explicit protocol before collection,
+rather than post-run matching of average ON counts. The first 3 forced-OFF
+rounds provide the window for comparing opening behavior before any realized
+sanction.
 
-The reference-inheritance result motivates examining how the scoring context
-updates within this broader control-design problem. The earlier concept below
-is retained as an unexecuted mechanism proposal. It has not become a completed
-repair merely because the announcement diagnostic is now finished.
+This is a conceptual comparison for later development. It has not been run,
+and no sample size, cost or executable protocol is frozen. The broader goal
+remains to evaluate how language should enter enforcement through its
+consequences for complete-game net earnings.
+
+The reference-inheritance result motivates a separate question about how
+scoring context updates. The earlier concept below remains an unexecuted
+proposal rather than the next scheduled experiment.
 
 # Earlier reference-update concept
 
